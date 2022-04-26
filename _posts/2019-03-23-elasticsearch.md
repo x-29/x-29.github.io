@@ -1,6 +1,6 @@
 ---
 ID: 73
-ptitle: 自顶而下说 Elasticsearch
+title: 自顶而下说 Elasticsearch
 layout: post
 published: true
 date: 2019-03-23 22:05:28
