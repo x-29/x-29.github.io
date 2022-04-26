@@ -1,12 +1,9 @@
 ---
 ID: 73
-post_title: 自顶而下说 Elasticsearch
-author: hemi
-post_excerpt: ""
+ptitle: 自顶而下说 Elasticsearch
 layout: post
-permalink: http://hemi.im/archives/73
 published: true
-post_date: 2019-03-23 22:05:28
+date: 2019-03-23 22:05:28
 ---
 <!-- wp:paragraph -->
 <p>试着用自顶而下的方式说道一下 Elasticsearch 的运行机制。</p>
