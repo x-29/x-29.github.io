@@ -1,12 +1,10 @@
 ---
 ID: 185
-post_title: 商业数据科学思维
+title: 商业数据科学思维
 author: hemi
-post_excerpt: ""
 layout: post
-permalink: http://hemi.im/archives/185
 published: true
-post_date: 2019-04-25 16:12:37
+date: 2019-04-25 16:12:37
 ---
 <!-- wp:paragraph -->
 <p>今天看的一篇文章：<a href="https://data36.com/data-science-for-business/">Data Science for Business</a></p>
