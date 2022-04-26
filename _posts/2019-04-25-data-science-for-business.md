@@ -1,8 +1,6 @@
 ---
 ID: 185
 title: 商业数据科学思维
-author: hemi
-layout: post
 published: true
 date: 2019-04-25 16:12:37
 ---
