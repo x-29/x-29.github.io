@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>x-29 的网络日志</title>
+    <link>https://example.com/</link>
+    <description>Recent content on x-29 的网络日志</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2008–2018, Steve Francia and the Hugo Authors; all rights reserved.</copyright>
+    <lastBuildDate>Mon, 23 May 2022 14:49:25 +0800</lastBuildDate><atom:link href="https://example.com/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C 笔记</title>
+      <link>https://example.com/post/2022-05-c-note/</link>
+      <pubDate>Mon, 23 May 2022 14:49:25 +0800</pubDate>
+      
+      <guid>https://example.com/post/2022-05-c-note/</guid>
+      <description>
+        
+          
+            这是 《Linux C编程一站式学习》一书的读书笔记。
+一 程序由一系列指令组成，指令包括：
+ 输出 输入 基本运算 测试和分支 循环（递归）  编写程序就是这样一个过程：
+ 把复杂的任务分解成子任务，把子任务再分解成更简单的任务，层层分解，直到最后简单得可以用以上指令来完成。
+  一种平台就是一种体系结构，就是一种指令集，就是一种机器语言。
+ 计算机只能执行低级语言中的指令（汇编语言的指令要先转成机器码才能执行），高级语言要执行就必须先翻译成低级语言。翻译的方式有两种：1) 编译 2）解释。
+1）编译执行的过程：
+source code --&amp;gt; complier --&amp;gt; executable -&amp;gt; loader --&amp;gt; 输出结果
+把源代码全部翻译成机器指令，再加上一些描述信息，生成一个可执行文件，可执行文件可以被操作系统加载运行。
+2） 解释执行的过程：
+source code --&amp;gt; interpeter --&amp;gt; 结果
+解释器读取源代码解释执行，程序运行的结果出现在屏幕上。
+虚拟机执行过程：
+source code --&amp;gt; complier --&amp;gt; byte code --&amp;gt; interpeter --&amp;gt; 结果
+ 编程语言是一种形式语言，是专门设计用来表达计算过程的形式语言。
+形式语言有严格的语法(Syntax)规则。语法规则是由符号（Token）和结构（structure）的规则所组成。
+ 关于 Token 的规则称为词法（Lexical）规则。 关于结构的规则称为语法（Grammar）规则。   程序中的错误叫做 Bug。找到 Bug 并加以纠正的过程叫做调试（Debug）。
+程序中的 Bug 分为：
+          
+          
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>
