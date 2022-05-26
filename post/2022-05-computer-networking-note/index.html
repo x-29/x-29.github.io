@@ -1,15 +1,17 @@
 
 <!DOCTYPE html>
 <html
-  lang="en"
-  data-figures=""
+  lang="zh"
+  data-figures="true"
+  
+    class="page"
   
   
     data-mode="lit"
   
   >
   <head>
-<title>404 Page not found | x-29&#39;s blog</title>
+<title>计算机网络(Computer Networking)笔记 | x-29 的网络日志</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,23 +23,23 @@
   gtag('config', 'XXXXXXXXXX');
 </script>
 
-<meta property="og:locale" content="en" />
+<meta property="og:locale" content="zh" />
 
 <meta property="og:type" content="article">
-<meta name="description" content="" />
+<meta name="description" content="计算机网络(Computer Networking: A Top-Down Approach)学习笔记." />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="@XXXXXXXX">
-<meta name="twitter:title" content="404 Page not found" />
-<meta property="og:url" content="https://x-29.github.io/en/404.html" />
-<meta property="og:title" content="404 Page not found" />
-<meta property="og:description" content="" />
-<meta property="og:image" content="https://x-29.github.io/images/thumbnail.png" />
+<meta name="twitter:title" content="计算机网络(Computer Networking)笔记" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-computer-networking-note/" />
+<meta property="og:title" content="计算机网络(Computer Networking)笔记" />
+<meta property="og:description" content="计算机网络(Computer Networking: A Top-Down Approach)学习笔记." />
+<meta property="og:image" content="https://x-29.github.io/post/2022-05-computer-networking-note/https:/img3.doubanio.com/view/subject/s/public/s27997920.jpg" />
 
 <link rel="apple-touch-icon" sizes="180x180" href="https://x-29.github.io/icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://x-29.github.io/icons/favicon-32x32.png">
 <link rel="manifest" href="https://x-29.github.io/icons/site.webmanifest">
 
-<link rel="canonical" href="https://x-29.github.io/en/404.html">
+<link rel="canonical" href="https://x-29.github.io/post/2022-05-computer-networking-note/">
 
 
 
@@ -45,7 +47,7 @@
 
 
 
-<link rel="preload" href="https://x-29.github.io/en/js/bundle.7f647092ffab6102858ab92bae4e65bbeae89d4ff6e29aace780277762afcb3c86ab88f9ff22e3a54b6db55e549b9d2d26560e67a29a3cf9dca00c77bffd16fc.js" as="script" integrity=
+<link rel="preload" href="https://x-29.github.io/zh/js/bundle.7f647092ffab6102858ab92bae4e65bbeae89d4ff6e29aace780277762afcb3c86ab88f9ff22e3a54b6db55e549b9d2d26560e67a29a3cf9dca00c77bffd16fc.js" as="script" integrity=
 "sha512-f2Rwkv&#43;rYQKFirkrrk5lu&#43;ronU/24pqs54And2KvyzyGq4j5/yLjpUtttV5Um50tJlYOZ6KaPPncoAx3v/0W/A==" crossorigin="anonymous">
 
 
@@ -54,13 +56,13 @@
 
   </head>
   <body
-    data-code="7"
+    data-code="10"
     data-lines="false"
     id="documentTop"
   >
 
 <header class="nav_header" >
-  <nav class="nav"><a href='https://x-29.github.io/en/' class="nav_brand nav_item" title="x-29&#39;s blog">x-29&#39;s blog
+  <nav class="nav"><a href='https://x-29.github.io/' class="nav_brand nav_item" title="x-29 的网络日志">x-29 的网络日志
   <div class="nav_close">
     <div><svg class="icon">
   <title>open-menu</title>
@@ -81,10 +83,10 @@
         
 
   <div class="nav_parent">
-    <a href="https://x-29.github.io/en/" class="nav_item" title="Home">Home </a>
+    <a href="https://x-29.github.io/" class="nav_item" title="首页">首页 </a>
   </div>
   <div class="nav_parent">
-    <a href="https://x-29.github.io/en/posts" class="nav_item" title="Articles">Articles </a>
+    <a href="https://x-29.github.io/post" class="nav_item" title="文章">文章 </a>
   </div>
       
       <div class="nav_parent">
@@ -99,35 +101,6 @@
         </div>
       </div>
 <div class='follow'>
-  <a href="https://github.com/#">
-    <svg class="icon">
-  <title>github</title>
-  <use xlink:href="#github"></use>
-</svg>
-
-  </a>
-  <a href="https://twitter.com/#">
-    <svg class="icon">
-  <title>twitter</title>
-  <use xlink:href="#twitter"></use>
-</svg>
-
-  </a>
-  <a href="https://www.linkedin.com/in/#">
-    <svg class="icon">
-  <title>linkedin</title>
-  <use xlink:href="#linkedin"></use>
-</svg>
-
-  </a>
-    
-  <a href="https://x-29.github.io/en/index.xml">
-    <svg class="icon">
-  <title>rss</title>
-  <use xlink:href="#rss"></use>
-</svg>
-
-  </a>
 <div class="color_mode">
   <input type="checkbox" class="color_choice" id="mode">
 </div>
@@ -139,12 +112,239 @@
 </header>
 
     <main>
-<div class="never wrap">
-  <h1>Lost</h1>
-  <p class="pale">We couldn&#39;t find the page you&#39;re looking for</p><br>
-  <div class="button btn_back">Go Back</div>
+  
+<div class="grid-inverse wrap content">
+  <article class="post_content">
+    <h1 class="post_title">计算机网络(Computer Networking)笔记</h1>
+  <div class="post_meta">
+    <span><svg class="icon">
+  <title>calendar</title>
+  <use xlink:href="#calendar"></use>
+</svg>
+</span>
+    <span class="post_date">
+      May 23, 2022</span>
+    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://x-29.github.io/tags/networking' title="networking" class="post_tag button button_translucent">networking
+        </a>
+    </span>
+  </div>
+<div class="post_featured"><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_featured image_external image_processed"
+        width="270"
+        height="432"
+        src="/images/s27997920_1015895638620413967.jpg"
+      
+      
+        title="图片来自: douban."
+      
+    />
+
+    <figcaption class="caption_figure caption_featured caption_external">图片来自: douban.</figcaption></picture>
+</figure>
+
+      </div>
+    <div class="post_body"><p>这是<a href="https://book.douban.com/subject/26176870/">《计算机网络自顶向下方法 第6版》</a>一书的读书笔记。</p>
+<h2 id="一-介绍">一 介绍</h2>
+<p><em>从整体上粗线条地勾画出计算机网络地概貌。</em></p>
+<p/>
+<p>什么是因特网：从“具体构成”来看</p>
+<blockquote>
+<p>因特网是一个世界范围地计算机网络，即它是一个互联了遍及全世界地数以亿计的计算机设备的网络。</p>
+</blockquote>
+<p>这些设备称为<strong>主机</strong>（host）或<strong>端系统</strong>（end system）</p>
+<p>端系统 (end system) 通过通信链路 (communication link) 和分组交换机（packet switch）连接到一起。</p>
+<p>链路的传输速率以 <code>bit/s</code> 度量（或者 bps）。</p>
+<p>一台端系统要向另一台端系统发送数据时，发送端系统将数据分段，并为每段加上首部字节。由此形成的信息包称为<strong>分组</strong> (packet)。</p>
+<p>分组交换机用来转发分组，最著名的两种类型是：路由器（router）和链路层交换机（link-layer switch）。</p>
+<p>从发送端系统到接收端系统，一个分组（packet）所经历的一系列通信链路和分组交换机称为该网络的<strong>路径</strong>(route 或 path)。</p>
+<p>端系统通过 <strong>ISP</strong>（Internet Service Provider）接入因特网。</p>
+<p>端系统、分组交换机和其他因特网部件都要运行一系列<strong>协议</strong>（protocol），这些协议控制因特网中信息的接收和发送。</p>
+<ul>
+<li>e.g，TCP，IP，HTTP，Skype，802.11</li>
+</ul>
+<p>因特网的标准由 <strong>IETF</strong>（Internet Engineering Task Force）研发。IETF 的标准文档称为 <strong>RFC</strong> （Request For Comment）。</p>
+<p>什么是因特网：从“服务”来看</p>
+<blockquote>
+<p>因特网即是：</p>
+<ul>
+<li>为应用程序提供服务的基层设施。 如：Web，Email，电子商务</li>
+<li>为分布式应用程序提供编程接口</li>
+</ul>
+</blockquote>
+<p>什么是协议?</p>
+<blockquote>
+<p>一个协议定义了在两个或多个通信实体之间交换的报文格式和次序，以及报文发送和/或接收一条报文或其他事件所采取的动作。</p>
+</blockquote>
+<p>因特网广泛地使用了协议。不同的协议用于完成不同的通信任务。</p>
+<hr>
+<p>与因特网相连的设备（例如，桌面计算机、服务器和移动计算机）位于因特网的边缘，故而称为端系统。</p>
+<ul>
+<li>端系统也称为主机，主机被进一步划分为两类：客户（client）和服务器（server）。</li>
+<li>服务器通常用于大型数据中心（data center）。</li>
+</ul>
+<hr>
+<p>为了从源端系统向目的端系统发送一个报文，源将长报文划分成较小的数据块，称之为<strong>分组</strong>（packet)。</p>
+<p>在源和目的之间，每个分组都通过通信链路和分组交换机（packet switch）传送。</p>
+<ul>
+<li>分组以等于链路最大传输速率的速度传输通过通信链路。</li>
+<li>如果某源端系统或分组交换机经过一条链路发送一个 <em>L</em> bit 的分组，链路的传输速率为 <em>R</em> bit/s，那么传输该分组的时间为 <em>L/R</em> /s。</li>
+</ul>
+<hr>
+<p>多数分组交换机在链路的输入端使用存储转发传输（store-and-forward transmission）机制。</p>
+<p>存储转发机制是指交换机能够开始向输出链路传输该分组的第一个比特（bit）之前，必须接收到整个分组。（之前接收到的比特先缓存（即 “存储”）起来，仅当已经接收完了该分组的所有比特后，才开始向出链路传输（即 “转发”）该分组）</p>
+<blockquote>
+<p>端到端的时延 = 2<em>L/R</em>（假设传播时延为 0）。</p>
+</blockquote>
+<p>每个分组交换机有多条链路与之相连。对于每条相连的链路，该分组交换机具有一个输出缓存（output buffer）（也称为输出队列，用于存储路由器准备发往那条链路的分组。</p>
+<p>如果在一段时间内，链路的到达速率（以比特为单位）超过链路的传输速率：</p>
+<ul>
+<li>分组将会在输出缓存中排队，等待在链路上传输</li>
+<li>如果输出缓存填满，分组可能被丢弃（丢失）</li>
+</ul>
+<hr>
+<p>分组从一台主机（源）出发，通过一系列路由器传输，在另一台主机（目的地）中结束它的历程。当分组从一个结点（主机或路由器）沿着这条路径到后继结点（主机或路由器），该分组在沿途的每个结点经受了几种不同类型的时延：</p>
+<ul>
+<li>结点处理时延（nodal processing delay）
+<ul>
+<li>检查比特级别的差错</li>
+<li>决定将分组导向何处</li>
+<li>高速路由器的处理时延通常 &lt; msec (微秒或更低)。</li>
+</ul>
+</li>
+<li>排队时延（queuing delay）
+<ul>
+<li>分组在链路是等待传输的时间</li>
+<li>依赖于路由器的拥塞程度</li>
+<li>时延在毫秒到微秒级别</li>
+</ul>
+</li>
+<li>传输时延（transmission delay）
+<ul>
+<li>路由器将分组推出所需要的时间</li>
+<li><em>L</em>：表示分组长度（bit)</li>
+<li><em>R</em>: 表示链路带宽，即从路由器 A 到路由器 B 的链路传输速率（bps)。对于一条 10Mbps 的以太网链路，速率 <em>R</em>=10Mbps；对于 100Mbps 的以太网链路，速率 <em>R</em>=100Mbps。</li>
+<li>传输时延 = <em>L/R</em>，通常在毫秒到微秒级别。</li>
+</ul>
+</li>
+<li>传播时延（propagation delay）
+<ul>
+<li>一个比特从一台路由器向另一台路由器传播所需要的时间</li>
+<li><em>d</em>: 表示物理链路的长度，即两台路由器之间的距离</li>
+<li><em>s</em>: 表示链路的传播速率，取决于链路的物理媒体（即光纤、双绞铜线等）</li>
+<li>传播时延=<em>d/s</em>，毫秒级别。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>结点总时延 = 结点处理时延 + 排队时延 + 传输时延 + 传播时延</p>
+</blockquote>
+
+    </div>
+<div class="post_comments">
+  
+  
+  
 </div>
 
+
+
+
+  </article>
+<aside class="sidebar">
+  <section class="sidebar_inner">
+    <br>
+    
+  
+  <div class="search">
+    <input type="search" class="search_field form_field" placeholder='Search...' id="find" autocomplete="off" data-scope='post'>
+    <label for="find" class="search_label"><svg class="icon">
+  <title>search</title>
+  <use xlink:href="#search"></use>
+</svg>
+
+    </label>
+    
+    <div class="search_results results"></div>
+  </div>
+
+        <h2>x-29</h2>
+      <div class="author_bio">
+        java, mysql, tcp, performance, network, docker, Linux.
+      </div>
+      <a href='https://x-29.github.io/about/' class="button mt-1" role="button" title='阅读更多'>阅读更多</a>
+
+    
+    
+    <h2 class="mt-4">精选文章</h2>
+    <ul>
+      <li>
+        <a href="https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/" class="nav-link" title="The Pragmatic Programmer 笔记">The Pragmatic Programmer 笔记</a>
+      </li>
+      <li>
+        <a href="https://x-29.github.io/post/2022-05-c-note/" class="nav-link" title="C 笔记">C 笔记</a>
+      </li>
+    </ul>
+    <h2 class="mt-4">最新文章</h2>
+    <ul class="flex-column">
+      <li>
+        <a href="https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/" class="nav-link" title="The Pragmatic Programmer 笔记">The Pragmatic Programmer 笔记</a>
+      </li>
+      <li>
+        <a href="https://x-29.github.io/post/2022-05-c-note/" class="nav-link" title="C 笔记">C 笔记</a>
+      </li>
+    </ul>
+    <div>
+      <h2 class="mt-4 taxonomy" id="categories-section">分类</h2>
+      <nav class="tags_nav">
+        <a href='https://x-29.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/' class="post_tag button button_translucent" title="读书笔记">
+          读书笔记
+          <span class="button_tally">3</span>
+        </a>
+        
+        
+      </nav>
+    </div>
+    <div>
+      <h2 class="mt-4 taxonomy" id="tags-section">标签</h2>
+      <nav class="tags_nav">
+        <a href='https://x-29.github.io/tags/c/' class="post_tag button button_translucent" title="c">
+          C
+          <span class="button_tally">1</span>
+        </a>
+        
+        <a href='https://x-29.github.io/tags/networking/' class="post_tag button button_translucent" title="networking">
+          NETWORKING
+          <span class="button_tally">1</span>
+        </a>
+        
+        <a href='https://x-29.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/' class="post_tag button button_translucent" title="程序员">
+          程序员
+          <span class="button_tally">1</span>
+        </a>
+        
+        
+      </nav>
+    </div>
+  </section>
+</aside>
+
+  
+</div>
     </main><svg width="0" height="0" class="hidden">
   <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
     <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>
@@ -213,8 +413,8 @@
 
 <footer class="footer">
   <div class="footer_inner wrap pale">
-    <img src='https://x-29.github.io/icons/apple-touch-icon.png' class="icon icon_2 transparent" alt="x-29&#39;s blog">
-    <p>Copyright&nbsp;<span class="year"></span>&nbsp;X-29&#39;S BLOG. All Rights Reserved</p><a class="to_top" href="#documentTop">
+    <img src='https://x-29.github.io/icons/apple-touch-icon.png' class="icon icon_2 transparent" alt="x-29 的网络日志">
+    <p>Copyright&nbsp;<span class="year"></span>&nbsp;X-29 的网络日志. All Rights Reserved</p><a class="to_top" href="#documentTop">
   <svg class="icon">
   <title>to-top</title>
   <use xlink:href="#to-top"></use>
@@ -225,7 +425,7 @@
   </div>
 </footer>
 
-<script type="text/javascript" src="https://x-29.github.io/en/js/bundle.7f647092ffab6102858ab92bae4e65bbeae89d4ff6e29aace780277762afcb3c86ab88f9ff22e3a54b6db55e549b9d2d26560e67a29a3cf9dca00c77bffd16fc.js" integrity="sha512-f2Rwkv&#43;rYQKFirkrrk5lu&#43;ronU/24pqs54And2KvyzyGq4j5/yLjpUtttV5Um50tJlYOZ6KaPPncoAx3v/0W/A==" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://x-29.github.io/zh/js/bundle.7f647092ffab6102858ab92bae4e65bbeae89d4ff6e29aace780277762afcb3c86ab88f9ff22e3a54b6db55e549b9d2d26560e67a29a3cf9dca00c77bffd16fc.js" integrity="sha512-f2Rwkv&#43;rYQKFirkrrk5lu&#43;ronU/24pqs54And2KvyzyGq4j5/yLjpUtttV5Um50tJlYOZ6KaPPncoAx3v/0W/A==" crossorigin="anonymous"></script>
 
   <script src="https://x-29.github.io/js/search.min.459aee3b504b2204e992427e1b6f3dfccfdfc589a4f4ee270b5a1fa9b4c806cf6505a9a7d0af8717109194723fc5885ba9f28bc8bcc15a8f8debd17b4623069c.js"></script>
 

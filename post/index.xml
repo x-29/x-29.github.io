@@ -6,7 +6,85 @@
     <description>Recent content in Posts on x-29 的网络日志</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>Copyright © 2008–2018, Steve Francia and the Hugo Authors; all rights reserved.</copyright>
-    <lastBuildDate>Mon, 23 May 2022 14:49:25 +0800</lastBuildDate><atom:link href="https://x-29.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 26 May 2022 13:38:20 +0800</lastBuildDate><atom:link href="https://x-29.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Pragmatic Programmer 笔记</title>
+      <link>https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/</link>
+      <pubDate>Thu, 26 May 2022 13:38:20 +0800</pubDate>
+      
+      <guid>https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/</guid>
+      <description>
+        
+          
+            这是《程序员修炼之道 第2版》一书的读书笔记。
+ 编程是一项艰难的工作
+ 你不应该拘泥于任何特定的技术，而应该拥有足够广泛的背景和经验基础，以便在特定的情况下选择合适的解决方案。你的背景来自对计算机科学基本原理的理解，而你的经验来自广泛的实际项目。
+务实的程序员共有的特征：
+ 喜欢尝试。接触到新事物，能很快地掌握并应用起来。 好奇。倾向于问问题。 批判性的思考者。没有得到证实前很少接受既定的现实。 现实主义。试图理解面临的每个问题的本质。 多面手。熟悉各种技术和环境。 关注技艺。技艺人，不关注自己的技艺怎么能做好技艺活呢。   一  人生是你的，是你在拥有、经营和创造。
+ 工作环境很糟糕？工作很无聊？尝试纠正它。
+想远程工作？要求过了码？
+你有选择权，人生是你的。
+ 责任意味着你对某事积极认同。
+承担责任，做出承诺之前，必须分析超出你控制范围的风险情况，如果责任不清，抑或风险过大，你有权不承担责任。
+承担责任意味着你将承接相关义务。
+ 犯了错误或是做出了错误的判断，诚实的承认它，并尝试给出选择 不要把问题归咎于别人或其他什么事情上，也不要寻找借口 不要说搞不定，解释一下要做什么才能挽回局面  意识到自己在说“我不知道”时，一定要接着说“---但是我会去搞清楚”。
+不要搁置“破窗”（糟糕的设计、错误的决定、低劣的代码），每发现一个就赶紧修一个。
+不要只是因为一些东西非常紧急，就去造成附带损害。
+破窗一扇都嫌太多。
+构建知识组合，并对知识组合做定期投资。
+读非技术书。你做的事情是为了满足人的需要。
+批判性地分析你读到和听到的东西。
+ 问“五个为什么”。有了答案后，还要追问“为什么” 谁从中受益。追踪金钱的流动更容易理清脉络 有什么背景。每件事都有它发生的背景。 什么时候在哪里可以工作起来。是在什么情况下？太晚了嘛？不要停留在一阶思维下（接下来会发生什么），要进行二阶思考：它结束后还会发生什么？ 为什么是这个问。是否存在一个基础模型？这个基础模型是怎么工作的？  把母语看成另一门编程语言，像写代码一样用自然语言写文章：尊重 DRY 原则、ETC、自动化。
+想说什么之前问一下自己：“这是否用正确的方式向我的听众传达了我想表达的东西？”
+记下你想要沟通的想法，并准备多个让对方理解的策略。
+听他们说。你不听他们的，他们也不会听你的。
+回应别人。让人感觉到你并没有忘记他们。
+二  ETC（Easier To Change，更容易变更），对代码而言，就是要顺应变化。
+ 无论什么设计原则，都是 ETC 的一个特例。e.g，解耦，单一职责原则。
+价值观是帮助你做决定的：应该做这个，还是做那个？在软件领域思考时，ETC 是一个向导，它能帮助你在不同的路线中选出一条。ETC 是一种价值观念，不是一条规则。
+ DRY---不要重复自己
+ DRY 针对的是你对知识和意图的复制。它强调的是，在两个地方表达的东西其实是相同的，只是表达方式有可能完全不同。
+          
+          
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>计算机网络(Computer Networking)笔记</title>
+      <link>https://x-29.github.io/post/2022-05-computer-networking-note/</link>
+      <pubDate>Mon, 23 May 2022 23:56:18 +0800</pubDate>
+      
+      <guid>https://x-29.github.io/post/2022-05-computer-networking-note/</guid>
+      <description>
+        
+          
+            这是《计算机网络自顶向下方法 第6版》一书的读书笔记。
+一 介绍 从整体上粗线条地勾画出计算机网络地概貌。
+ 什么是因特网：从“具体构成”来看
+ 因特网是一个世界范围地计算机网络，即它是一个互联了遍及全世界地数以亿计的计算机设备的网络。
+ 这些设备称为主机（host）或端系统（end system）
+端系统 (end system) 通过通信链路 (communication link) 和分组交换机（packet switch）连接到一起。
+链路的传输速率以 bit/s 度量（或者 bps）。
+一台端系统要向另一台端系统发送数据时，发送端系统将数据分段，并为每段加上首部字节。由此形成的信息包称为分组 (packet)。
+分组交换机用来转发分组，最著名的两种类型是：路由器（router）和链路层交换机（link-layer switch）。
+从发送端系统到接收端系统，一个分组（packet）所经历的一系列通信链路和分组交换机称为该网络的路径(route 或 path)。
+端系统通过 ISP（Internet Service Provider）接入因特网。
+端系统、分组交换机和其他因特网部件都要运行一系列协议（protocol），这些协议控制因特网中信息的接收和发送。
+ e.g，TCP，IP，HTTP，Skype，802.11  因特网的标准由 IETF（Internet Engineering Task Force）研发。IETF 的标准文档称为 RFC （Request For Comment）。
+什么是因特网：从“服务”来看
+ 因特网即是：
+ 为应用程序提供服务的基层设施。 如：Web，Email，电子商务 为分布式应用程序提供编程接口   什么是协议?
+ 一个协议定义了在两个或多个通信实体之间交换的报文格式和次序，以及报文发送和/或接收一条报文或其他事件所采取的动作。
+ 因特网广泛地使用了协议。不同的协议用于完成不同的通信任务。
+ 与因特网相连的设备（例如，桌面计算机、服务器和移动计算机）位于因特网的边缘，故而称为端系统。
+ 端系统也称为主机，主机被进一步划分为两类：客户（client）和服务器（server）。 服务器通常用于大型数据中心（data center）。   为了从源端系统向目的端系统发送一个报文，源将长报文划分成较小的数据块，称之为分组（packet)。
+          
+          
+        
+      </description>
+    </item>
+    
     <item>
       <title>C 笔记</title>
       <link>https://x-29.github.io/post/2022-05-c-note/</link>
