@@ -56,7 +56,7 @@
 
   </head>
   <body
-    data-code="10"
+    data-code="12"
     data-lines="false"
     id="documentTop"
   >
@@ -124,7 +124,7 @@
 </span>
     <span class="post_date">
       May 26, 2022</span>
-    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://x-29.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98' title="程序员" class="post_tag button button_translucent">程序员
+    <span class="post_time"> · 2 min read</span><span>&nbsp;· <a href='https://x-29.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98' title="程序员" class="post_tag button button_translucent">程序员
         </a>
     </span>
   </div>
@@ -266,6 +266,155 @@
 <li>猜测将来有什么技术可用</li>
 </ul>
 <p>与其浪费精力为不确定的未来做设计，还不如将代码设计成可替换的。使代码可替换，有助于提高内聚性、解耦和 DRY，从而实现更好的总体设计。</p>
+<h3 id="五">五</h3>
+<blockquote>
+<p>一切都是为了变更</p>
+</blockquote>
+<p>耦合有传递性：如果 A 与 B、C 耦合，B 与 M、N 耦合，C 与 X、Y 耦合，那么 A 实际上与 B、C、M、N、X 及 Y 耦合。</p>
+<p>解耦代码让改变更容易，三个方面：</p>
+<ul>
+<li>一连串的方法调用。</li>
+<li>全局数据</li>
+<li>继承</li>
+</ul>
+<hr>
+<p><strong>只管命令不要询问</strong>。不应该根据对象的内部状态做出决策，然后更新该对象。例如：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">public void applyDiscount(customer, order_id, discount) {
+</span></span><span class="line"><span class="ln">2</span><span class="cl">	totals = customer
+</span></span><span class="line"><span class="ln">3</span><span class="cl">				.orders
+</span></span><span class="line"><span class="ln">4</span><span class="cl">				.find(order_id)
+</span></span><span class="line"><span class="ln">5</span><span class="cl">				.getTotals();
+</span></span><span class="line"><span class="ln">6</span><span class="cl">	totals.grandTotal = totals.grandTotal - discount;
+</span></span><span class="line"><span class="ln">7</span><span class="cl">	totals.discount = discount;
+</span></span><span class="line"><span class="ln">8</span><span class="cl">}
+</span></span></code></pre></div><p>这样做完全破坏了封装的优势，也会把实现相关的知识扩散到整个代码中。</p>
+<p>把计算折扣的工作委托给 total 对象：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">public void applyDiscout(customer, order_id, discount) {
+</span></span><span class="line"><span class="ln">2</span><span class="cl">	customer
+</span></span><span class="line"><span class="ln">3</span><span class="cl">		.orders
+</span></span><span class="line"><span class="ln">4</span><span class="cl">		.find(order_id)
+</span></span><span class="line"><span class="ln">5</span><span class="cl">		.getTotals()
+</span></span><span class="line"><span class="ln">6</span><span class="cl">		.applyDiscount(discount);
+</span></span><span class="line"><span class="ln">7</span><span class="cl">}
+</span></span></code></pre></div><p>对于客户对象和对象的订单来说，不应该取出订单列表在从中搜索，而应该直接向客户要想要的订单：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">public void applyDiscout(customer, order_id, discount) {
+</span></span><span class="line"><span class="ln">2</span><span class="cl">	customer
+</span></span><span class="line"><span class="ln">3</span><span class="cl">		.findOrder(order_id)
+</span></span><span class="line"><span class="ln">4</span><span class="cl">		.getTotals()
+</span></span><span class="line"><span class="ln">5</span><span class="cl">		.applyDiscount(discount);
+</span></span><span class="line"><span class="ln">6</span><span class="cl">}
+</span></span></code></pre></div><p>订单对象和订单的总金额之间也有相同的问题。订单的实现使用了一个分离的对象 totals 来保存总金额，外部世界为什么要知道这么一个对象呢？</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">public void applyDiscout(customer, order_id, discount) {
+</span></span><span class="line"><span class="ln">2</span><span class="cl">	customer
+</span></span><span class="line"><span class="ln">3</span><span class="cl">		.findOrder(order_id)
+</span></span><span class="line"><span class="ln">4</span><span class="cl">		.applyDiscount(discount);
+</span></span><span class="line"><span class="ln">5</span><span class="cl">}
+</span></span></code></pre></div><hr>
+<p>访问某样东西时，尽量不要超过一个 “.”，也就是不要链式调用方法。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl"># 这是很糟糕的风格
+</span></span><span class="line"><span class="ln">2</span><span class="cl">amount = customer.orders.last().totals().amout;
+</span></span><span class="line"><span class="ln">3</span><span class="cl"># 这也一样......
+</span></span><span class="line"><span class="ln">4</span><span class="cl">orders = customer.orders;
+</span></span><span class="line"><span class="ln">5</span><span class="cl">last = orders.last();
+</span></span><span class="line"><span class="ln">6</span><span class="cl">totals = last.totals();
+</span></span></code></pre></div><p>“一个点” 规则的例外是：如果链式调用的东西真的不太可能改变。</p>
+<hr>
+<p>任何可变的外部资源都是全局数据，始终确保将这些资源包装在你所控制的代码之后。</p>
+<hr>
+<p>有限状态机（FSM）基本上就是怎么处理事件的一份规范。它由一组状态组成，其中一个是<strong>当前状态</strong>。对于每个状态，我们列出对该状态有意义的事件。对于每个事件，我们定义出系统新的当前状态。</p>
+<p>例如，我们可能从 websocket 接收到多个部分的消息。第一消息是消息头，接下来是任意数量的数据体，之后是消息尾。用 FSM 表示为：</p>
+<p><figure>
+  <picture>
+
+    
+      
+        
+        
+        
+        
+        
+        
+    <img
+      loading="lazy"
+      decoding="async"
+      alt=""
+      
+        class="image_figure image_internal image_unprocessed"
+        src="/images/IMG_200.jpg"
+      
+      
+    />
+
+    </picture>
+</figure>
+</p>
+<p>我们从 “初始状态” 开始。如果我们接收到消息头。就<strong>转换</strong>到 “读取消息” 状态。如果在初始状态接收到任何其他内容（带有星号的线），我们就转换到 “出错” 状态。</p>
+<p>当我们处于 “读取消息” 状态是，可以接收数据消息（在这种情况下，我们将继续以相同的状态读取消息），也可以接收消息尾（它将让我们转换到 “完成” 状态）。其他任何操作都会导致转换到 “出错” 状态。</p>
+<p>处理代码比较简单：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln"> 1</span><span class="cl">TRANSITONS = {
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">  initial: { header:  :reading },
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">  reading: { data:  :reading, trailer:	:done }
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">}
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">state = :initial
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">while state != :done &amp;&amp; state ! :error
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">  msg = get_next_message()
+</span></span><span class="line"><span class="ln">10</span><span class="cl">  state = TRANSITONS[state][msg.msg_type] || :error #实现状态间转换
+</span></span><span class="line"><span class="ln">11</span><span class="cl">end
+</span></span></code></pre></div><hr>
+<p>观察者模式因为每个观察者都必须与观察对象注册在一起，所以它引入了耦合。此外，回调是由观察对象以同步的方式内联处理的，因此可能会导致性能瓶颈。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln"> 1</span><span class="cl">module Terminator
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">  CALLBACKS = []
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">  def self.register(callback)
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    CALLBACKS &lt;&lt; callback
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">  end
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">  
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">  def self.exit(exit_status)
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    CALLBACKS.each { |callback| callback.(exit_status) }
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    exit!(exit_status)
+</span></span><span class="line"><span class="ln">11</span><span class="cl">  end
+</span></span><span class="line"><span class="ln">12</span><span class="cl">end
+</span></span><span class="line"><span class="ln">13</span><span class="cl">
+</span></span><span class="line"><span class="ln">14</span><span class="cl">Terminator.register(-&gt; (status) { puts &#34;callback 1 sees #{status}&#34; })
+</span></span><span class="line"><span class="ln">15</span><span class="cl">Terminator.register(-&gt; (status) { puts &#34;callback 2 sees #{status}&#34; })
+</span></span><span class="line"><span class="ln">16</span><span class="cl">
+</span></span><span class="line"><span class="ln">17</span><span class="cl">Terminator.exit(99)
+</span></span></code></pre></div><p><strong>发布/订阅</strong>（pubsub）推广了观察者模式，同时解决了耦合和性能问题。</p>
+<p>在 pubsub 模式中，有<code>发布者</code>和<code>订阅者</code>。它们是通过信道连接在一起的。信道在单独的代码块中实现：有时是库，有时是进程，有时是分布式基础设施。所有这些实现细节对代码来说都是隐藏的。</p>
+<p>每个信道都有一个名字。订阅者注册感兴趣的一个或多个具名信道，发布者向信道写入事件。与观察者模式不同，发布者和订阅者之间的通信是在代码之外处理的，并且可能是异步的。</p>
+<hr>
+<p>编程讲的是代码，而程序谈的是数据。</p>
+<p>所有程序其实都是对数据的一种变换---将输入转换成输出。</p>
+<p>例如：列出目录树中行数最多的五个文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">$ find . -type f | xargs wc -l | sort -n | tail -6 | head 5
+</span></span></code></pre></div><p>从各个步骤之间数据流动的角度来考虑，就变成了一系列的转换：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">目录名
+</span></span><span class="line"><span class="ln">2</span><span class="cl">-&gt;列出文件
+</span></span><span class="line"><span class="ln">3</span><span class="cl">-&gt;列出行数
+</span></span><span class="line"><span class="ln">4</span><span class="cl">-&gt;对列表排序
+</span></span><span class="line"><span class="ln">5</span><span class="cl">-&gt;最多的五项 + 总数
+</span></span><span class="line"><span class="ln">6</span><span class="cl">-&gt;最多的五项
+</span></span></code></pre></div><p>在变换式模型中，要把数据看作是一条浩浩荡荡的<code>河流</code>。数据成为与功能对等的东西：<code>代码-&gt;数据-&gt;代码-&gt;数据......</code>。</p>
+<hr>
+<blockquote>
+<p>不要付继承税</p>
+</blockquote>
+<p>继承就是耦合。</p>
+<p>用这三种技术，不要再使用继承：</p>
+<ul>
+<li>接口与协议。尽量用接口来表达多态</li>
+<li>委托。用委托提供服务：“有一个” 胜过 “是一个”</li>
+<li>mixin 与特征。利用 mixin 共享功能</li>
+</ul>
+<hr>
+<p>如果代码依赖某些值，而这些值在应用程序发布后还有可能改变，那么就把这些值放在程序外部。</p>
+<p>将配置信息包装在一个（瘦）API 后面。不直接放在文件中，也不放在数据库里，而是存储在一个服务 API 之后。</p>
+<blockquote>
+<p>不要因为懒，就放弃做决策，而把分歧做成配置。</p>
+</blockquote>
+<p>如果对某个特性应该这样工作还是那样工作真的存在争议，或者不知道是否应该让用户选择，那就去找个方法试试，通过反馈来决定哪一种更好。</p>
 
     </div>
 <div class="post_comments">
