@@ -1,143 +1,57 @@
-
 <!DOCTYPE html>
-<html
-  lang="zh"
-  data-figures=""
-  
-    class="page"
-  
-  
-    data-mode="lit"
-  
-  >
-  <head>
-<title>C 笔记 | x-29 的网络日志</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<script async src="https://www.googletagmanager.com/gtag/js?id=XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'XXXXXXXXXX');
-</script>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>C 笔记 - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="这是《Linux C编程一站式学习》一书的读书笔记" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="C 笔记" />
+<meta property="og:description" content="这是《Linux C编程一站式学习》一书的读书笔记" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-c-note/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-23T14:49:25+08:00" />
+<meta property="article:modified_time" content="2022-05-23T14:49:25+08:00" />
 
-<meta property="og:locale" content="zh" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="C 笔记"/>
+<meta name="twitter:description" content="这是《Linux C编程一站式学习》一书的读书笔记"/>
+<script src="https://x-29.github.iojs/feather.min.js"></script>
+	
+	
+        <link href="https://x-29.github.io/css/fonts.b685ac6f654695232de7b82a9143a46f9e049c8e3af3a21d9737b01f4be211d1.css" rel="stylesheet">
+	
 
-<meta property="og:type" content="article">
-<meta name="description" content="这是 《Linux C编程一站式学习》一书的读书笔记。
-一 程序由一系列指令组成，指令包括：
- 输出 输入 基本运算 测试和分支 循环（递归）  编写程序就是这样一个过程：
- 把复杂的任务分解成子任务，把子任务再分解成更简单的任务，层层分解，直到最后简单得可以用以上指令来完成。
-  一种平台就是一种体系结构，就是一种指 …" />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:creator" content="@XXXXXXXX">
-<meta name="twitter:title" content="C 笔记" />
-<meta property="og:url" content="https://x-29.github.io/post/2022-05-c-note/" />
-<meta property="og:title" content="C 笔记" />
-<meta property="og:description" content="这是 《Linux C编程一站式学习》一书的读书笔记。
-一 程序由一系列指令组成，指令包括：
- 输出 输入 基本运算 测试和分支 循环（递归）  编写程序就是这样一个过程：
- 把复杂的任务分解成子任务，把子任务再分解成更简单的任务，层层分解，直到最后简单得可以用以上指令来完成。
-  一种平台就是一种体系结构，就是一种指 …" />
-<meta property="og:image" content="https://x-29.github.io/images/thumbnail.png" />
-
-<link rel="apple-touch-icon" sizes="180x180" href="https://x-29.github.io/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://x-29.github.io/icons/favicon-32x32.png">
-<link rel="manifest" href="https://x-29.github.io/icons/site.webmanifest">
-
-<link rel="canonical" href="https://x-29.github.io/post/2022-05-c-note/">
-
-
-
-<link rel="preload" href="https://x-29.github.io/css/styles.367129801480fead578d7a356a98fcb3bce794981ff18cee55868d198d0d2bf1eb4feac97319d0871c6255183b9fd27a7059e4632c785951f4c4f6953559c4d0.css" integrity = "sha512-NnEpgBSA/q1XjXo1apj8s7znlJgf8YzuVYaNGY0NK/HrT&#43;rJcxnQhxxiVRg7n9J6cFnkYyx4WVH0xPaVNVnE0A==" as="style" crossorigin="anonymous">
-
-
-
-<link rel="preload" href="https://x-29.github.io/zh/js/bundle.7f647092ffab6102858ab92bae4e65bbeae89d4ff6e29aace780277762afcb3c86ab88f9ff22e3a54b6db55e549b9d2d26560e67a29a3cf9dca00c77bffd16fc.js" as="script" integrity=
-"sha512-f2Rwkv&#43;rYQKFirkrrk5lu&#43;ronU/24pqs54And2KvyzyGq4j5/yLjpUtttV5Um50tJlYOZ6KaPPncoAx3v/0W/A==" crossorigin="anonymous">
-
-
-<link rel="stylesheet" type="text/css" href="https://x-29.github.io/css/styles.367129801480fead578d7a356a98fcb3bce794981ff18cee55868d198d0d2bf1eb4feac97319d0871c6255183b9fd27a7059e4632c785951f4c4f6953559c4d0.css" integrity="sha512-NnEpgBSA/q1XjXo1apj8s7znlJgf8YzuVYaNGY0NK/HrT&#43;rJcxnQhxxiVRg7n9J6cFnkYyx4WVH0xPaVNVnE0A==" crossorigin="anonymous">
-
-
-  </head>
-  <body
-    data-code="7"
-    data-lines="false"
-    id="documentTop"
-  >
-
-<header class="nav_header" >
-  <nav class="nav"><a href='https://x-29.github.io/' class="nav_brand nav_item" title="x-29 的网络日志">x-29 的网络日志
-  <div class="nav_close">
-    <div><svg class="icon">
-  <title>open-menu</title>
-  <use xlink:href="#open-menu"></use>
-</svg>
-<svg class="icon">
-  <title>closeme</title>
-  <use xlink:href="#closeme"></use>
-</svg>
-</div>
-  </div>
-</a>
-
-    <div class='nav_body nav_body_left'>
-      
-      
-      
-        
-
-  <div class="nav_parent">
-    <a href="https://x-29.github.io/" class="nav_item" title="首页">首页 </a>
-  </div>
-  <div class="nav_parent">
-    <a href="https://x-29.github.io/post" class="nav_item" title="文章">文章 </a>
-  </div>
-      
-      <div class="nav_parent">
-        <a href="#" class="nav_item">🌐</a>
-        <div class="nav_sub">
-          <span class="nav_child"></span>
-          
-          <a href="https://x-29.github.io/" class="nav_child nav_item">zh-CN</a>
-          
-          <a href="https://x-29.github.io/en/" class="nav_child nav_item">English</a>
-          
-        </div>
-      </div>
-<div class='follow'>
-<div class="color_mode">
-  <input type="checkbox" class="color_choice" id="mode">
-</div>
-
-</div>
-
-    </div>
-  </nav>
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://x-29.github.io/css/main.40ca3a860425083862b7ebd55447caec5c4384573f0cb098b8d06a91e8dace2e.css" />
+	
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://x-29.github.io">CS里的X-29</a>
+	</div>
+	<nav>
+		
+		<a href="/">首页</a>
+		
+		<a href="/post">文章</a>
+		
+		<a href="/about">关于</a>
+		
+		
+	</nav>
 </header>
 
-    <main>
-  
-<div class="grid-inverse wrap content">
-  <article class="post_content">
-    <h1 class="post_title">C 笔记</h1>
-  <div class="post_meta">
-    <span><svg class="icon">
-  <title>calendar</title>
-  <use xlink:href="#calendar"></use>
-</svg>
-</span>
-    <span class="post_date">
-      May 23, 2022</span>
-    <span class="post_time"> · 12 min read</span><span>&nbsp;· <a href='https://x-29.github.io/tags/c' title="C" class="post_tag button button_translucent">C
-        </a>
-    </span>
-  </div>
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">C 笔记</h1>
+			<div class="meta">Posted on May 23, 2022</div>
+		</div>
+		
 
-    <div class="post_body"><p>这是 <a href="https://book.douban.com/subject/6025290/">《Linux C编程一站式学习》</a>一书的读书笔记。</p>
+		<section class="body">
+			<p>这是 <a href="https://book.douban.com/subject/6025290/">《Linux C编程一站式学习》</a>一书的读书笔记。</p>
 <h3 id="一">一</h3>
 <p>程序由一系列指令组成，指令包括：</p>
 <ul>
@@ -156,13 +70,13 @@
 <hr>
 <p>计算机只能执行低级语言中的指令（汇编语言的指令要先转成机器码才能执行），高级语言要执行就必须先翻译成低级语言。翻译的方式有两种：1) 编译 2）解释。</p>
 <p>1）编译执行的过程：</p>
-<p><code>source code</code> --&gt; <code>complier</code> --&gt; <code>executable</code> -&gt; <code>loader</code> --&gt; <code>输出结果</code></p>
+<p><code>source code</code> &ndash;&gt; <code>complier</code> &ndash;&gt; <code>executable</code> -&gt; <code>loader</code> &ndash;&gt; <code>输出结果</code></p>
 <p>把源代码全部翻译成机器指令，再加上一些描述信息，生成一个可执行文件，可执行文件可以被操作系统加载运行。</p>
 <p>2） 解释执行的过程：</p>
-<p><code>source code</code> --&gt; <code>interpeter</code> --&gt; <code>结果</code></p>
+<p><code>source code</code> &ndash;&gt; <code>interpeter</code> &ndash;&gt; <code>结果</code></p>
 <p>解释器读取源代码解释执行，程序运行的结果出现在屏幕上。</p>
 <p>虚拟机执行过程：</p>
-<p><code>source code</code> --&gt; <code>complier</code> --&gt; <code>byte code</code> --&gt; <code>interpeter</code> --&gt; <code>结果</code></p>
+<p><code>source code</code> &ndash;&gt; <code>complier</code> &ndash;&gt; <code>byte code</code> &ndash;&gt; <code>interpeter</code> &ndash;&gt; <code>结果</code></p>
 <hr>
 <p>编程语言是一种形式语言，是专门设计用来表达计算过程的形式语言。</p>
 <p>形式语言有严格的语法(Syntax)规则。语法规则是由符号（Token）和结构（structure）的规则所组成。</p>
@@ -188,11 +102,11 @@
 <p>单行注释符 // 在 C99 中标准化。</p>
 <hr>
 <p>转义序列是在编译时处理的，而转换说明是在运行时处理的。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">printf(&#34;%d\n&#34;, a);
-</span></span><span class="line"><span class="ln">2</span><span class="cl">
-</span></span><span class="line"><span class="ln">3</span><span class="cl">\n --- 转义序列
-</span></span><span class="line"><span class="ln">4</span><span class="cl">%d --- 转换说明
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>printf(&#34;%d\n&#34;, a);
+
+\n --- 转义序列
+%d --- 转换说明
+</code></pre><hr>
 <p>变量的类型决定了它所占有的存储空间的大小。</p>
 <p>在C语言中用声明（Declaration）来规定变量的名字和类型。</p>
 <p>C 语言中的声明有三种：变量声明、函数声明和类型声明。声明分为“是定义（Definition）的声明” 和 “不是定义的声明”。分配存储空间的声明同时也是定义，不分配存储空间的声明不是定义。</p>
@@ -283,7 +197,7 @@
 <hr>
 <p>类型定义也是一种声明，声明都要以 <code>;</code> 号结尾。</p>
 <hr>
-<p>struct Tag {...} 整个可以看成一个类型名，就像 int 或 double 一样，只不过它是复合类型。</p>
+<p>struct Tag {&hellip;} 整个可以看成一个类型名，就像 int 或 double 一样，只不过它是复合类型。</p>
 <hr>
 <p>{} 这种语法不能用于结构体的赋值，如：z = {3.0, 40 }    (错误的用法)。</p>
 <hr>
@@ -318,12 +232,12 @@
 <p>数组（Array）也是一种复合数据类型，它由一系列相同类型的元素组成。</p>
 <p>和结构体相似，数组元素的存储空间也是相邻的。</p>
 <p>定义一个由 4 个 int 型元素组成的数组 count：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">int count[4];
-</span></span></code></pre></div><p>数组下标的表达式不仅可以表示存储单元的值，也可以表示存储单元本身，就是说可以做左值，如：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">count[0] = 7;
-</span></span><span class="line"><span class="ln">2</span><span class="cl">count[1] = count[2] * 2;
-</span></span><span class="line"><span class="ln">3</span><span class="cl">++count[2];
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>int count[4];
+</code></pre><p>数组下标的表达式不仅可以表示存储单元的值，也可以表示存储单元本身，就是说可以做左值，如：</p>
+<pre tabindex="0"><code>count[0] = 7;
+count[1] = count[2] * 2;
+++count[2];
+</code></pre><hr>
 <p>在 C 语言中，后缀运算符的优选级最高，单目运算符次之。</p>
 <hr>
 <p>数组不能相互赋值或初始化，也不能用数组类型作为函数的参数或返回值。</p>
@@ -338,33 +252,33 @@
 <p>字符串字面值和数组类型相似，它的每个元素是字符型的。</p>
 <p>每个字符串末尾都有一个字符‘\0’做结束符。\0 是 ASCII 码中的 Null 字符。</p>
 <p>字符串字面值所代表的存储空间是只读的，不允许修改。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">&#34;Hello&#34;[0] = &#39;A&#39;     (x)
-</span></span></code></pre></div><p>字符串字面值做右值使用时，自动转换成指向首元素的指针。</p>
+<pre tabindex="0"><code>&#34;Hello&#34;[0] = &#39;A&#39;     (x)
+</code></pre><p>字符串字面值做右值使用时，自动转换成指向首元素的指针。</p>
 <hr>
 <p>字符数组可以用一个字符串字面值来初始化，如：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">char str[10] = &#34;Hello&#34;;
-</span></span></code></pre></div><p>str 的后 4 个元素没有指定，自动初始化为 '\0'，即 Null 字符。</p>
+<pre tabindex="0"><code>char str[10] = &#34;Hello&#34;;
+</code></pre><p>str 的后 4 个元素没有指定，自动初始化为 &lsquo;\0&rsquo;，即 Null 字符。</p>
 <blockquote>
 <p>写代码最重要的是选择正确的数据结构来组织信息，设计控制流程和算法尚在其次，只要数据结构选择正确，其他代码自然而然就变得容易理解和维护了。</p>
 </blockquote>
 <p>一个数组的元素可以是另一个数组，这样就构成了多维数组。</p>
 <p>定义并初始化一个二维数组：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">int a[3][2] = {1, 2, 3, 4, 5};
-</span></span></code></pre></div><p>数组 a 有 3 个元素：a[0]、a[1]、a[2]。每个元素也是一个数组，例如 a[0] 是一个数组，它有两个元素 a[0][0]、a[0][1]，这两个元素的类型是 int，值分别是 1, 2。</p>
+<pre tabindex="0"><code>int a[3][2] = {1, 2, 3, 4, 5};
+</code></pre><p>数组 a 有 3 个元素：a[0]、a[1]、a[2]。每个元素也是一个数组，例如 a[0] 是一个数组，它有两个元素 a[0][0]、a[0][1]，这两个元素的类型是 int，值分别是 1, 2。</p>
 <p><em>概念模型</em></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">   |  0    1
-</span></span><span class="line"><span class="ln">2</span><span class="cl">---|---------
-</span></span><span class="line"><span class="ln">3</span><span class="cl">0  |  1    2
-</span></span><span class="line"><span class="ln">4</span><span class="cl">1  |  3    4
-</span></span><span class="line"><span class="ln">5</span><span class="cl">2  |  5    0
-</span></span><span class="line"><span class="ln">6</span><span class="cl">-------------
-</span></span></code></pre></div><p>从概念模型上看，这个二维数组是三行两列的表格，元素的两个下标分别是行号和列号。</p>
+<pre tabindex="0"><code>   |  0    1
+---|---------
+0  |  1    2
+1  |  3    4
+2  |  5    0
+-------------
+</code></pre><p>从概念模型上看，这个二维数组是三行两列的表格，元素的两个下标分别是行号和列号。</p>
 <p><em>物理模型</em></p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl"> a[0][0]  a[0][1]  a[1][0]  a[1][1]  a[2][0]  a[2][1]
-</span></span><span class="line"><span class="ln">2</span><span class="cl">-------------------------------------------------------
-</span></span><span class="line"><span class="ln">3</span><span class="cl">|   1   |    2    |   3   |   4    |   5    |    0    |
-</span></span><span class="line"><span class="ln">4</span><span class="cl">-------------------------------------------------------
-</span></span></code></pre></div><p>从物理模型上看，这 6 个元素在存储器中仍然是连续存储的。</p>
+<pre tabindex="0"><code> a[0][0]  a[0][1]  a[1][0]  a[1][1]  a[2][0]  a[2][1]
+-------------------------------------------------------
+|   1   |    2    |   3   |   4    |   5    |    0    |
+-------------------------------------------------------
+</code></pre><p>从物理模型上看，这 6 个元素在存储器中仍然是连续存储的。</p>
 <h2 id="九">九</h2>
 <p>编码风格</p>
 <ul>
@@ -422,7 +336,7 @@
 <hr>
 <p>对于一个二进制数（A3A2A1A0），最左边的 A3 位称为最高位（Most significant Bit，MSB），最右边的 A0 位称为最低位（Least Significant Bit，LSB）。</p>
 <hr>
-<p>二进制小数：(0.A1A2A3...)2 = A1 x 2-1 + A2x2-2 + A3 x 2-3 + ...</p>
+<p>二进制小数：(0.A1A2A3&hellip;)2 = A1 x 2-1 + A2x2-2 + A3 x 2-3 + &hellip;</p>
 <hr>
 <p>八进制，十六进制是程序员为了书写二进制数方便而发明的简便写法。</p>
 <hr>
@@ -451,19 +365,19 @@
 <p>指针类型的长度总是和计算机的位数一致。因为指针变量存储的是内存单元的地址，每个内存单元的地址长度是由计算机的字长决定的。</p>
 <hr>
 <p>整数常量的类型（在 c 头文件 limits.h 中）</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">#define    INT_MAX      2147483647
-</span></span><span class="line"><span class="ln">2</span><span class="cl">#define    INT_MIN      (-INT_MAX - 1) 
-</span></span></code></pre></div><p>写成（-INT_MAX - 1）是因为补码表示的不对称性和 C 语言的转换规则之间奇怪的交互。虽然 -2147483648 这个数值能够用 int 表示，但在 C 语言中却没法写出对应这个数值的 int 常量，C 编译器会把它当成一个整数常量 2147483648 和一个负号（-）运算符组成的表达式，而整数常量 2147483648 已经超出了 int 型的取值范围，写成 -2147483647 - 1 这样减号（-）运算符的两个操作数都是 int 型，计算结果也应该是 int 型，并且它的值也没有超出 int 型的取值范围。</p>
+<pre tabindex="0"><code>#define    INT_MAX      2147483647
+#define    INT_MIN      (-INT_MAX - 1) 
+</code></pre><p>写成（-INT_MAX - 1）是因为补码表示的不对称性和 C 语言的转换规则之间奇怪的交互。虽然 -2147483648 这个数值能够用 int 表示，但在 C 语言中却没法写出对应这个数值的 int 常量，C 编译器会把它当成一个整数常量 2147483648 和一个负号（-）运算符组成的表达式，而整数常量 2147483648 已经超出了 int 型的取值范围，写成 -2147483647 - 1 这样减号（-）运算符的两个操作数都是 int 型，计算结果也应该是 int 型，并且它的值也没有超出 int 型的取值范围。</p>
 <hr>
 <p>C 标准规定中，既没有规定浮点型类型占多少字节，也没规定采用哪种表示形式。</p>
 <p>大部分平台的浮点数实现遵循 IEEE 754，float 型通常是 32 位，double 型通常是 64 位。</p>
 <p>浮点数在计算机中的表示是基于科学计数法的：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">V = (-1)^s x M x 2^E
-</span></span><span class="line"><span class="ln">2</span><span class="cl">
-</span></span><span class="line"><span class="ln">3</span><span class="cl">M: 尾数
-</span></span><span class="line"><span class="ln">4</span><span class="cl">E：指数
-</span></span><span class="line"><span class="ln">5</span><span class="cl">s: 符号，=0 表示正，=1 表示负
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>V = (-1)^s x M x 2^E
+
+M: 尾数
+E：指数
+s: 符号，=0 表示正，=1 表示负
+</code></pre><hr>
 <p>C 语法规则中最复杂的是类型转换。（P181)</p>
 <h2 id="十五">十五</h2>
 <p>位运算 &amp;、｜、^ 运算符都是要做 Usual Aritchetic Conversion 的（其中有一步是 Integer Promotion）。</p>
@@ -482,12 +396,12 @@
 <hr>
 <p>要对一个整数中的某些位进行操作，可以用<em>掩码</em>来表示这些位在整数中的位置。</p>
 <p>例如：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">1. 取出 8 ～ 15 位
-</span></span><span class="line"><span class="ln">2</span><span class="cl">（0x12345678 &amp; 0x0000ff00) &gt;&gt; 8           /* 0x00000056 */
-</span></span><span class="line"><span class="ln">3</span><span class="cl">
-</span></span><span class="line"><span class="ln">4</span><span class="cl">2. 将 8 ～ 15 位清 0
-</span></span><span class="line"><span class="ln">5</span><span class="cl">  0x12345678 &amp; ～0x0000ff00                /* 12340078 */
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>1. 取出 8 ～ 15 位
+（0x12345678 &amp; 0x0000ff00) &gt;&gt; 8           /* 0x00000056 */
+
+2. 将 8 ～ 15 位清 0
+  0x12345678 &amp; ～0x0000ff00                /* 12340078 */
+</code></pre><hr>
 <p>一个数和自己做异或的结果是 0，即 x ^ x = 0。</p>
 <hr>
 <p>a += 1 相当于 a = a + 1。( 表达式 a += 1，a 是求值一次；表达式 a = a + 1，a 求值两次。)</p>
@@ -499,14 +413,14 @@
 <p>sizeof(类型名)</p>
 <p>这两种形式都是求类型所占的字节数。</p>
 <p>例如：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">1.
-</span></span><span class="line"><span class="ln">2</span><span class="cl">sizeof i++ 
-</span></span><span class="line"><span class="ln">3</span><span class="cl">求表达式 i++ 的类型所占的字节数。表达式 i++ 不会求值，sizeof 是在编译时计算。
-</span></span><span class="line"><span class="ln">4</span><span class="cl">
-</span></span><span class="line"><span class="ln">5</span><span class="cl">2.
-</span></span><span class="line"><span class="ln">6</span><span class="cl">sizeof(int)
-</span></span><span class="line"><span class="ln">7</span><span class="cl">求 int 类型的字节数。
-</span></span></code></pre></div><p>sizeof 运算符的结果是 size_t 类型。</p>
+<pre tabindex="0"><code>1.
+sizeof i++ 
+求表达式 i++ 的类型所占的字节数。表达式 i++ 不会求值，sizeof 是在编译时计算。
+
+2.
+sizeof(int)
+求 int 类型的字节数。
+</code></pre><p>sizeof 运算符的结果是 size_t 类型。</p>
 <p>C 标准规定 size_t 是一种无符号整型。</p>
 <p>不同平台的编译器可能会根据自己平台的具体情况定义 size_t 所代表的类型，C 标准规定 size_t 这个名字就是为了隐藏这些细节，使代码具有可移植性。</p>
 <hr>
@@ -523,18 +437,18 @@
 <ul>
 <li>一个数和自己做异或的结果是 0。x86 平台的编译器可能会生成这样的指令：<code>XORL %eax, %eax</code>。不管 eax 寄存器里的值原来是多少，做异或运算都能得到 0，这条指令比同样效果的 movl $0, %eax 指令快。</li>
 <li>不管 0 还是 1，和 0 做异或保持原值不变；和 1 做异或得到原值的相反值。</li>
-<li>如果 a1 ^ a2 ^ a3 ... ^ aN 的结果是 1，则表示当中 1 的个数为奇数个，否则为偶数个。这条性质可用于奇偶校验。</li>
+<li>如果 a1 ^ a2 ^ a3 &hellip; ^ aN 的结果是 1，则表示当中 1 的个数为奇数个，否则为偶数个。这条性质可用于奇偶校验。</li>
 <li>x ^ x ^ y == y，因为 x ^ x = 0，0 ^ y == y。这个性质可以用来不借助额外的存储空间交换两个变量的值，例如：</li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">a = a ^ b;
-</span></span><span class="line"><span class="ln">2</span><span class="cl">b = b ^ a;
-</span></span><span class="line"><span class="ln">3</span><span class="cl">a = a ^ b;
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>a = a ^ b;
+b = b ^ a;
+a = a ^ b;
+</code></pre><hr>
 <p>为避免出现野指针，在定义指针变量是，应该给它明确的初值，或者把它初始化为 NULL。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">int *p = NULL;
-</span></span></code></pre></div><p>NULL 在标准库的头文件 stddef.h 中定义：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">#define NULL ((void *)0)
-</span></span></code></pre></div><p>就是把地址 0 转换成指针类型，称为空指针。它的特殊之处在于操作系统不会把任何数据保存在地址 0 及其附近，也不会把地址 0 ~ 0xfff 的页面映射到物理内存，所以任何对地址 0 的访问都会立即导致段错误。</p>
+<pre tabindex="0"><code>int *p = NULL;
+</code></pre><p>NULL 在标准库的头文件 stddef.h 中定义：</p>
+<pre tabindex="0"><code>#define NULL ((void *)0)
+</code></pre><p>就是把地址 0 转换成指针类型，称为空指针。它的特殊之处在于操作系统不会把任何数据保存在地址 0 及其附近，也不会把地址 0 ~ 0xfff 的页面映射到物理内存，所以任何对地址 0 的访问都会立即导致段错误。</p>
 <h2 id="十六">十六</h2>
 <blockquote>
 <p>All problems in compute science can be solved by another level of indirection.</p>
@@ -666,8 +580,8 @@
 <p>x86 汇编存在两种不同的语法：intel 语法和 AT&amp;T 语法。Unix 平台用 AT&amp;T 语法。</p>
 <hr>
 <p>寻址方式</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">偏移量(基地址, 变址, 倍数)
-</span></span></code></pre></div><p>计算方式为：偏移量 + 基地址 + 变址 * 倍数。</p>
+<pre tabindex="0"><code>偏移量(基地址, 变址, 倍数)
+</code></pre><p>计算方式为：偏移量 + 基地址 + 变址 * 倍数。</p>
 <ul>
 <li>偏移量和倍数必须是常数。</li>
 <li>基地址和变址必须是寄存器。</li>
@@ -722,22 +636,22 @@
 <hr>
 <p>合理设计结构体成员的排列顺序可以节省存储空间。</p>
 <p>例如：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln"> 1</span><span class="cl">1. 有空隙
-</span></span><span class="line"><span class="ln"> 2</span><span class="cl">struct {
-</span></span><span class="line"><span class="ln"> 3</span><span class="cl">	char a;
-</span></span><span class="line"><span class="ln"> 4</span><span class="cl">	shourt c;
-</span></span><span class="line"><span class="ln"> 5</span><span class="cl">	int d;
-</span></span><span class="line"><span class="ln"> 6</span><span class="cl">	char b;
-</span></span><span class="line"><span class="ln"> 7</span><span class="cl">} S;
-</span></span><span class="line"><span class="ln"> 8</span><span class="cl">
-</span></span><span class="line"><span class="ln"> 9</span><span class="cl">2. 无空隙
-</span></span><span class="line"><span class="ln">10</span><span class="cl">struct {
-</span></span><span class="line"><span class="ln">11</span><span class="cl">	char a;
-</span></span><span class="line"><span class="ln">12</span><span class="cl">	char b;
-</span></span><span class="line"><span class="ln">13</span><span class="cl">	short c;
-</span></span><span class="line"><span class="ln">14</span><span class="cl">	int d;
-</span></span><span class="line"><span class="ln">15</span><span class="cl">} S;
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>1. 有空隙
+struct {
+	char a;
+	shourt c;
+	int d;
+	char b;
+} S;
+
+2. 无空隙
+struct {
+	char a;
+	char b;
+	short c;
+	int d;
+} S;
+</code></pre><hr>
 <p>如果两个平台具有相同的体系结构，并且遵循相同的 ABI（Application Binary Interface，应用程序二进制接口规范），就可以保证一个平台上的二进制程序直接拷贝到另一个平台就能运行，不用重新编译。</p>
 <hr>
 <p>在 C 语言中用 <code>volatile </code> 限定符修饰的变量，编译器在编译时不会做优化，每次读这个变量都会老老实实从内存读取，每次写这个变量也老老实实写回内存。</p>
@@ -745,7 +659,7 @@
 <p>作用域（scope）这个概念适用于所有标识符，而不仅仅时变量，C 语言的作用域分为以下几类：</p>
 <ul>
 <li>函数作用域，标识符在整个函数中都有效。只有标号属于函数作用域。</li>
-<li>文件作用域（File Scope），标识符在函数外声明，从它声明的位置开始直到这个文件末尾都有效---严格来说是直到编译单元（Translation Unit）末尾都有效。比如有源文件 a.c 包含 b.h 和 c.h，那么经过预处理把 b.h 和 c.h 在 a.c 中展开之后得到的代码称为一个编译单元。编译器将每个编译单元分别编译成一个目标文件，最后链接器把这些目标文件链接到一起成为一个可执行文件。</li>
+<li>文件作用域（File Scope），标识符在函数外声明，从它声明的位置开始直到这个文件末尾都有效&mdash;严格来说是直到编译单元（Translation Unit）末尾都有效。比如有源文件 a.c 包含 b.h 和 c.h，那么经过预处理把 b.h 和 c.h 在 a.c 中展开之后得到的代码称为一个编译单元。编译器将每个编译单元分别编译成一个目标文件，最后链接器把这些目标文件链接到一起成为一个可执行文件。</li>
 <li>块作用域（Block Scope），标识符在一对 { } 括号中声明，即在函数体或语句块中声明。从它声明的位置开始到右 } 括之间有效。</li>
 <li>函数原型作用域（Function Prototype Scope），标识符从声明的位置开始到这个原型结束之前有效。</li>
 </ul>
@@ -789,31 +703,7 @@
 <p><code>/pro</code> 目录下的文件并不是真正的磁盘文件，而是由内核虚拟出来的，当前运行的每个进程在 /proc 下都有一个子目录，目录名就是进程的 <code>id</code>，查看子目录下的文件可以得到该进程的相关信息。</p>
 <hr>
 <p>进程虚拟地址空间</p>
-<p><figure>
-  <picture>
-
-    
-      
-        
-        
-        
-        
-        
-        
-    <img
-      loading="lazy"
-      decoding="async"
-      alt=""
-      
-        class="image_figure image_internal image_unprocessed"
-        src="/images/IMG_001.jpg"
-      
-      
-    />
-
-    </picture>
-</figure>
-</p>
+<p><img src="/images/IMG_001.jpg" alt=""></p>
 <p>堆空间的结束地址称为<code>Break</code>，动态分配内存时堆空间可以向高地址增长，堆空间要向高地址增长就要抬高 Break，映射新的虚拟内存页面到物理内存（这是通过系统调用 brk 实现的，malloc 函数也是调用 brk 向内核请求分配内存的）。</p>
 <hr>
 <p>栈空间从高地址向低地址增长。</p>
@@ -830,58 +720,10 @@
 <p>不同进程中相同的 VA 被 MMU映射到不同的 PA，因此在某个进程中访问任何虚拟地址都不可能访问到属于另一个进程的物理内存页面，并且每个进程都认为自己独占 0x00000000 ~ 0xbfffffff（32 位机器的前 3GB） 的整个用户地址空间。</p>
 <p>独立地址空间的好处是：任何一个进程由于执行了错误指令或恶意代码而导致的非法内存访问都不会意外改写其他进程的数据，不会影响其他进程。</p>
 <p>每个进程都有自己的一套 VA 到 PA 的映射表，在一个进程中通过 VA 只能访问到属于自己的物理页面，而不访问到其他进程的物理页面。</p>
-<p><figure>
-  <picture>
-
-    
-      
-        
-        
-        
-        
-        
-        
-    <img
-      loading="lazy"
-      decoding="async"
-      alt=""
-      
-        class="image_figure image_internal image_unprocessed"
-        src="/images/IMG_010.jpg"
-      
-      
-    />
-
-    </picture>
-</figure>
-</p>
+<p><img src="/images/IMG_010.jpg" alt=""></p>
 <p>操作系统可以安排两个进程共享相同的物理页面，只要每个进程中不同的 VA 映射到相同的 PA 就可以实现共享。</p>
 <p>3）VA 到 PA 的映射会给分配和释放内存带来方便，物理地址不连续的几块内存可以映射成虚拟地址连续的一块内存。</p>
-<p><figure>
-  <picture>
-
-    
-      
-        
-        
-        
-        
-        
-        
-    <img
-      loading="lazy"
-      decoding="async"
-      alt=""
-      
-        class="image_figure image_internal image_unprocessed"
-        src="/images/IMG_011.jpg"
-      
-      
-    />
-
-    </picture>
-</figure>
-</p>
+<p><img src="/images/IMG_011.jpg" alt=""></p>
 <p>4）虚拟内存管理机制可以是的运行着的进程分配的内存之和可以大于实际可用的物理内存。</p>
 <p>进程访问的是虚拟内存页面，这些页面的数据可以保存在物理页面中，也可以临时保存在磁盘上而不占用物理内存页面，可以在磁盘上开一个分区或着建一个文件专门用于临时保存虚拟内存页面的数据，这称为交换设备（Swap Device）。</p>
 <p>启用了交换设备之后，系统可以分配的内存总量 = 物理内存的大小 + 交换设备的大小。</p>
@@ -891,58 +733,58 @@
 <h2 id="二十">二十</h2>
 <p>可以像变量一样在代码中使用的宏定义称为变量式宏定义。如：<code>#define N   20</code></p>
 <p>可以像函数调用一样在代码中使用的称为函数式宏定义，如：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">#define   MAX(a, b)   ((a)&gt;(b)?(a):(b))
-</span></span><span class="line"><span class="ln">2</span><span class="cl">k = MAX(i&amp;0x0f, j&amp;0x0f)
-</span></span></code></pre></div><p>k 展开成：k = ((i&amp;0x0f)&gt;(j&amp;0x0f)?(i&amp;0x0f):(j&amp;0x0f))。就像函数调用一样，把两个实参表达式分别替换到宏定义中形参 a 和 b 的位置。</p>
+<pre tabindex="0"><code>#define   MAX(a, b)   ((a)&gt;(b)?(a):(b))
+k = MAX(i&amp;0x0f, j&amp;0x0f)
+</code></pre><p>k 展开成：k = ((i&amp;0x0f)&gt;(j&amp;0x0f)?(i&amp;0x0f):(j&amp;0x0f))。就像函数调用一样，把两个实参表达式分别替换到宏定义中形参 a 和 b 的位置。</p>
 <hr>
 <p>一般来说简短的，被频繁调用的函数适合用函数宏定义来代替实现，省去了分配和释放栈帧、传参、传返回值等一系列工作。</p>
 <p>函数式宏定义经常写成这样的形式（取自内核代码）：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">#define device_init_wakeup(dev, val)\
-</span></span><span class="line"><span class="ln">2</span><span class="cl">	do {\
-</span></span><span class="line"><span class="ln">3</span><span class="cl">		device_can_wakeup(dev) =!!(val);\
-</span></span><span class="line"><span class="ln">4</span><span class="cl">		device_set_wakeup_enable(dev, val);\
-</span></span><span class="line"><span class="ln">5</span><span class="cl">	} while(0)
-</span></span></code></pre></div><p>用 do {...} while(0) 括起来。</p>
+<pre tabindex="0"><code>#define device_init_wakeup(dev, val)\
+	do {\
+		device_can_wakeup(dev) =!!(val);\
+		device_set_wakeup_enable(dev, val);\
+	} while(0)
+</code></pre><p>用 do {&hellip;} while(0) 括起来。</p>
 <hr>
 <p>C99 引入一个新。的关键字 inline，用于定义内联函数（Inline Function），在内核代码中很常见。inline 关键字告诉编译器，这个函数的调用要尽可能快，可以当普通的函数调用实现，也可以用宏展开的办法实现。</p>
 <hr>
 <p>宏定义中可变参数部分用<code>_VA_ARGS_</code>表示，在宏展开是和<code>...</code>对应的几个实参可以看成一个实参来替换掉_VA_ARGS_。</p>
 <p>例：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">#define showlist(...) printf(#_VA_ARGS_)
-</span></span><span class="line"><span class="ln">2</span><span class="cl">showlist(The first, second, and third items.);
-</span></span></code></pre></div><p>预处理之后变成：printf(&quot;The first, second, and third items.&quot;);</p>
+<pre tabindex="0"><code>#define showlist(...) printf(#_VA_ARGS_)
+showlist(The first, second, and third items.);
+</code></pre><p>预处理之后变成：printf(&ldquo;The first, second, and third items.&rdquo;);</p>
 <hr>
 <p><code>#</code> 号运算符后面应该跟一个形参，用于创建字符串字面值，预处理器用<code>&quot;</code>号把实参括起来称为一个字符串字面值，并且实参中的连续多个空白字符串被替换成一个空格。</p>
 <p><code>##</code> 运算符把前后两个预处理 Token 连接成一个预处理 Token。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">#define CONCAT(a,b)     a##b
-</span></span><span class="line"><span class="ln">2</span><span class="cl">CONCAT(con, cat)
-</span></span></code></pre></div><p>预处理之后是：concat。</p>
+<pre tabindex="0"><code>#define CONCAT(a,b)     a##b
+CONCAT(con, cat)
+</code></pre><p>预处理之后是：concat。</p>
 <hr>
 <p>重复定义一个宏必须定义得一摸一样才算对，否则算错，而重复取消一个宏的定义不算错。</p>
 <p>取消宏定义用 <code>#undef</code> 预处理指示，如：<code>#undef X</code>。</p>
 <hr>
 <p>宏展开的步骤：</p>
 <p>例：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">#define   sh(x)    printf(&#34;n&#34;  #x   &#34;=%d, or %d\n&#34;, n##x, alt[x])
-</span></span><span class="line"><span class="ln">2</span><span class="cl">#define  sub_z    26
-</span></span><span class="line"><span class="ln">3</span><span class="cl">sh(sub_z)
-</span></span></code></pre></div><p>替换过程如下：</p>
+<pre tabindex="0"><code>#define   sh(x)    printf(&#34;n&#34;  #x   &#34;=%d, or %d\n&#34;, n##x, alt[x])
+#define  sub_z    26
+sh(sub_z)
+</code></pre><p>替换过程如下：</p>
 <ul>
 <li><code>#x</code>要替换成 “sub_z”。</li>
 <li>n##x 要替换成 nsub_z。</li>
 <li>除了带<code>#</code>和<code>##</code>运算符的参数之外，其他参数在替换之前要对实参本身做充分展开，所以应该先把 sub_z 展开成 26 再替换到 alt<input checked="" disabled="" type="checkbox"> 中 x 的位置。</li>
-<li>现在展开成了 printf(&quot;n&quot; &quot;sub_z&quot; &quot;=%d, or %d\n&quot;, nsub_z, alt[26])，所有参数都替换完了，这时编译器会再扫描一遍，再找出可以展开的宏定义来展开，假设 nsub_z 或 alt 是变量是宏定义，这时会进一步展开。</li>
+<li>现在展开成了 printf(&ldquo;n&rdquo; &ldquo;sub_z&rdquo; &ldquo;=%d, or %d\n&rdquo;, nsub_z, alt[26])，所有参数都替换完了，这时编译器会再扫描一遍，再找出可以展开的宏定义来展开，假设 nsub_z 或 alt 是变量是宏定义，这时会进一步展开。</li>
 </ul>
 <hr>
 <p>预处理运算符 defined 一般用作表达式中的一部分，如果单独使用，</p>
 <p><code>#if defined x</code> 相当于 <code>#ifdef x</code>。</p>
-<p><code>#if !defined x 相当于 </code>#ifndef x`。</p>
+<p><code>#if !defined x</code> 相当于 <code>#ifndef x</code>。</p>
 <hr>
 <p>预处理器如何求值 #if 后面的表达式（这个表达式必须是常量表达式）。</p>
 <p>例：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">#define VERSION   2
-</span></span><span class="line"><span class="ln">2</span><span class="cl">#if defined x||y||VERSION&lt;3
-</span></span></code></pre></div><ol>
+<pre tabindex="0"><code>#define VERSION   2
+#if defined x||y||VERSION&lt;3
+</code></pre><ol>
 <li>如果 x 这个宏有定义，则把 defined x 替换成 1，否则替换成 0，因此变成 <code>#if 0||y||VERSION&lt;3</code></li>
 <li>把有定义的宏展开，变成 <code>#if 0||y||2&lt;3</code></li>
 <li>把每一定义的宏替换成 0，变成 <code>#if 0||0||2&lt;3</code></li>
@@ -957,9 +799,9 @@
 <hr>
 <p>把多个数组放在一起声明，每个数组名后面都要有<code>[]</code>，同理，把多个指针变量放在一起声明，每个变量名前面都要有 <code>*</code>。</p>
 <p>例如：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">int a[5], b[10];
-</span></span><span class="line"><span class="ln">2</span><span class="cl">int *p, *q;
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>int a[5], b[10];
+int *p, *q;
+</code></pre><hr>
 <p><code>pi = &amp;j</code>，把变量 j 的内存地址赋给指针变量 pi。</p>
 <p><code>*pi = *pi + 10</code>，通过指针变量 pi 间接寻址到变量 j，把变量 j 的值增加 10。</p>
 <p>这里的 * 是指针间接寻址运算符。</p>
@@ -1014,23 +856,23 @@ pti = pi;</p>
 <hr>
 <p>函数原型中的参数写成指针形式还是数组形式对编译器来说没有区别，这个参数都是指针类型。</p>
 <hr>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">const int *a;
-</span></span><span class="line"><span class="ln">2</span><span class="cl">int const *a;
-</span></span></code></pre></div><p>这两种写法一样，a 是一个指向 const int 型的指针，a 所指向的内存单元不可改写，所以（*a)++ 是不允许的，但指针 a 本身可以改写，即 a 可以指向别的存储单元，a++ 是允许的。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">int *const a;
-</span></span></code></pre></div><p>a 是一个指向 int 型的 const 指针，*a 是可以改写的，但 a 本身不允许改写。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">int const *const a;
-</span></span><span class="line"><span class="ln">2</span><span class="cl">const int *const a;
-</span></span></code></pre></div><p>a 是一个指向 const int 型的 const 指针，*a 和 a 本身都不允许改写。</p>
+<pre tabindex="0"><code>const int *a;
+int const *a;
+</code></pre><p>这两种写法一样，a 是一个指向 const int 型的指针，a 所指向的内存单元不可改写，所以（*a)++ 是不允许的，但指针 a 本身可以改写，即 a 可以指向别的存储单元，a++ 是允许的。</p>
+<pre tabindex="0"><code>int *const a;
+</code></pre><p>a 是一个指向 int 型的 const 指针，*a 是可以改写的，但 a 本身不允许改写。</p>
+<pre tabindex="0"><code>int const *const a;
+const int *const a;
+</code></pre><p>a 是一个指向 const int 型的 const 指针，*a 和 a 本身都不允许改写。</p>
 <hr>
 <p>要想把指针 p 赋给指针 q，q 指向的类型应该比 p 指向的类型限定得更严格，或至少是同样严格，而不能比 p 指向的类型限定得更宽松。</p>
 <hr>
 <p>尽量使用 const 限定符，把不该变的都声明成只读，防止意外改写数据。</p>
 <hr>
 <p>表达式 &amp;c 是指针类型，如：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">const char c = &#39;a&#39;;
-</span></span><span class="line"><span class="ln">2</span><span class="cl">char *q = &amp;c;
-</span></span></code></pre></div><p>表达式 &amp;c 是 const char * 型的。</p>
+<pre tabindex="0"><code>const char c = &#39;a&#39;;
+char *q = &amp;c;
+</code></pre><p>表达式 &amp;c 是 const char * 型的。</p>
 <hr>
 <p>指针数组中的每一个元素都是指针。</p>
 <p>例如：char *argv[]；</p>
@@ -1047,15 +889,15 @@ pti = pi;</p>
 <p><code>int (*a)[10];</code> 指针变量 a 指向由 10 个 int 元素组成的数组。</p>
 <p><code>int *a[10];</code> 指针变量 a 为指针数组，数组元素为 int * 指针。</p>
 <p>拆开来看：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">int (*a)[10]   =&gt; int [10] *a;
-</span></span><span class="line"><span class="ln">2</span><span class="cl">                  =&gt; typedef int T[10];
-</span></span><span class="line"><span class="ln">3</span><span class="cl">                  =&gt; T *a;
-</span></span><span class="line"><span class="ln">4</span><span class="cl">T 代表由 10 个 int 元素组成的数组类型，a 则是指向这种类型的指针（a 就是指向数组的指针）。
-</span></span><span class="line"><span class="ln">5</span><span class="cl">
-</span></span><span class="line"><span class="ln">6</span><span class="cl">int *a[10]     =&gt; [int *]a[10];
-</span></span><span class="line"><span class="ln">7</span><span class="cl">                  =&gt; T a[10] ;
-</span></span><span class="line"><span class="ln">8</span><span class="cl">             
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>int (*a)[10]   =&gt; int [10] *a;
+                  =&gt; typedef int T[10];
+                  =&gt; T *a;
+T 代表由 10 个 int 元素组成的数组类型，a 则是指向这种类型的指针（a 就是指向数组的指针）。
+
+int *a[10]     =&gt; [int *]a[10];
+                  =&gt; T a[10] ;
+             
+</code></pre><hr>
 <p>int a[10]；</p>
 <p><code>&amp;a[0]</code> 的类型是 <code>int *</code>，<code>&amp;a</code> 的类型是 <code>int (*)[10]</code>。</p>
 <hr>
@@ -1083,9 +925,9 @@ pti = pi;</p>
 <p>typedef int F(void);</p>
 <p>定义了函数类型 F。这种类型的函数不带参数，返回值是 int。</p>
 <p>那么，F f, g； 相当于声明：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">int f(void);
-</span></span><span class="line"><span class="ln">2</span><span class="cl">int g(void);
-</span></span></code></pre></div><p>而 F h(void); 这个声明是错误的。函数不能返回 <em>函数类型</em>，也不能返回数组类型。</p>
+<pre tabindex="0"><code>int f(void);
+int g(void);
+</code></pre><p>而 F h(void); 这个声明是错误的。函数不能返回 <em>函数类型</em>，也不能返回数组类型。</p>
 <p>F *e(void)； 函数 e 返回一个 F * 类型的函数指针。</p>
 <p>F *fp；fp 是一个函数指针。</p>
 <hr>
@@ -1093,43 +935,43 @@ pti = pi;</p>
 <ul>
 <li>T *p；p 是指向 T 类型的指针。</li>
 <li>T a[]；a 是由 T 类型的元素组成的数组（如果 a 是函数的形参，则相当于 T *a）。</li>
-<li>T1 f(T2, T3, ...)；f 是一个函数，参数类型是 T2, T3 等，返回值类型是 T1。</li>
+<li>T1 f(T2, T3, &hellip;)；f 是一个函数，参数类型是 T2, T3 等，返回值类型是 T1。</li>
 </ul>
 <p>例：分解 <code>int (* (*fp)(void *))[10]</code>;</p>
 <ol>
 <li>fp 和 * 号括在一起，说明 fp 是一个指针，指向 T1 类型：</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">typedef int (*T1(void *))[10];
-</span></span><span class="line"><span class="ln">2</span><span class="cl">T1 *fp;
-</span></span></code></pre></div><ol start="2">
+<pre tabindex="0"><code>typedef int (*T1(void *))[10];
+T1 *fp;
+</code></pre><ol start="2">
 <li>T1 应该是一个函数类型，参数是 void *，返回值是 T2 类型：</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">typedef int (*T2)[10];
-</span></span><span class="line"><span class="ln">2</span><span class="cl">typedef T2 T1(void *);
-</span></span><span class="line"><span class="ln">3</span><span class="cl">T1 *fp;
-</span></span></code></pre></div><ol start="3">
+<pre tabindex="0"><code>typedef int (*T2)[10];
+typedef T2 T1(void *);
+T1 *fp;
+</code></pre><ol start="3">
 <li>T2 和 * 号括在一个起，应该也是一个指针，指向 T3 类型：</li>
 </ol>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">typedef int T3[10];
-</span></span><span class="line"><span class="ln">2</span><span class="cl">typedef int T2 *T2;
-</span></span><span class="line"><span class="ln">3</span><span class="cl">typedef T2 T1(void *);
-</span></span><span class="line"><span class="ln">4</span><span class="cl">T1 *fp;
-</span></span></code></pre></div><p>显然，T3 是一个 int 数组，由 10 个元素组成。分解完毕。</p>
+<pre tabindex="0"><code>typedef int T3[10];
+typedef int T2 *T2;
+typedef T2 T1(void *);
+T1 *fp;
+</code></pre><p>显然，T3 是一个 int 数组，由 10 个元素组成。分解完毕。</p>
 <hr>
 <p>在赋值，初始化和函数调用传参过程中，假设要把指针 p 赋给 指针 q，应注意 const 限定符的语义作用：</p>
 <ul>
 <li>如果 p 指向的类型不带有 const 限定，而 q 指向的类型带有 const 限定，则可以把 p 赋给 q，例如：</li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="ln">1</span><span class="cl"><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">`</span><span class="n">a</span><span class="o">`</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="w"></span><span class="n">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">c</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p>表达式 &amp;c 是 char * 型的，而 q 是 const char * 型的，可以赋值，赋值后 *q 不允许改写，即不能通过指针 q 来改写变量 c 的值。</p>
+<pre tabindex="0"><code>char c = `a`;
+const char *q = &amp;c;
+</code></pre><p>表达式 &amp;c 是 char * 型的，而 q 是 const char * 型的，可以赋值，赋值后 *q 不允许改写，即不能通过指针 q 来改写变量 c 的值。</p>
 <ul>
 <li>如果 p 指向的类型带有 const 限定，而 q 指向的类型不带有 const 限定，则不能把 p 赋给 q。
 例如，对下面的代码编译器会报警告：</li>
 </ul>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-mysql" data-lang="mysql"><span class="line"><span class="ln">1</span><span class="cl"><span class="n">cons</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">`</span><span class="n">c</span><span class="o">`</span><span class="p">;</span><span class="w">
-</span></span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="w"></span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">c</span><span class="p">;</span><span class="w">
-</span></span></span></code></pre></div><p>表达式 &amp;c 是 const char * 型的，而 q 是 char * 型的。假如允许赋值，则赋值后就可以通过指针 q 来改写变量 c 的值，等于绕过了变量 c 的 const 限定这道防线，这是很危险的。</p>
+<pre tabindex="0"><code>cons char c = `c`;
+char *q = &amp;c;
+</code></pre><p>表达式 &amp;c 是 const char * 型的，而 q 是 char * 型的。假如允许赋值，则赋值后就可以通过指针 q 来改写变量 c 的值，等于绕过了变量 c 的 const 限定这道防线，这是很危险的。</p>
 <ul>
 <li>如果 p 和 q 指向的类型都带有 const 限定，或者都不带有 const 限定，则可以把 p 赋给 q。</li>
 </ul>
@@ -1154,180 +996,34 @@ pti = pi;</p>
 <hr>
 <p>(完)</p>
 
-    </div>
-<div class="post_comments">
-  
-  
-  
-</div>
+		</section>
 
-
-
-
-  </article>
-<aside class="sidebar">
-  <section class="sidebar_inner">
-    <br>
-    
-  
-  <div class="search">
-    <input type="search" class="search_field form_field" placeholder='Search...' id="find" autocomplete="off" data-scope='post'>
-    <label for="find" class="search_label"><svg class="icon">
-  <title>search</title>
-  <use xlink:href="#search"></use>
-</svg>
-
-    </label>
-    
-    <div class="search_results results"></div>
-  </div>
-
-        <h2>x-29</h2>
-      <div class="author_bio">
-        java, mysql, tcp, performance, network, docker, Linux.
-      </div>
-      <a href='https://x-29.github.io/about/' class="button mt-1" role="button" title='阅读更多'>阅读更多</a>
-
-    
-    
-    <h2 class="mt-4">精选文章</h2>
-    <ul>
-      <li>
-        <a href="https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/" class="nav-link" title="The Pragmatic Programmer 笔记">The Pragmatic Programmer 笔记</a>
-      </li>
-      <li>
-        <a href="https://x-29.github.io/post/2022-05-computer-networking-note/" class="nav-link" title="计算机网络(Computer Networking)笔记">计算机网络(Computer Networking)笔记</a>
-      </li>
-    </ul>
-    <h2 class="mt-4">最新文章</h2>
-    <ul class="flex-column">
-      <li>
-        <a href="https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/" class="nav-link" title="The Pragmatic Programmer 笔记">The Pragmatic Programmer 笔记</a>
-      </li>
-      <li>
-        <a href="https://x-29.github.io/post/2022-05-computer-networking-note/" class="nav-link" title="计算机网络(Computer Networking)笔记">计算机网络(Computer Networking)笔记</a>
-      </li>
-    </ul>
-    <div>
-      <h2 class="mt-4 taxonomy" id="categories-section">分类</h2>
-      <nav class="tags_nav">
-        <a href='https://x-29.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/' class="post_tag button button_translucent" title="读书笔记">
-          读书笔记
-          <span class="button_tally">3</span>
-        </a>
-        
-        
-      </nav>
-    </div>
-    <div>
-      <h2 class="mt-4 taxonomy" id="tags-section">标签</h2>
-      <nav class="tags_nav">
-        <a href='https://x-29.github.io/tags/c/' class="post_tag button button_translucent" title="c">
-          C
-          <span class="button_tally">1</span>
-        </a>
-        
-        <a href='https://x-29.github.io/tags/networking/' class="post_tag button button_translucent" title="networking">
-          NETWORKING
-          <span class="button_tally">1</span>
-        </a>
-        
-        <a href='https://x-29.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/' class="post_tag button button_translucent" title="程序员">
-          程序员
-          <span class="button_tally">1</span>
-        </a>
-        
-        
-      </nav>
-    </div>
-  </section>
-</aside>
-
-  
-</div>
-    </main><svg width="0" height="0" class="hidden">
-  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
-    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter">
-    <path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68 0 0 1-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043 0-1.924.366-2.643 1.078a3.56 3.56 0 0 0-1.076 2.605c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846 0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47 0 .929.273 1.705.82 2.388a3.623 3.623 0 0 0 2.115 1.291c-.312.08-.641.118-.979.118-.312 0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652 0 0 0 2.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422 0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139 0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77 0 0 0 1.172-4.892v-.468a7.788 7.788 0 0 0 1.84-1.921 8.142 8.142 0 0 1-2.11.593z"
-      ></path>
-  </symbol>
-  <symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail">
-    <path  d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar">
-    <path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916 0 100v352c0 33.084 26.916 60 60 60h392c33.084 0 60-26.916 60-60V100c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028 0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028 0 20 8.972 20 20v48z"></path>
-    <path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github">
-    <path d="M255.968 5.329C114.624 5.329 0 120.401 0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384 0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008 0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992 0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584 0 34.368-.32 62.08-.32 70.496 0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab">
-    <path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6 0L12.3 74.8z" />
-    <path d="M12.3 74.7L.5 111c-1 3.2 0 6.8 3 8.8l101.6 74-92.5-119z"/>
-    <path d="M105 193.7l-38.6-119h-54l92.7 119z"/>
-    <path d="M105 193.7l38.7-119H66.4l38.7 119z"/>
-    <path d="M105 193.7l38.7-119H198l-93 119z"/>
-    <path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/>
-    <path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6 0L198 74.8z"/> 
-  </symbol>
-  <symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss">
-    <circle cx="3.429" cy="20.571" r="3.429"></circle>
-    <path d="M11.429 24h4.57C15.999 15.179 8.821 8.001 0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"></path>
-    <path d="M24 24C24 10.766 13.234 0 0 0v4.571c10.714 0 19.43 8.714 19.43 19.429z"></path>
-  </symbol>
-  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin">
-    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h362c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="to-top">
-    <path d="M604.501 440.509L325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298 0 36.323s26.223 10.024 36.222 0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221 0 9.999-10.023 9.999-26.298 0-36.323z"></path>
-  </symbol>
-  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly">
-    <path d="M504.971 239.029L448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c19.851 0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002 0 0 0 400 320v108c0 19.851-16.149 36-36 36h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c46.318 0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568 0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255 0 24-10.745 24-24S205.255 0 192 0h-44c-46.318 0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568 0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255 0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851 0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002 0 0 0 112 192z"></path>
-  </symbol>
-  <symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy">
-    <path d="M23 2.75A2.75 2.75 0 0 0 20.25 0H8.75A2.75 2.75 0 0 0 6 2.75v13.5A2.75 2.75 0 0 0 8.75 19h11.5A2.75 2.75 0 0 0 23 16.25zM18.25 14.5h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5zm0-3h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5zm0-3h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5z"></path>
-    <path d="M8.75 20.5a4.255 4.255 0 0 1-4.25-4.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752 0 0 0 1 5.25v16A2.752 2.752 0 0 0 3.75 24h12a2.752 2.752 0 0 0 2.75-2.75v-.75z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme">
-    <path d="M284.286 256.002L506.143 34.144c7.811-7.811 7.811-20.475 0-28.285-7.811-7.81-20.475-7.811-28.285 0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285 0-7.81 7.811-7.811 20.475 0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475 0 28.285a19.938 19.938 0 0 0 14.143 5.857 19.94 19.94 0 0 0 14.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475 0-28.285L284.286 256.002z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu">
-    <path d="M492 236H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954 0 96s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram">
-    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id=youtube>
-    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow">
-    <path d="M21 27v-8h3v11H0V19h3v8h18z"></path><path d="M17.1.2L15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8l13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="xing">
-    <path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/>
-  </symbol>
-</svg>
-
-
-<footer class="footer">
-  <div class="footer_inner wrap pale">
-    <img src='https://x-29.github.io/icons/apple-touch-icon.png' class="icon icon_2 transparent" alt="x-29 的网络日志">
-    <p>Copyright&nbsp;<span class="year"></span>&nbsp;X-29 的网络日志. All Rights Reserved</p><a class="to_top" href="#documentTop">
-  <svg class="icon">
-  <title>to-top</title>
-  <use xlink:href="#to-top"></use>
-</svg>
-
-</a>
-
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/c">C</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/x-29" title="GitHub"><i data-feather="github"></i></a><a class="soc" href="https://twiiter.com/x-29/" title="Twitter"><i data-feather="twitter"></i></a><a class="soc" href="https://gitlab.com/x-29/" title="GitLab"><i data-feather="gitlab"></i></a></div>
+  <div class="footer-info">
+    2022  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
   </div>
 </footer>
 
-<script type="text/javascript" src="https://x-29.github.io/zh/js/bundle.7f647092ffab6102858ab92bae4e65bbeae89d4ff6e29aace780277762afcb3c86ab88f9ff22e3a54b6db55e549b9d2d26560e67a29a3cf9dca00c77bffd16fc.js" integrity="sha512-f2Rwkv&#43;rYQKFirkrrk5lu&#43;ronU/24pqs54And2KvyzyGq4j5/yLjpUtttV5Um50tJlYOZ6KaPPncoAx3v/0W/A==" crossorigin="anonymous"></script>
 
-  <script src="https://x-29.github.io/js/search.min.459aee3b504b2204e992427e1b6f3dfccfdfc589a4f4ee270b5a1fa9b4c806cf6505a9a7d0af8717109194723fc5885ba9f28bc8bcc15a8f8debd17b4623069c.js"></script>
-
-  </body>
+<script>
+  feather.replace()
+</script></div>
+    </body>
 </html>

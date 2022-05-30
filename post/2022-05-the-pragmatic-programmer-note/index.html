@@ -1,164 +1,57 @@
-
 <!DOCTYPE html>
-<html
-  lang="zh"
-  data-figures="true"
-  
-    class="page"
-  
-  
-    data-mode="lit"
-  
-  >
-  <head>
-<title>The Pragmatic Programmer 笔记 | x-29 的网络日志</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<script async src="https://www.googletagmanager.com/gtag/js?id=XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'XXXXXXXXXX');
-</script>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>The Pragmatic Programmer 笔记 - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="这是《程序员修炼之道 第2版》一书的读书笔记" />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="The Pragmatic Programmer 笔记" />
+<meta property="og:description" content="这是《程序员修炼之道 第2版》一书的读书笔记" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-26T13:38:20+08:00" />
+<meta property="article:modified_time" content="2022-05-26T13:38:20+08:00" />
 
-<meta property="og:locale" content="zh" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="The Pragmatic Programmer 笔记"/>
+<meta name="twitter:description" content="这是《程序员修炼之道 第2版》一书的读书笔记"/>
+<script src="https://x-29.github.iojs/feather.min.js"></script>
+	
+	
+        <link href="https://x-29.github.io/css/fonts.b685ac6f654695232de7b82a9143a46f9e049c8e3af3a21d9737b01f4be211d1.css" rel="stylesheet">
+	
 
-<meta property="og:type" content="article">
-<meta name="description" content="The Pragmatic Programmer-程序员修炼知道 通往务实的最高境界" />
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:creator" content="@XXXXXXXX">
-<meta name="twitter:title" content="The Pragmatic Programmer 笔记" />
-<meta property="og:url" content="https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/" />
-<meta property="og:title" content="The Pragmatic Programmer 笔记" />
-<meta property="og:description" content="The Pragmatic Programmer-程序员修炼知道 通往务实的最高境界" />
-<meta property="og:image" content="https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/https:/img9.doubanio.com/view/subject/s/public/s33836286.jpg" />
-
-<link rel="apple-touch-icon" sizes="180x180" href="https://x-29.github.io/icons/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://x-29.github.io/icons/favicon-32x32.png">
-<link rel="manifest" href="https://x-29.github.io/icons/site.webmanifest">
-
-<link rel="canonical" href="https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/">
-
-
-
-<link rel="preload" href="https://x-29.github.io/css/styles.367129801480fead578d7a356a98fcb3bce794981ff18cee55868d198d0d2bf1eb4feac97319d0871c6255183b9fd27a7059e4632c785951f4c4f6953559c4d0.css" integrity = "sha512-NnEpgBSA/q1XjXo1apj8s7znlJgf8YzuVYaNGY0NK/HrT&#43;rJcxnQhxxiVRg7n9J6cFnkYyx4WVH0xPaVNVnE0A==" as="style" crossorigin="anonymous">
-
-
-
-<link rel="preload" href="https://x-29.github.io/zh/js/bundle.7f647092ffab6102858ab92bae4e65bbeae89d4ff6e29aace780277762afcb3c86ab88f9ff22e3a54b6db55e549b9d2d26560e67a29a3cf9dca00c77bffd16fc.js" as="script" integrity=
-"sha512-f2Rwkv&#43;rYQKFirkrrk5lu&#43;ronU/24pqs54And2KvyzyGq4j5/yLjpUtttV5Um50tJlYOZ6KaPPncoAx3v/0W/A==" crossorigin="anonymous">
-
-
-<link rel="stylesheet" type="text/css" href="https://x-29.github.io/css/styles.367129801480fead578d7a356a98fcb3bce794981ff18cee55868d198d0d2bf1eb4feac97319d0871c6255183b9fd27a7059e4632c785951f4c4f6953559c4d0.css" integrity="sha512-NnEpgBSA/q1XjXo1apj8s7znlJgf8YzuVYaNGY0NK/HrT&#43;rJcxnQhxxiVRg7n9J6cFnkYyx4WVH0xPaVNVnE0A==" crossorigin="anonymous">
-
-
-  </head>
-  <body
-    data-code="12"
-    data-lines="false"
-    id="documentTop"
-  >
-
-<header class="nav_header" >
-  <nav class="nav"><a href='https://x-29.github.io/' class="nav_brand nav_item" title="x-29 的网络日志">x-29 的网络日志
-  <div class="nav_close">
-    <div><svg class="icon">
-  <title>open-menu</title>
-  <use xlink:href="#open-menu"></use>
-</svg>
-<svg class="icon">
-  <title>closeme</title>
-  <use xlink:href="#closeme"></use>
-</svg>
-</div>
-  </div>
-</a>
-
-    <div class='nav_body nav_body_left'>
-      
-      
-      
-        
-
-  <div class="nav_parent">
-    <a href="https://x-29.github.io/" class="nav_item" title="首页">首页 </a>
-  </div>
-  <div class="nav_parent">
-    <a href="https://x-29.github.io/post" class="nav_item" title="文章">文章 </a>
-  </div>
-      
-      <div class="nav_parent">
-        <a href="#" class="nav_item">🌐</a>
-        <div class="nav_sub">
-          <span class="nav_child"></span>
-          
-          <a href="https://x-29.github.io/" class="nav_child nav_item">zh-CN</a>
-          
-          <a href="https://x-29.github.io/en/" class="nav_child nav_item">English</a>
-          
-        </div>
-      </div>
-<div class='follow'>
-<div class="color_mode">
-  <input type="checkbox" class="color_choice" id="mode">
-</div>
-
-</div>
-
-    </div>
-  </nav>
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://x-29.github.io/css/main.40ca3a860425083862b7ebd55447caec5c4384573f0cb098b8d06a91e8dace2e.css" />
+	
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://x-29.github.io">CS里的X-29</a>
+	</div>
+	<nav>
+		
+		<a href="/">首页</a>
+		
+		<a href="/post">文章</a>
+		
+		<a href="/about">关于</a>
+		
+		
+	</nav>
 </header>
 
-    <main>
-  
-<div class="grid-inverse wrap content">
-  <article class="post_content">
-    <h1 class="post_title">The Pragmatic Programmer 笔记</h1>
-  <div class="post_meta">
-    <span><svg class="icon">
-  <title>calendar</title>
-  <use xlink:href="#calendar"></use>
-</svg>
-</span>
-    <span class="post_date">
-      May 26, 2022</span>
-    <span class="post_time"> · 3 min read</span><span>&nbsp;· <a href='https://x-29.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98' title="程序员" class="post_tag button button_translucent">程序员
-        </a>
-    </span>
-  </div>
-<div class="post_featured"><figure>
-  <picture>
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">The Pragmatic Programmer 笔记</h1>
+			<div class="meta">Posted on May 26, 2022</div>
+		</div>
+		
 
-    
-      
-        
-        
-        
-        
-        
-        
-    <img
-      loading="lazy"
-      decoding="async"
-      alt=""
-      
-        class="image_figure image_featured image_external image_processed"
-        width="270"
-        height="355"
-        src="/images/s33836286_3223248299453819713.jpg"
-      
-      
-        title="图片来自: douban."
-      
-    />
-
-    <figcaption class="caption_figure caption_featured caption_external">图片来自: douban.</figcaption></picture>
-</figure>
-
-      </div>
-    <div class="post_body"><p>这是<a href="https://book.douban.com/subject/35006892/">《程序员修炼之道 第2版》</a>一书的读书笔记。</p>
+		<section class="body">
+			<p>这是<a href="https://book.douban.com/subject/35006892/">《程序员修炼之道 第2版》</a>一书的读书笔记。</p>
 <blockquote>
 <p>编程是一项艰难的工作</p>
 </blockquote>
@@ -189,7 +82,7 @@
 <li>不要把问题归咎于别人或其他什么事情上，也不要寻找借口</li>
 <li>不要说搞不定，解释一下要做什么才能挽回局面</li>
 </ul>
-<p>意识到自己在说“我不知道”时，一定要接着说“---但是我会去搞清楚”。</p>
+<p>意识到自己在说“我不知道”时，一定要接着说“&mdash;但是我会去搞清楚”。</p>
 <p>不要搁置“破窗”（糟糕的设计、错误的决定、低劣的代码），每发现一个就<strong>赶紧</strong>修一个。</p>
 <p>不要只是因为一些东西非常紧急，就去造成附带损害。</p>
 <p>破窗一扇都嫌太多。</p>
@@ -215,7 +108,7 @@
 <p>无论什么设计原则，都是 ETC 的一个特例。e.g，解耦，单一职责原则。</p>
 <p>价值观是帮助你做决定的：应该做这个，还是做那个？在软件领域思考时，ETC 是一个向导，它能帮助你在不同的路线中选出一条。<strong>ETC 是一种价值观念，不是一条规则</strong>。</p>
 <blockquote>
-<p>DRY---不要重复自己</p>
+<p>DRY&mdash;不要重复自己</p>
 </blockquote>
 <p>DRY 针对的是你对<strong>知识</strong>和<strong>意图</strong>的复制。它强调的是，在两个地方表达的东西其实是相同的，只是表达方式有可能完全不同。</p>
 <p>被要求做一个估算时说什么？应该说“我等一下答复你。”</p>
@@ -259,7 +152,7 @@
 <blockquote>
 <p>永远使用版本控制</p>
 </blockquote>
-<p>即使你只有一个人且项目周期一周就会结束，即使它是一个“用完即弃的”原型，即使是非项目的事物，永远都应如此 --- 确保所有内容都在版本控制之下。</p>
+<p>即使你只有一个人且项目周期一周就会结束，即使它是一个“用完即弃的”原型，即使是非项目的事物，永远都应如此 &mdash; 确保所有内容都在版本控制之下。</p>
 <p>如果你在看到 Bug 或 Bug 报告时的第一反应是“这不可能”，那你就大错特错了。不要在“但那不可能发生”的思路上浪费哪怕一个神经元，因为很明显它会发生，而且已经发生了。</p>
 <p>调试时，把纸笔放在旁边会很有帮助，可以随时做笔记。如果之前没有记下从哪里开始的，可能会在找回源头上浪费很多时间。</p>
 <p>跟踪消息应该采用规范一致的格式，有可能需要自动对其解析。例如，如果需要跟踪资源泄露（例如不平衡的文件open/close），可以在日志文件中跟踪每个文件打开和关闭操作。通过使用文本处理工具或 shell 命令来处理日志文件，就可以很容易地识别出，有问题的打开操作发生在哪里。</p>
@@ -271,21 +164,21 @@
 </blockquote>
 <p>一旦代码发现本来不可能发生的事情已经发生，程序就不再可靠。从这一刻开始，它所做的任何事情都是可疑的，所以要尽快终止它。</p>
 <p>发现自己在想“当然这是不可能发生的”时，添加代码来检查这一点。最简单的方法是使用断言。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">assert(result != null);
-</span></span></code></pre></div><p>分配资源的函数或对象，应该负责释放资源。</p>
+<pre tabindex="0"><code>assert(result != null);
+</code></pre><p>分配资源的函数或对象，应该负责释放资源。</p>
 <p>对嵌套的分配的两个额外的建议：</p>
 <ul>
 <li>释放资源的顺序与分配资源的顺序相反。</li>
 <li>在代码的不同位置，如果都会分配同一组资源，就始终以相同的顺序分配它们。</li>
 </ul>
 <p>在有异常的环境中，处理资源回收的正确模式是：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">thing = allocate_resource()
-</span></span><span class="line"><span class="ln">2</span><span class="cl">begin
-</span></span><span class="line"><span class="ln">3</span><span class="cl">    process(thing)
-</span></span><span class="line"><span class="ln">4</span><span class="cl">finally
-</span></span><span class="line"><span class="ln">5</span><span class="cl">    deallocate(thing)
-</span></span><span class="line"><span class="ln">6</span><span class="cl">end
-</span></span></code></pre></div><p>当你不得不做下面这些事情的时候，可能已经陷入了“占卜”的境地了：</p>
+<pre tabindex="0"><code>thing = allocate_resource()
+begin
+    process(thing)
+finally
+    deallocate(thing)
+end
+</code></pre><p>当你不得不做下面这些事情的时候，可能已经陷入了“占卜”的境地了：</p>
 <ul>
 <li>估计未来几个月之后的完成日期</li>
 <li>为将来的维护或可扩展性预设方案</li>
@@ -306,124 +199,100 @@
 </ul>
 <hr>
 <p><strong>只管命令不要询问</strong>。不应该根据对象的内部状态做出决策，然后更新该对象。例如：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">public void applyDiscount(customer, order_id, discount) {
-</span></span><span class="line"><span class="ln">2</span><span class="cl">	totals = customer
-</span></span><span class="line"><span class="ln">3</span><span class="cl">				.orders
-</span></span><span class="line"><span class="ln">4</span><span class="cl">				.find(order_id)
-</span></span><span class="line"><span class="ln">5</span><span class="cl">				.getTotals();
-</span></span><span class="line"><span class="ln">6</span><span class="cl">	totals.grandTotal = totals.grandTotal - discount;
-</span></span><span class="line"><span class="ln">7</span><span class="cl">	totals.discount = discount;
-</span></span><span class="line"><span class="ln">8</span><span class="cl">}
-</span></span></code></pre></div><p>这样做完全破坏了封装的优势，也会把实现相关的知识扩散到整个代码中。</p>
+<pre tabindex="0"><code>public void applyDiscount(customer, order_id, discount) {
+	totals = customer
+				.orders
+				.find(order_id)
+				.getTotals();
+	totals.grandTotal = totals.grandTotal - discount;
+	totals.discount = discount;
+}
+</code></pre><p>这样做完全破坏了封装的优势，也会把实现相关的知识扩散到整个代码中。</p>
 <p>把计算折扣的工作委托给 total 对象：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">public void applyDiscout(customer, order_id, discount) {
-</span></span><span class="line"><span class="ln">2</span><span class="cl">	customer
-</span></span><span class="line"><span class="ln">3</span><span class="cl">		.orders
-</span></span><span class="line"><span class="ln">4</span><span class="cl">		.find(order_id)
-</span></span><span class="line"><span class="ln">5</span><span class="cl">		.getTotals()
-</span></span><span class="line"><span class="ln">6</span><span class="cl">		.applyDiscount(discount);
-</span></span><span class="line"><span class="ln">7</span><span class="cl">}
-</span></span></code></pre></div><p>对于客户对象和对象的订单来说，不应该取出订单列表在从中搜索，而应该直接向客户要想要的订单：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">public void applyDiscout(customer, order_id, discount) {
-</span></span><span class="line"><span class="ln">2</span><span class="cl">	customer
-</span></span><span class="line"><span class="ln">3</span><span class="cl">		.findOrder(order_id)
-</span></span><span class="line"><span class="ln">4</span><span class="cl">		.getTotals()
-</span></span><span class="line"><span class="ln">5</span><span class="cl">		.applyDiscount(discount);
-</span></span><span class="line"><span class="ln">6</span><span class="cl">}
-</span></span></code></pre></div><p>订单对象和订单的总金额之间也有相同的问题。订单的实现使用了一个分离的对象 totals 来保存总金额，外部世界为什么要知道这么一个对象呢？</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">public void applyDiscout(customer, order_id, discount) {
-</span></span><span class="line"><span class="ln">2</span><span class="cl">	customer
-</span></span><span class="line"><span class="ln">3</span><span class="cl">		.findOrder(order_id)
-</span></span><span class="line"><span class="ln">4</span><span class="cl">		.applyDiscount(discount);
-</span></span><span class="line"><span class="ln">5</span><span class="cl">}
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>public void applyDiscout(customer, order_id, discount) {
+	customer
+		.orders
+		.find(order_id)
+		.getTotals()
+		.applyDiscount(discount);
+}
+</code></pre><p>对于客户对象和对象的订单来说，不应该取出订单列表在从中搜索，而应该直接向客户要想要的订单：</p>
+<pre tabindex="0"><code>public void applyDiscout(customer, order_id, discount) {
+	customer
+		.findOrder(order_id)
+		.getTotals()
+		.applyDiscount(discount);
+}
+</code></pre><p>订单对象和订单的总金额之间也有相同的问题。订单的实现使用了一个分离的对象 totals 来保存总金额，外部世界为什么要知道这么一个对象呢？</p>
+<pre tabindex="0"><code>public void applyDiscout(customer, order_id, discount) {
+	customer
+		.findOrder(order_id)
+		.applyDiscount(discount);
+}
+</code></pre><hr>
 <p>访问某样东西时，尽量不要超过一个 “.”，也就是不要链式调用方法。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl"># 这是很糟糕的风格
-</span></span><span class="line"><span class="ln">2</span><span class="cl">amount = customer.orders.last().totals().amout;
-</span></span><span class="line"><span class="ln">3</span><span class="cl"># 这也一样......
-</span></span><span class="line"><span class="ln">4</span><span class="cl">orders = customer.orders;
-</span></span><span class="line"><span class="ln">5</span><span class="cl">last = orders.last();
-</span></span><span class="line"><span class="ln">6</span><span class="cl">totals = last.totals();
-</span></span></code></pre></div><p>“一个点” 规则的例外是：如果链式调用的东西真的不太可能改变。</p>
+<pre tabindex="0"><code># 这是很糟糕的风格
+amount = customer.orders.last().totals().amout;
+# 这也一样......
+orders = customer.orders;
+last = orders.last();
+totals = last.totals();
+</code></pre><p>“一个点” 规则的例外是：如果链式调用的东西真的不太可能改变。</p>
 <hr>
 <p>任何可变的外部资源都是全局数据，始终确保将这些资源包装在你所控制的代码之后。</p>
 <hr>
 <p>有限状态机（FSM）基本上就是怎么处理事件的一份规范。它由一组状态组成，其中一个是<strong>当前状态</strong>。对于每个状态，我们列出对该状态有意义的事件。对于每个事件，我们定义出系统新的当前状态。</p>
 <p>例如，我们可能从 websocket 接收到多个部分的消息。第一消息是消息头，接下来是任意数量的数据体，之后是消息尾。用 FSM 表示为：</p>
-<p><figure>
-  <picture>
-
-    
-      
-        
-        
-        
-        
-        
-        
-    <img
-      loading="lazy"
-      decoding="async"
-      alt=""
-      
-        class="image_figure image_internal image_unprocessed"
-        src="/images/IMG_200.jpg"
-      
-      
-    />
-
-    </picture>
-</figure>
-</p>
+<p><img src="/images/IMG_200.jpg" alt=""></p>
 <p>我们从 “初始状态” 开始。如果我们接收到消息头。就<strong>转换</strong>到 “读取消息” 状态。如果在初始状态接收到任何其他内容（带有星号的线），我们就转换到 “出错” 状态。</p>
 <p>当我们处于 “读取消息” 状态是，可以接收数据消息（在这种情况下，我们将继续以相同的状态读取消息），也可以接收消息尾（它将让我们转换到 “完成” 状态）。其他任何操作都会导致转换到 “出错” 状态。</p>
 <p>处理代码比较简单：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln"> 1</span><span class="cl">TRANSITONS = {
-</span></span><span class="line"><span class="ln"> 2</span><span class="cl">  initial: { header:  :reading },
-</span></span><span class="line"><span class="ln"> 3</span><span class="cl">  reading: { data:  :reading, trailer:	:done }
-</span></span><span class="line"><span class="ln"> 4</span><span class="cl">}
-</span></span><span class="line"><span class="ln"> 5</span><span class="cl">
-</span></span><span class="line"><span class="ln"> 6</span><span class="cl">state = :initial
-</span></span><span class="line"><span class="ln"> 7</span><span class="cl">
-</span></span><span class="line"><span class="ln"> 8</span><span class="cl">while state != :done &amp;&amp; state ! :error
-</span></span><span class="line"><span class="ln"> 9</span><span class="cl">  msg = get_next_message()
-</span></span><span class="line"><span class="ln">10</span><span class="cl">  state = TRANSITONS[state][msg.msg_type] || :error #实现状态间转换
-</span></span><span class="line"><span class="ln">11</span><span class="cl">end
-</span></span></code></pre></div><hr>
+<pre tabindex="0"><code>TRANSITONS = {
+  initial: { header:  :reading },
+  reading: { data:  :reading, trailer:	:done }
+}
+
+state = :initial
+
+while state != :done &amp;&amp; state ! :error
+  msg = get_next_message()
+  state = TRANSITONS[state][msg.msg_type] || :error #实现状态间转换
+end
+</code></pre><hr>
 <p>观察者模式因为每个观察者都必须与观察对象注册在一起，所以它引入了耦合。此外，回调是由观察对象以同步的方式内联处理的，因此可能会导致性能瓶颈。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln"> 1</span><span class="cl">module Terminator
-</span></span><span class="line"><span class="ln"> 2</span><span class="cl">  CALLBACKS = []
-</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    
-</span></span><span class="line"><span class="ln"> 4</span><span class="cl">  def self.register(callback)
-</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    CALLBACKS &lt;&lt; callback
-</span></span><span class="line"><span class="ln"> 6</span><span class="cl">  end
-</span></span><span class="line"><span class="ln"> 7</span><span class="cl">  
-</span></span><span class="line"><span class="ln"> 8</span><span class="cl">  def self.exit(exit_status)
-</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    CALLBACKS.each { |callback| callback.(exit_status) }
-</span></span><span class="line"><span class="ln">10</span><span class="cl">    exit!(exit_status)
-</span></span><span class="line"><span class="ln">11</span><span class="cl">  end
-</span></span><span class="line"><span class="ln">12</span><span class="cl">end
-</span></span><span class="line"><span class="ln">13</span><span class="cl">
-</span></span><span class="line"><span class="ln">14</span><span class="cl">Terminator.register(-&gt; (status) { puts &#34;callback 1 sees #{status}&#34; })
-</span></span><span class="line"><span class="ln">15</span><span class="cl">Terminator.register(-&gt; (status) { puts &#34;callback 2 sees #{status}&#34; })
-</span></span><span class="line"><span class="ln">16</span><span class="cl">
-</span></span><span class="line"><span class="ln">17</span><span class="cl">Terminator.exit(99)
-</span></span></code></pre></div><p><strong>发布/订阅</strong>（pubsub）推广了观察者模式，同时解决了耦合和性能问题。</p>
+<pre tabindex="0"><code>module Terminator
+  CALLBACKS = []
+    
+  def self.register(callback)
+    CALLBACKS &lt;&lt; callback
+  end
+  
+  def self.exit(exit_status)
+    CALLBACKS.each { |callback| callback.(exit_status) }
+    exit!(exit_status)
+  end
+end
+
+Terminator.register(-&gt; (status) { puts &#34;callback 1 sees #{status}&#34; })
+Terminator.register(-&gt; (status) { puts &#34;callback 2 sees #{status}&#34; })
+
+Terminator.exit(99)
+</code></pre><p><strong>发布/订阅</strong>（pubsub）推广了观察者模式，同时解决了耦合和性能问题。</p>
 <p>在 pubsub 模式中，有<code>发布者</code>和<code>订阅者</code>。它们是通过信道连接在一起的。信道在单独的代码块中实现：有时是库，有时是进程，有时是分布式基础设施。所有这些实现细节对代码来说都是隐藏的。</p>
 <p>每个信道都有一个名字。订阅者注册感兴趣的一个或多个具名信道，发布者向信道写入事件。与观察者模式不同，发布者和订阅者之间的通信是在代码之外处理的，并且可能是异步的。</p>
 <hr>
 <p>编程讲的是代码，而程序谈的是数据。</p>
-<p>所有程序其实都是对数据的一种变换---将输入转换成输出。</p>
+<p>所有程序其实都是对数据的一种变换&mdash;将输入转换成输出。</p>
 <p>例如：列出目录树中行数最多的五个文件。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">$ find . -type f | xargs wc -l | sort -n | tail -6 | head 5
-</span></span></code></pre></div><p>从各个步骤之间数据流动的角度来考虑，就变成了一系列的转换：</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">目录名
-</span></span><span class="line"><span class="ln">2</span><span class="cl">-&gt;列出文件
-</span></span><span class="line"><span class="ln">3</span><span class="cl">-&gt;列出行数
-</span></span><span class="line"><span class="ln">4</span><span class="cl">-&gt;对列表排序
-</span></span><span class="line"><span class="ln">5</span><span class="cl">-&gt;最多的五项 + 总数
-</span></span><span class="line"><span class="ln">6</span><span class="cl">-&gt;最多的五项
-</span></span></code></pre></div><p>在变换式模型中，要把数据看作是一条浩浩荡荡的<code>河流</code>。数据成为与功能对等的东西：<code>代码-&gt;数据-&gt;代码-&gt;数据......</code>。</p>
+<pre tabindex="0"><code>$ find . -type f | xargs wc -l | sort -n | tail -6 | head 5
+</code></pre><p>从各个步骤之间数据流动的角度来考虑，就变成了一系列的转换：</p>
+<pre tabindex="0"><code>目录名
+-&gt;列出文件
+-&gt;列出行数
+-&gt;对列表排序
+-&gt;最多的五项 + 总数
+-&gt;最多的五项
+</code></pre><p>在变换式模型中，要把数据看作是一条浩浩荡荡的<code>河流</code>。数据成为与功能对等的东西：<code>代码-&gt;数据-&gt;代码-&gt;数据......</code>。</p>
 <hr>
 <blockquote>
 <p>不要付继承税</p>
@@ -452,11 +321,11 @@
 <p>当编程举步维艰时，其实是潜意识在告诉你有什么地方不对劲。</p>
 <p>在开始编程前，对这件事大概会花多长时间要有概念。可以用常识判断出许多基本算法的级别：</p>
 <ul>
-<li>简单循环。算法是 <em>O</em>(n) 时间的---时间增加和 n 线性相关。例子有穷举查找、找到数组中的最大值。</li>
+<li>简单循环。算法是 <em>O</em>(n) 时间的&mdash;时间增加和 n 线性相关。例子有穷举查找、找到数组中的最大值。</li>
 <li>嵌套循环。在循环中嵌套另一个循环，算法就变成了 <em>O</em>(m x n)，m 和 n 分别是两层循环的上限。例如冒泡排序。趋近于 <em>O</em>(n^2)。</li>
 <li>二分法。在循环中每轮将集合对分，那么算法是 <em>O</em>(lg n) 时间的。对有序二分查找、遍历二叉树、找到机器字的最高位，都是 <em>O</em>(lg n) 的。</li>
 <li>分治法。如果算法将输入分成两半来分开处理，最后再把结果合并起来，那么就是 <em>O</em>(n lg n) 的。经典的例子是快速排序。</li>
-<li>组合问题。当算法开始关注事物的排列组合时，运行时间可能会失控。因为排列涉及阶乘（数字 1 到 5 点排列就有 5! = 5 x 4 x 3 x 2 x 1 = 120 种)。以计算 5 个元素的组合算法的时间为基准：运行 6 个元素需要 6 倍的时间，运行 7 个元素需要 42 倍的时间。例子包括了许多公认的<em>困难</em>问题的算法---旅行推销员问题、最优装箱问题。</li>
+<li>组合问题。当算法开始关注事物的排列组合时，运行时间可能会失控。因为排列涉及阶乘（数字 1 到 5 点排列就有 5! = 5 x 4 x 3 x 2 x 1 = 120 种)。以计算 5 个元素的组合算法的时间为基准：运行 6 个元素需要 6 倍的时间，运行 7 个元素需要 42 倍的时间。例子包括了许多公认的<em>困难</em>问题的算法&mdash;旅行推销员问题、最优装箱问题。</li>
 </ul>
 <blockquote>
 <p>测试与找 bug 无关。</p>
@@ -498,10 +367,10 @@
 <p>当开始一个项目时，给它起一个名字，最好是一个稀奇古怪的名字。</p>
 <p>与别人交谈时，大方地使用团队的名字。</p>
 <p>测试状态的覆盖率，而非代码的覆盖率。</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="ln">1</span><span class="cl">int test(int a, int b) {
-</span></span><span class="line"><span class="ln">2</span><span class="cl">  return a / (a + b);
-</span></span><span class="line"><span class="ln">3</span><span class="cl">}
-</span></span></code></pre></div><p>这个函数接受两个整数，假设每个整数是 0 到 999 之间的数字。理论上，这个三行的函数有 1,000,000 个逻辑状态，其中 999,999 个可以正常工作，而另一个则不能（a + b 等于零时）。仅仅知道执行了这行代码并不能告诉你这些，你需要识别出程序的所有可能的状态。</p>
+<pre tabindex="0"><code>int test(int a, int b) {
+  return a / (a + b);
+}
+</code></pre><p>这个函数接受两个整数，假设每个整数是 0 到 999 之间的数字。理论上，这个三行的函数有 1,000,000 个逻辑状态，其中 999,999 个可以正常工作，而另一个则不能（a + b 等于零时）。仅仅知道执行了这行代码并不能告诉你这些，你需要识别出程序的所有可能的状态。</p>
 <p>用户真正要的不是代码，他们只是遇到某个业务问题，需要在目标和预算范围内解决。他们的信念是，通过与你的团队合作，能够做到这一点。</p>
 <p>用户的期望与软件无关，他们的期望是对业务价值的期望，软件只是到达这一目标的一种手段。了解到他们的价值期望后，就要考虑如何实现这些期望：</p>
 <ul>
@@ -513,211 +382,65 @@
 <blockquote>
 <p>在作品上签名</p>
 </blockquote>
-<p>我们想看到你对所有权引以为豪---“这是我写的，我与我的作品同在”。你的签名应该被认为是质量的标志。人们应该在一段代码上看到你的名字，并对它是可靠的、编写良好的、经过测试的、文档化的从满期许。</p>
+<p>我们想看到你对所有权引以为豪&mdash;“这是我写的，我与我的作品同在”。你的签名应该被认为是质量的标志。人们应该在一段代码上看到你的名字，并对它是可靠的、编写良好的、经过测试的、文档化的从满期许。</p>
 <hr>
 <h3 id="后记">后记</h3>
 <p>读完本书后，找到了译者 @云风 老师最近的一篇采访，摘录一些文字在这里。</p>
-<h5 id="新程序员你们现在忙吗">《新程序员》：你们现在忙吗？</h5>
+<p><strong>《新程序员》：你们现在忙吗？</strong></p>
 <p>云风：还算有点忙，但至少我负责的团队，从不鼓励加班。我们在晚上六、七点钟就下班，下班后也不谈工作。在我看来，做开发这项工作，最主要的是把事情想清楚，再按照计划好的工作时间做事。比如一件事你做了两年，回头看有多少时间在做有效工作？可能你做了很多无谓的事情，占用了太多时间。你会发现，最终有效工作花掉的时间并不多。因此，要少犯错误、少走弯路，减少返工，这样就会有很多时间被节省下来。如果事情没有做好，我作为团队领导者责任最大，是我带着大家走了弯路。</p>
-<h5 id="新程序员很多伟大的项目往往由一个人或者一个极小数量的群体发起并成长起来的但在企业里作为开发者缺乏高层决策能力项目的开展也讲求完美的计划多人头脑风暴你认为这两者之间是否存在矛盾">《新程序员》：很多伟大的项目往往由一个人或者一个极小数量的群体发起并成长起来的，但在企业里，作为开发者缺乏高层决策能力，项目的开展也讲求完美的计划，多人头脑风暴，你认为这两者之间是否存在“矛盾”？</h5>
+<p><strong>《新程序员》：很多伟大的项目往往由一个人或者一个极小数量的群体发起并成长起来的，但在企业里，作为开发者缺乏高层决策能力，项目的开展也讲求完美的计划，多人头脑风暴，你认为这两者之间是否存在“矛盾”？</strong></p>
 <p>云风：我个人不太喜欢多人头脑风暴，大部分时候都是在浪费时间，只有极少数头脑风暴能带来一点灵感。我们启动新项目时，通常只在吃饭的时候，大家凑在一起聊一聊，很少在工作时间开大会。</p>
 <p>首先，我个人比较反感开会这件事，我认为做好工作计划，大家各自执行就好了，然后团队负责人尽量了解其他人在做什么事，做好沟通工作。一堆人为了沟通专门坐在一起开会，是非常没有效率的。</p>
 <p>其次，项目做得好不好，最为关键的往往只在一两个人。</p>
-<h5 id="新程序员您如何看待开源的发展及它对世界的影响未来开源还会向哪些方向发展">《新程序员》：您如何看待开源的发展及它对世界的影响？未来开源还会向哪些方向发展？</h5>
+<p><strong>《新程序员》：您如何看待开源的发展及它对世界的影响？未来开源还会向哪些方向发展？</strong></p>
 <p>云风：世界上要解决的问题是非常多的，尤其是一些根源问题，但每个问题都只能找到极少的几个人去解决。因为对于程序员而言，做得好的人和做得不那么好的人，会相差几个数量级。如果你需要解决的问题非常需要人去做的话，那么可能你在世界上只能找到那么几个人可以把这个事情做好，不是说其他人做不好，其他人可能不关心这个问题，或者不是他的领域。如果这个前提正确，你就会发现很多基础设施的问题和一些很专注的问题，若限定在一个公司里边，根本找不到合适的人。只有群体足够大，大到世界范围，才可以找到对的人把事情做好或把问题很好的解决，我觉得这是开源最大的意义：把特定的事情和擅长做这些事的人连接、聚集在一起。</p>
 <p>正因此，不是所有的代码都应该开源，比如一项特别专注于某个领域或某项技术的业务代码，开源没有意义，因为不需要有很多人参与。反之，越是能被大众广泛使用的项目，越值得开源。游戏引擎同理，大家不需要把精力都浪费在同样的事情上。</p>
 <p>当然，开源的发展与互联网的发展相互关联，如果互联网不那么发达，就没办法把世界各地、各种各样的人连接在一起。举个例子，为什么在早年间美国的大学之间会流行开源、黑客文化等？因为他们有自己的网络。当人和人不能顺畅沟通的时候，就谈不上做开源这件事，而开源又会极大地促进互联网行业的发展，因此我认为，至少对于通用的、底层的设施，必然会走向开源，不应该有第二条路。</p>
-<h5 id="新程序员你对中国的开发者在开源领域有哪些期待或倡导">《新程序员》：你对中国的开发者在开源领域，有哪些期待或倡导？</h5>
+<p><strong>《新程序员》：你对中国的开发者在开源领域，有哪些期待或倡导？</strong></p>
 <p>云风：当我们作为开源领域的参与者或贡献者时，最重要的能力不是代码写得比别人好多少，而当我们作为一个开源项目的主导者，最重要的能力是与人沟通的能力，听更多人的意见，求同存异。这和我们在公司当差不一样，在公司里，大家都拿工资，下级需要听从上级的安排，但在开源领域，大家可能都是“为爱发电”，只有信任才能让彼此更好地协作，把事情做好，因此，通过网络语言让别人相信你的想法，愿意跟你共事，是相当重要的。</p>
 <p>另外，怎么让你的项目吸引更多人，一起把你的项目做好，也非常重要。拿到一个开源项目，私下做一个分支，我不喜欢这样的开发方式，我觉得对于开源项目，如果它是一个基础设施，所有参与贡献的开发者就应该抱紧了朝一个方向走下去，即使这个方向有人并不喜欢，但可以先参与进去，慢慢将其修正为自己喜欢的方向，或逐渐改变自己的想法，尽量减少分叉。对于这种情况，你需要花费很多时间与参与者或用户，也可以称其为潜在的开发者，保持良好的关系。</p>
-<h5 id="新程序员如今你已经有三十多年码龄了在你的编程生涯中从前和现在的做事方式或观念有没有一些变化">《新程序员》：如今，你已经有三十多年码龄了，在你的编程生涯中，从前和现在的做事方式或观念有没有一些变化？</h5>
+<p><strong>《新程序员》：如今，你已经有三十多年码龄了，在你的编程生涯中，从前和现在的做事方式或观念有没有一些变化？</strong></p>
 <p>云风：改变都是渐进的，从趋势上来看，我越来越趋向于写更简单的程序，而不追求性能更好。但我想说，把程序写简单，不论是空间性能还是时间性能都更容易变好。性能是一种自然而然的结果，不必刻意追求。</p>
 <p>现在做事情也更有规律。二十几岁时，我经常通宵写代码，一旦进入状态能写到第二天早上七、八点，还不觉得累，觉得一天能做很多事，非常有满足感。而现在，我会在每天早上或头天晚上临睡前想好接下来要做什么事、几个小时完成、大概怎么做，以及在每天下午四、五点钟思考下一步的计划。即使这个时间段我有很好的工作状态，也会去想下一步该怎么做、应该在哪里停下来。在下班之前，我会把工作告一段落，并想好第二天怎么接着启动更好。如果是周五，就告一个大的段落，如果这件事比较重要，我在周末两天也会思考，但不会动手做。把事情分阶段完成，讲究节奏，不倾向于突击，是我在做事方面比较大的改变，三思而后行。</p>
-<h5 id="新程序员以你多年的从业经历来看优秀的研发人员具有哪些品质和能力">《新程序员》：以你多年的从业经历来看，优秀的研发人员具有哪些品质和能力？</h5>
+<p><strong>《新程序员》：以你多年的从业经历来看，优秀的研发人员具有哪些品质和能力？</strong></p>
 <p>云风：很多能力都重要，近两年我认为，比较重要的能力是抓住问题的本质。就是可以用足够简单的方法去解决根源问题，抛开中间的一些枝节干扰。</p>
 <p>为什么我会强调用简单的方法？Keep it Simple and Stupid，即KISS原则。在20年前，我不完全理解这个道理，比如，我在大学期间以及刚毕业的时候，比较喜欢做程序的优化，让自己写的代码比别人写的代码跑得快。很多年轻程序员和我一样，都喜欢炫技。但我现在看来，这些事不是解决问题的本质。这与把事情做简单有什么关系？以前我认为写出复杂的程序并且不出错是一种出色的能力，可随着时间的推移，我的代码需要被别人维护，可能还要和其他人合作，这时我们需要在这群人之间找到一个共同的基点，让代码更容易理解。所以我们需要让代码足够简单，让别人一看就明白。什么样的代码是好代码？并不是看上去好像没有问题的代码，而是看上去所有东西都清清楚楚，断定它肯定不会出问题的代码。</p>
 <p>最近几年，我写程序很少炫技。炫技在短时间内看，是用一个很巧妙的方法把问题解决掉了，但经不起时间的检验。把复杂的问题简单化，对程序员而言是一项非常重要的能力。</p>
 <p>另一项重要能力是评估事物的能力，知道一件事情大概是怎么回事，需要多长时间完成，需要什么条件完成，这是靠经验堆出来的。也要对自身有清晰的认知，这样你才能规划好你做整件事情的流程和时间，减少返工。通常一件事谁都能做，比如，同样是2000行代码，有人只需要两天，有人却需要两周、两月，为什么？当一个程序员经验不足时，他评估一件事可以用两天搞定，但他可能又花费两周甚至两月来解决他做事过程中发现的问题，改错、返工，导致和预期完成时间出入很大。这就是能力的差异，否则程序员的能力差异体现在哪里？别人会的东西，你学习后也能掌握，所以真正在做事时，能力的差异就在于一个人的评估能力。</p>
-<h5 id="新程序员那么有哪些人生感悟研发感悟可以分享给大家吗">《新程序员》：那么，有哪些人生感悟、研发感悟可以分享给大家吗？</h5>
+<p><strong>《新程序员》：那么，有哪些人生感悟、研发感悟可以分享给大家吗?</strong></p>
 <p>云风：第一，做事情要专注。想好一件事情就去做，只要花的时间和精力足够多，不三心二意，这件事终究会给你回报。每个人的生命都几乎一样长，你不可能比别人多出很多时间和精力，你也不会比别人差在哪或好多少，那么，一件事情做得好不好，就看你投入的时间多不多。但过程中是有方法的，不能蛮干，时常回顾自己怎么才能把这件事学好、做好，发现错误或更好的方向，及时修正。</p>
 <p>我现在40多岁，每个人从十几岁开始明白这个世界的道理，到了40多岁，也就30年的时间，每个人都是30年。如果这30年间你都做一件事，那你会超越大部分人。对于任何事情，如果你处于金字塔上层的位置，就会觉得自己是个很有用的人。很多事情必需你来做才能做好的时候，自然而然，这个世界就会给你回报。</p>
 <p>第二，信任和你共事的人，接受他们做得不好的方面。以把整件事情做好为主。每个模块都按照你的想法做，通常是行不通的。你可以找准你真正想要的那件事，围绕那件事情，把它做好，其他事情放心交给你的伙伴。我反复讲，人不会比其他人强多少，也不会差多少，你找对人一起做事，接纳其他人的不同想法，求同存异，把整件事做好就可以了。</p>
 <p>(完)</p>
 
-    </div>
-<div class="post_comments">
-  
-  
-  
-</div>
+		</section>
 
-
-
-
-  </article>
-<aside class="sidebar">
-  <section class="sidebar_inner">
-    <br>
-    
-  
-  <div class="search">
-    <input type="search" class="search_field form_field" placeholder='Search...' id="find" autocomplete="off" data-scope='post'>
-    <label for="find" class="search_label"><svg class="icon">
-  <title>search</title>
-  <use xlink:href="#search"></use>
-</svg>
-
-    </label>
-    
-    <div class="search_results results"></div>
-  </div>
-
-        <h2>x-29</h2>
-      <div class="author_bio">
-        java, mysql, tcp, performance, network, docker, Linux.
-      </div>
-      <a href='https://x-29.github.io/about/' class="button mt-1" role="button" title='阅读更多'>阅读更多</a>
-
-    
-    
-    <h2 class="mt-4">精选文章</h2>
-    <ul>
-      <li>
-        <a href="https://x-29.github.io/post/2022-05-computer-networking-note/" class="nav-link" title="计算机网络(Computer Networking)笔记">计算机网络(Computer Networking)笔记</a>
-      </li>
-      <li>
-        <a href="https://x-29.github.io/post/2022-05-c-note/" class="nav-link" title="C 笔记">C 笔记</a>
-      </li>
-    </ul>
-    <h2 class="mt-4">最新文章</h2>
-    <ul class="flex-column">
-      <li>
-        <a href="https://x-29.github.io/post/2022-05-computer-networking-note/" class="nav-link" title="计算机网络(Computer Networking)笔记">计算机网络(Computer Networking)笔记</a>
-      </li>
-      <li>
-        <a href="https://x-29.github.io/post/2022-05-c-note/" class="nav-link" title="C 笔记">C 笔记</a>
-      </li>
-    </ul>
-    <div>
-      <h2 class="mt-4 taxonomy" id="categories-section">分类</h2>
-      <nav class="tags_nav">
-        <a href='https://x-29.github.io/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/' class="post_tag button button_translucent" title="读书笔记">
-          读书笔记
-          <span class="button_tally">3</span>
-        </a>
-        
-        
-      </nav>
-    </div>
-    <div>
-      <h2 class="mt-4 taxonomy" id="tags-section">标签</h2>
-      <nav class="tags_nav">
-        <a href='https://x-29.github.io/tags/c/' class="post_tag button button_translucent" title="c">
-          C
-          <span class="button_tally">1</span>
-        </a>
-        
-        <a href='https://x-29.github.io/tags/networking/' class="post_tag button button_translucent" title="networking">
-          NETWORKING
-          <span class="button_tally">1</span>
-        </a>
-        
-        <a href='https://x-29.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/' class="post_tag button button_translucent" title="程序员">
-          程序员
-          <span class="button_tally">1</span>
-        </a>
-        
-        
-      </nav>
-    </div>
-  </section>
-</aside>
-
-  
-</div>
-    </main><svg width="0" height="0" class="hidden">
-  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
-    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.001 18.001" id="twitter">
-    <path d="M15.891 4.013c.808-.496 1.343-1.173 1.605-2.034a8.68 8.68 0 0 1-2.351.861c-.703-.756-1.593-1.14-2.66-1.14-1.043 0-1.924.366-2.643 1.078a3.56 3.56 0 0 0-1.076 2.605c0 .309.039.585.117.819-3.076-.105-5.622-1.381-7.628-3.837-.34.601-.51 1.213-.51 1.846 0 1.301.549 2.332 1.645 3.089-.625-.053-1.176-.211-1.645-.47 0 .929.273 1.705.82 2.388a3.623 3.623 0 0 0 2.115 1.291c-.312.08-.641.118-.979.118-.312 0-.533-.026-.664-.083.23.757.664 1.371 1.291 1.841a3.652 3.652 0 0 0 2.152.743C4.148 14.173 2.625 14.69.902 14.69c-.422 0-.721-.006-.902-.038 1.697 1.102 3.586 1.649 5.676 1.649 2.139 0 4.029-.542 5.674-1.626 1.645-1.078 2.859-2.408 3.639-3.974a10.77 10.77 0 0 0 1.172-4.892v-.468a7.788 7.788 0 0 0 1.84-1.921 8.142 8.142 0 0 1-2.11.593z"
-      ></path>
-  </symbol>
-  <symbol aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="mail">
-    <path  d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="calendar">
-    <path d="M452 40h-24V0h-40v40H124V0H84v40H60C26.916 40 0 66.916 0 100v352c0 33.084 26.916 60 60 60h392c33.084 0 60-26.916 60-60V100c0-33.084-26.916-60-60-60zm20 412c0 11.028-8.972 20-20 20H60c-11.028 0-20-8.972-20-20V188h432v264zm0-304H40v-48c0-11.028 8.972-20 20-20h24v40h40V80h264v40h40V80h24c11.028 0 20 8.972 20 20v48z"></path>
-    <path d="M76 230h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 310h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zM76 390h40v40H76zm80 0h40v40h-40zm80 0h40v40h-40zm80 0h40v40h-40zm80-80h40v40h-40z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="github">
-    <path d="M255.968 5.329C114.624 5.329 0 120.401 0 262.353c0 113.536 73.344 209.856 175.104 243.872 12.8 2.368 17.472-5.568 17.472-12.384 0-6.112-.224-22.272-.352-43.712-71.2 15.52-86.24-34.464-86.24-34.464-11.616-29.696-28.416-37.6-28.416-37.6-23.264-15.936 1.728-15.616 1.728-15.616 25.696 1.824 39.2 26.496 39.2 26.496 22.848 39.264 59.936 27.936 74.528 21.344 2.304-16.608 8.928-27.936 16.256-34.368-56.832-6.496-116.608-28.544-116.608-127.008 0-28.064 9.984-51.008 26.368-68.992-2.656-6.496-11.424-32.64 2.496-68 0 0 21.504-6.912 70.4 26.336 20.416-5.696 42.304-8.544 64.096-8.64 21.728.128 43.648 2.944 64.096 8.672 48.864-33.248 70.336-26.336 70.336-26.336 13.952 35.392 5.184 61.504 2.56 68 16.416 17.984 26.304 40.928 26.304 68.992 0 98.72-59.84 120.448-116.864 126.816 9.184 7.936 17.376 23.616 17.376 47.584 0 34.368-.32 62.08-.32 70.496 0 6.88 4.608 14.88 17.6 12.352C438.72 472.145 512 375.857 512 262.353 512 120.401 397.376 5.329 255.968 5.329z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 212 212" id="gitlab">
-    <path d="M12.3 74.7h54L43.3 3c-1-3.6-6.4-3.6-7.6 0L12.3 74.8z" />
-    <path d="M12.3 74.7L.5 111c-1 3.2 0 6.8 3 8.8l101.6 74-92.5-119z"/>
-    <path d="M105 193.7l-38.6-119h-54l92.7 119z"/>
-    <path d="M105 193.7l38.7-119H66.4l38.7 119z"/>
-    <path d="M105 193.7l38.7-119H198l-93 119z"/>
-    <path d="M198 74.7l11.6 36.2c1 3 0 6.6-3 8.6l-101.5 74 93-119z"/>
-    <path d="M198 74.7h-54.3L167 3c1.2-3.6 6.4-3.6 7.6 0L198 74.8z"/> 
-  </symbol>
-  <symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="rss">
-    <circle cx="3.429" cy="20.571" r="3.429"></circle>
-    <path d="M11.429 24h4.57C15.999 15.179 8.821 8.001 0 8v4.572c6.302.001 11.429 5.126 11.429 11.428z"></path>
-    <path d="M24 24C24 10.766 13.234 0 0 0v4.571c10.714 0 19.43 8.714 19.43 19.429z"></path>
-  </symbol>
-  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="linkedin">
-    <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h362c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zM181 406h-60V196h60zm0-240h-60v-60h60zm210 240h-60V286c0-16.54-13.46-30-30-30s-30 13.46-30 30v120h-60V196h60v11.309C286.719 202.422 296.93 196 316 196c40.691.043 75 36.547 75 79.688zm0 0"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 612 612" id="to-top">
-    <path d="M604.501 440.509L325.398 134.956c-5.331-5.357-12.423-7.627-19.386-7.27-6.989-.357-14.056 1.913-19.387 7.27L7.499 440.509c-9.999 10.024-9.999 26.298 0 36.323s26.223 10.024 36.222 0l262.293-287.164L568.28 476.832c9.999 10.024 26.222 10.024 36.221 0 9.999-10.023 9.999-26.298 0-36.323z"></path>
-  </symbol>
-  <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="carly">
-    <path d="M504.971 239.029L448 182.059V84c0-46.317-37.682-84-84-84h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c19.851 0 36 16.149 36 36v108c0 6.365 2.529 12.47 7.029 16.971L454.059 256l-47.029 47.029A24.002 24.002 0 0 0 400 320v108c0 19.851-16.149 36-36 36h-44c-13.255 0-24 10.745-24 24s10.745 24 24 24h44c46.318 0 84-37.683 84-84v-98.059l56.971-56.971c9.372-9.372 9.372-24.568 0-33.941zM112 192V84c0-19.851 16.149-36 36-36h44c13.255 0 24-10.745 24-24S205.255 0 192 0h-44c-46.318 0-84 37.683-84 84v98.059l-56.971 56.97c-9.373 9.373-9.373 24.568 0 33.941L64 329.941V428c0 46.317 37.682 84 84 84h44c13.255 0 24-10.745 24-24s-10.745-24-24-24h-44c-19.851 0-36-16.149-36-36V320c0-6.365-2.529-12.47-7.029-16.971L57.941 256l47.029-47.029A24.002 24.002 0 0 0 112 192z"></path>
-  </symbol>
-  <symbol viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" id="copy">
-    <path d="M23 2.75A2.75 2.75 0 0 0 20.25 0H8.75A2.75 2.75 0 0 0 6 2.75v13.5A2.75 2.75 0 0 0 8.75 19h11.5A2.75 2.75 0 0 0 23 16.25zM18.25 14.5h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5zm0-3h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5zm0-3h-7.5a.75.75 0 0 1 0-1.5h7.5a.75.75 0 0 1 0 1.5z"></path>
-    <path d="M8.75 20.5a4.255 4.255 0 0 1-4.25-4.25V2.75c0-.086.02-.166.025-.25H3.75A2.752 2.752 0 0 0 1 5.25v16A2.752 2.752 0 0 0 3.75 24h12a2.752 2.752 0 0 0 2.75-2.75v-.75z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.001 512.001" id="closeme">
-    <path d="M284.286 256.002L506.143 34.144c7.811-7.811 7.811-20.475 0-28.285-7.811-7.81-20.475-7.811-28.285 0L256 227.717 34.143 5.859c-7.811-7.811-20.475-7.811-28.285 0-7.81 7.811-7.811 20.475 0 28.285l221.857 221.857L5.858 477.859c-7.811 7.811-7.811 20.475 0 28.285a19.938 19.938 0 0 0 14.143 5.857 19.94 19.94 0 0 0 14.143-5.857L256 284.287l221.857 221.857c3.905 3.905 9.024 5.857 14.143 5.857s10.237-1.952 14.143-5.857c7.811-7.811 7.811-20.475 0-28.285L284.286 256.002z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" id="open-menu">
-    <path d="M492 236H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0-160H20C8.954 76 0 84.954 0 96s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20zm0 320H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h472c11.046 0 20-8.954 20-20s-8.954-20-20-20z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="instagram">
-    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id=youtube>
-    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="stackoverflow">
-    <path d="M21 27v-8h3v11H0V19h3v8h18z"></path><path d="M17.1.2L15 1.8l7.9 10.6 2.1-1.6L17.1.2zm3.7 14.7L10.6 6.4l1.7-2 10.2 8.5-1.7 2zM7.2 12.3l12 5.6 1.1-2.4-12-5.6-1.1 2.4zm-1.8 6.8l13.56 1.96.17-2.38-13.26-2.55-.47 2.97zM19 25H5v-3h14v3z"></path>
-  </symbol>
-  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="xing">
-    <path d="M18.188 0c-.517 0-.741.325-.927.66 0 0-7.455 13.224-7.702 13.657.015.024 4.919 9.023 4.919 9.023.17.308.436.66.967.66h3.454c.211 0 .375-.078.463-.22.089-.151.089-.346-.009-.536l-4.879-8.916c-.004-.006-.004-.016 0-.022L22.139.756c.095-.191.097-.387.006-.535C22.056.078 21.894 0 21.686 0h-3.498zM3.648 4.74c-.211 0-.385.074-.473.216-.09.149-.078.339.02.531l2.34 4.05c.004.01.004.016 0 .021L1.86 16.051c-.099.188-.093.381 0 .529.085.142.239.234.45.234h3.461c.518 0 .766-.348.945-.667l3.734-6.609-2.378-4.155c-.172-.315-.434-.659-.962-.659H3.648v.016z"/>
-  </symbol>
-</svg>
-
-
-<footer class="footer">
-  <div class="footer_inner wrap pale">
-    <img src='https://x-29.github.io/icons/apple-touch-icon.png' class="icon icon_2 transparent" alt="x-29 的网络日志">
-    <p>Copyright&nbsp;<span class="year"></span>&nbsp;X-29 的网络日志. All Rights Reserved</p><a class="to_top" href="#documentTop">
-  <svg class="icon">
-  <title>to-top</title>
-  <use xlink:href="#to-top"></use>
-</svg>
-
-</a>
-
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/%E7%A8%8B%E5%BA%8F%E5%91%98">程序员</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/x-29" title="GitHub"><i data-feather="github"></i></a><a class="soc" href="https://twiiter.com/x-29/" title="Twitter"><i data-feather="twitter"></i></a><a class="soc" href="https://gitlab.com/x-29/" title="GitLab"><i data-feather="gitlab"></i></a></div>
+  <div class="footer-info">
+    2022  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
   </div>
 </footer>
 
-<script type="text/javascript" src="https://x-29.github.io/zh/js/bundle.7f647092ffab6102858ab92bae4e65bbeae89d4ff6e29aace780277762afcb3c86ab88f9ff22e3a54b6db55e549b9d2d26560e67a29a3cf9dca00c77bffd16fc.js" integrity="sha512-f2Rwkv&#43;rYQKFirkrrk5lu&#43;ronU/24pqs54And2KvyzyGq4j5/yLjpUtttV5Um50tJlYOZ6KaPPncoAx3v/0W/A==" crossorigin="anonymous"></script>
 
-  <script src="https://x-29.github.io/js/search.min.459aee3b504b2204e992427e1b6f3dfccfdfc589a4f4ee270b5a1fa9b4c806cf6505a9a7d0af8717109194723fc5885ba9f28bc8bcc15a8f8debd17b4623069c.js"></script>
-
-  </body>
+<script>
+  feather.replace()
+</script></div>
+    </body>
 </html>

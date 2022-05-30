@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>程序员 on x-29 的网络日志</title>
+    <title>程序员 on CS里的X-29</title>
     <link>https://x-29.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/</link>
-    <description>Recent content in 程序员 on x-29 的网络日志</description>
+    <description>Recent content in 程序员 on CS里的X-29</description>
     <generator>Hugo -- gohugo.io</generator>
-    <copyright>Copyright © 2008–2018, Steve Francia and the Hugo Authors; all rights reserved.</copyright>
+    <language>en-us</language>
     <lastBuildDate>Thu, 26 May 2022 13:38:20 +0800</lastBuildDate><atom:link href="https://x-29.github.io/tags/%E7%A8%8B%E5%BA%8F%E5%91%98/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The Pragmatic Programmer 笔记</title>
@@ -13,10 +13,7 @@
       <pubDate>Thu, 26 May 2022 13:38:20 +0800</pubDate>
       
       <guid>https://x-29.github.io/post/2022-05-the-pragmatic-programmer-note/</guid>
-      <description>
-        
-          
-            这是《程序员修炼之道 第2版》一书的读书笔记。
+      <description>这是《程序员修炼之道 第2版》一书的读书笔记。
  编程是一项艰难的工作
  你不应该拘泥于任何特定的技术，而应该拥有足够广泛的背景和经验基础，以便在特定的情况下选择合适的解决方案。你的背景来自对计算机科学基本原理的理解，而你的经验来自广泛的实际项目。
 务实的程序员共有的特征：
@@ -27,7 +24,7 @@
  责任意味着你对某事积极认同。
 承担责任，做出承诺之前，必须分析超出你控制范围的风险情况，如果责任不清，抑或风险过大，你有权不承担责任。
 承担责任意味着你将承接相关义务。
- 犯了错误或是做出了错误的判断，诚实的承认它，并尝试给出选择 不要把问题归咎于别人或其他什么事情上，也不要寻找借口 不要说搞不定，解释一下要做什么才能挽回局面  意识到自己在说“我不知道”时，一定要接着说“---但是我会去搞清楚”。
+ 犯了错误或是做出了错误的判断，诚实的承认它，并尝试给出选择 不要把问题归咎于别人或其他什么事情上，也不要寻找借口 不要说搞不定，解释一下要做什么才能挽回局面  意识到自己在说“我不知道”时，一定要接着说“&amp;mdash;但是我会去搞清楚”。
 不要搁置“破窗”（糟糕的设计、错误的决定、低劣的代码），每发现一个就赶紧修一个。
 不要只是因为一些东西非常紧急，就去造成附带损害。
 破窗一扇都嫌太多。
@@ -42,12 +39,8 @@
 二  ETC（Easier To Change，更容易变更），对代码而言，就是要顺应变化。
  无论什么设计原则，都是 ETC 的一个特例。e.g，解耦，单一职责原则。
 价值观是帮助你做决定的：应该做这个，还是做那个？在软件领域思考时，ETC 是一个向导，它能帮助你在不同的路线中选出一条。ETC 是一种价值观念，不是一条规则。
- DRY---不要重复自己
- DRY 针对的是你对知识和意图的复制。它强调的是，在两个地方表达的东西其实是相同的，只是表达方式有可能完全不同。
-          
-          
-        
-      </description>
+ DRY&amp;mdash;不要重复自己
+ DRY 针对的是你对知识和意图的复制。它强调的是，在两个地方表达的东西其实是相同的，只是表达方式有可能完全不同。</description>
     </item>
     
   </channel>
