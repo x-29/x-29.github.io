@@ -9,10 +9,10 @@
     <lastBuildDate>Mon, 23 May 2022 14:49:25 +0800</lastBuildDate><atom:link href="https://x-29.github.io/tags/c/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>C 笔记</title>
-      <link>https://x-29.github.io/post/2022-05-c-note/</link>
+      <link>https://x-29.github.io/post/2022-05-c-notes/</link>
       <pubDate>Mon, 23 May 2022 14:49:25 +0800</pubDate>
       
-      <guid>https://x-29.github.io/post/2022-05-c-note/</guid>
+      <guid>https://x-29.github.io/post/2022-05-c-notes/</guid>
       <description>这是 《Linux C编程一站式学习》一书的读书笔记。
 一 程序由一系列指令组成，指令包括：
  输出 输入 基本运算 测试和分支 循环（递归）  编写程序就是这样一个过程：
