@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>计算机网络(Computer Networking)笔记(二) - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="计算机网络(Computer Networking: A Top-Down Approach)学习笔记（第二部分）." />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="计算机网络(Computer Networking)笔记(二)" />
+<meta property="og:description" content="计算机网络(Computer Networking: A Top-Down Approach)学习笔记（第二部分）." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-computer-networking-notes-part2/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-25T08:59:38+08:00" />
+<meta property="article:modified_time" content="2022-05-25T08:59:38+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="计算机网络(Computer Networking)笔记(二)"/>
+<meta name="twitter:description" content="计算机网络(Computer Networking: A Top-Down Approach)学习笔记（第二部分）."/>
+<script src="https://x-29.github.io/js/feather.min.js"></script>
+	
+	
+        <link href="https://x-29.github.io/css/fonts.b685ac6f654695232de7b82a9143a46f9e049c8e3af3a21d9737b01f4be211d1.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://x-29.github.io/css/main.40ca3a860425083862b7ebd55447caec5c4384573f0cb098b8d06a91e8dace2e.css" />
+	
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://x-29.github.io/">CS里的X-29</a>
+	</div>
+	<nav>
+		
+		<a href="/">首页</a>
+		
+		<a href="/post">文章</a>
+		
+		<a href="/about">关于</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">计算机网络(Computer Networking)笔记(二)</h1>
+			<div class="meta">Posted on May 25, 2022</div>
+		</div>
+		
+
+		<section class="body">
+			<p>这是<a href="https://book.douban.com/subject/26176870/">《计算机网络自顶向下方法 第6版》</a>一书的读书笔记的第二部分。</p>
+<p><a href="../2022-05-computer-networking-notes">第一部分</a></p>
+<h2 id="四-网络层">四 网络层</h2>
+<p><em>网络层怎样实现主机到主机的通信服务？</em></p>
+<blockquote>
+<p>在网络中的每一台主机和路由器中都有一个网络层。</p>
+</blockquote>
+<h3 id="转发和路由">转发和路由</h3>
+<p>网络层的作用是将分组从一台发送主机转移到一台接收主机。为此，需要两种重要的网络功能：</p>
+<ul>
+<li>转发。将分组从路由器的输入链路移动到相应的输出链路。转发发生的时间尺度很短（通常为几纳秒），通常用硬件实现。</li>
+<li>路由选择。决定分组从源到目的地的路由或路径。路由选择发生的时间尺度长一些（通常为几秒），通常用软件实现。计算路径的算法称为路由选择算法。</li>
+</ul>
+<p>用驾驶的例子类比，转发就像是通过单个立交桥的过程：驾驶员驾车从道路上进入立交桥的一个入口，并决定应当从哪个出口离开立交桥。路由选择可以看作是规划行程的过程：在开启行程之前，驾驶员查阅地图并在许多可能的路径中选择一条，其中每条路径都是由一系列经立交桥连接的路段组成。</p>
+<hr>
+<p>每台路由器中都有一张本地<strong>转发表</strong>（forwarding table）。路由器检查到达分组首部的一个或多个字段值，进而使用这些首部值在其转发表中索引查询。转发表中对应的表项指出了该分组将被转发的路由器的输出链路接口。</p>
+<p><img src="/images/per-router-control-plane.jpg" alt=""></p>
+<p>如图，一个首部值字段值为 0111 的分组到达路由器。路由器在它的转发表中索引，并确定该分组的输出链路接口是接口 2。然后路由器在内部将分组转发到接口 2。</p>
+<h3 id="网络服务模型">网络服务模型</h3>
+<blockquote>
+<p>网络服务模型（networ service model）定义了分组在发送与接收端系统之间的端到端运输特性。</p>
+</blockquote>
+<p>因特网的网络层提供了单一的服务，即尽力而为服务（best-effort service）。使用尽力而为服务：</p>
+<ul>
+<li>既不能保证传送的分组以它们发送的顺序被接收，也不能保证它们最终交付。</li>
+<li>既不能保证端到端时延，也不能保证有最小的带宽。</li>
+</ul>
+<hr>
+<p><strong>分组交换机</strong>是指一台通用分组交换设备，它根据分组首部字段中的值，从输入链路接口到输出链路接口转移分组。分组交换机主要有两类：</p>
+<ul>
+<li>链路层交换机（link-layer switches）。基于链路层字段中的值做转发决定。</li>
+<li>路由器（router）。基于网络层字段中的值做转发决定。</li>
+</ul>
+<h3 id="路由器工作原理">路由器工作原理</h3>
+<figure><img src="/images/router-architecture-overview.jpg"
+         alt="路由器体系结构"/><figcaption>
+            <p>路由器体系结构</p>
+        </figcaption>
+</figure>
+
+<p>如上图，一台路由器由 4 个部分组成：</p>
+<ul>
+<li>输入端口（input ports）</li>
+<li>交换结构（switching fabric）</li>
+<li>输出端口（output ports）</li>
+<li>路由选择处理器（routing processor）</li>
+</ul>
+<p>路由器的输入端口、输出端口和交换结构几乎总是用硬件实现。它们共同实现了转发功能。</p>
+<p><strong>1. 输入端口</strong></p>
+<figure><img src="/images/router-input-port-processing.jpg"
+         alt="输入端口处理"/><figcaption>
+            <p>输入端口处理</p>
+        </figcaption>
+</figure>
+
+<p>输入端口的线路端接（line termination）功能与链路层处理（link-layer processing）实现了用于各个输入链路的物理层和链路层。</p>
+<p>在输入端口执行的查找（lookup，图中红色框）是路由器操作的核心。正是在这里，路由器使用转发表来查找输出端口，使得到达的分组能经过交换结构（switch fabric）转发到该输出端口 。</p>
+<p><strong>2. 交换结构</strong></p>
+<p>交换结构位于一台路由器的核心部位。负责将分组从一个输入端口交换（即转发）到一个输出端口。</p>
+<p>交换结构有很多种，最主要的 3 种是：</p>
+<figure><img src="/images/3-types-switching-fabric.jpg"
+         alt="三种交换技术"/><figcaption>
+            <p>三种交换技术</p>
+        </figcaption>
+</figure>
+
+<ul>
+<li>经内存交换（memory）
+<ul>
+<li>输入端口与输出端口间的交换在 CPU（路由选择处理器）的直接控制下完成。一个分组到达一个输入端口时先被复制到处理器内存中，然后路由选择处理器提取分组首部字段，在转发表中找到适当的输出端口，并把分组复制到输出端口的缓存中。</li>
+<li>转发速度受到内存带宽的限制，每个分组需要经过两次共享系统总线。</li>
+</ul>
+</li>
+<li>经总线交换（bus）
+<ul>
+<li>输入端口经一根共享总线将分组直接传送到输出端口，不需要路由选择处理器的干预。</li>
+<li>转发速度受到总线带宽的限制</li>
+</ul>
+</li>
+<li>经互联网络交换（interconnection network）
+<ul>
+<li>使用了一种由 2N 条总线组成的互联网络，连接 N 输入端口与 N 个输出端口。这种纵横式网络能够并行转发多个分组。<strong>如果两个不同输入端口的两个分组的目的地时相同的输出端口，则一个分组必须在输入端等待，因为在某个时刻经给定总线仅有一个分组能够发送</strong>。</li>
+<li>更为复杂的互联网络使用多级交换，以使来自不同输入端口的分组通过交换结构同时朝着相同的输出端口前行。</li>
+<li>路由器的交换能力也能够通过并行运行多种交换结构进行扩展。
+<ul>
+<li>在这种方法中，输入端口和输出端口被连接到并行运行的 N 个交换结构 。</li>
+<li>一个输入端口将一个分组分成 K 个较小的块，并且通过 N 个交换结构中的 K 个来发送这些块到所选择的输出端口，输出端口再将 K 个块装配还原成初始的分组。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. 输出端口</strong></p>
+<p>输出端口处理（如图所示）获取存储在输出端口内存中的分组（数据包），并通过输出链路传输它们。这包括选择（即，调度）和取出排队的分组，以及执行所需的链路层和物理层传输功能。</p>
+<figure><img src="/images/router-output-port-processing.jpg"
+         alt="输出端口处理"/><figcaption>
+            <p>输出端口处理</p>
+        </figcaption>
+</figure>
+
+<p>如果分组到达的速率比链路传输的速率快时，分组就会在缓存中排队。一旦缓存满了就会丢弃分组，也就是出现丢包。</p>
+<h4 id="输入端口和输出端口排队">输入端口和输出端口排队</h4>
+<p>如果交换结构传送速率比分组到达输入端口的速率慢，那么在输入端口将会出现分组排队。</p>
+<ul>
+<li>这会产生排队时延，一旦输入端口的缓存溢出就会出现丢包。</li>
+<li>存在线路前部阻塞（Head-Of-the-Line, HOL) 现象，即在队列前面排队的分组阻塞队列中的其它分组向前移动。</li>
+</ul>
+<figure><img src="/images/hol-blocking-at-input-queued-switch.jpg"
+         alt="在输入排队交换机中的 HOL 阻塞"/><figcaption>
+            <p>在输入排队交换机中的 HOL 阻塞</p>
+        </figcaption>
+</figure>
+
+<p>如图，在两个输入端口队列前端的两个分组（红色）要发往同一个右上角的输出端口，假定交换结构决定发送左上角队列前端的分组，那么左下角队列中的红色分组就必须等待（同一个输出端口，交换结构一次只能传送一个分组到端口）。不仅它要等待，排在它后面的绿色分组也要等待，即使右下角的输出端口中无竞争。这种现象叫做输入排队交换机中的<strong>线路前部（Head-Of-the-Line，HOL）阻塞</strong>。</p>
+<hr>
+<p>如果交换结构传送分组的速率比输出链路传输的速率快时，分组就会在输出端口的缓存中排队。</p>
+<ul>
+<li>排队会带来时延，并且一旦队列满了分组就可能会被丢弃，也就是出现丢包。</li>
+<li>调度规则，决定在排队的分组中选择哪个分组进行传输。</li>
+</ul>
+<figure><img src="/images/output-port-queueing.jpg"
+         alt="输出端口排队"/><figcaption>
+            <p>输出端口排队</p>
+        </figcaption>
+</figure>
+
+<p>如图，在时刻<em>t</em>，每个输入端口都到达了一个分组，其中有两个分组是发往最上侧的输出端口，一个单位时间（即接送或发送一个分组所需的时间，也就是分组时间）之后，这两个分组都被传送到输出端口，并排队等待传输到输出链路上。由于输出端口在一个单位时间内只能发送一个分组，在下一个时间单位中，这 2 个分组中的一个将通过输出链路发送出去。具体是哪一个由分组调度规则决定。</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/networking">networking</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/x-29" title="GitHub"><i data-feather="github"></i></a><a class="soc" href="https://twiiter.com/x-29/" title="Twitter"><i data-feather="twitter"></i></a><a class="soc" href="https://gitlab.com/x-29/" title="GitLab"><i data-feather="gitlab"></i></a></div>
+  <div class="footer-info">
+    2022  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html><head>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>计算机网络(Computer Networking)笔记 - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>计算机网络(Computer Networking)笔记(一) - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="计算机网络(Computer Networking: A Top-Down Approach)学习笔记." />
 	<meta property="og:image" content=""/>
-	<meta property="og:title" content="计算机网络(Computer Networking)笔记" />
+	<meta property="og:title" content="计算机网络(Computer Networking)笔记(一)" />
 <meta property="og:description" content="计算机网络(Computer Networking: A Top-Down Approach)学习笔记." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://x-29.github.io/post/2022-05-computer-networking-notes/" /><meta property="article:section" content="post" />
@@ -12,7 +12,7 @@
 <meta property="article:modified_time" content="2022-05-23T23:56:18+08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="计算机网络(Computer Networking)笔记"/>
+<meta name="twitter:title" content="计算机网络(Computer Networking)笔记(一)"/>
 <meta name="twitter:description" content="计算机网络(Computer Networking: A Top-Down Approach)学习笔记."/>
 <script src="https://x-29.github.io/js/feather.min.js"></script>
 	
@@ -45,13 +45,14 @@
 <main>
 	<article>
 		<div class="title">
-			<h1 class="title">计算机网络(Computer Networking)笔记</h1>
+			<h1 class="title">计算机网络(Computer Networking)笔记(一)</h1>
 			<div class="meta">Posted on May 23, 2022</div>
 		</div>
 		
 
 		<section class="body">
-			<p>这是<a href="https://book.douban.com/subject/26176870/">《计算机网络自顶向下方法 第6版》</a>一书的读书笔记。</p>
+			<p>这是<a href="https://book.douban.com/subject/26176870/">《计算机网络自顶向下方法 第6版》</a>一书的读书笔记的第一部分。</p>
+<p><a href="../2022-05-computer-networking-notes-part2">第二部分</a></p>
 <h2 id="一-计算机网络和因特网">一 计算机网络和因特网</h2>
 <p><em>从整体上粗线条地勾画出计算机网络地概貌。</em></p>
 <h3 id="因特网">因特网</h3>
@@ -362,7 +363,7 @@ data data data ...
 <li><strong>UDP</strong>（用户数据报协议），为调用它的应用程序提供了一种不可靠、无连接的服务。</li>
 <li><strong>TCP</strong>（传输控制协议），为调用它的应用程序提供了一种可靠的、面向连接的服务。</li>
 </ul>
-<p>网络层为主机之间提供了逻辑通信。网络层协议只有一个，即网际协议（IP），它是尽力而为交付服务。就是说，IP 尽它“最大的努力”在通信的主机之间交付报文段，但不做任何确保。它不确保报文的交付，不保证报文段的按序交付，不保证报文段中数据完整性。因此，称为IP 为不可靠服务。</p>
+<p>网络层为主机之间提供了逻辑通信。网络层最著名的协议是网际协议（IP），它是尽力而为交付服务。就是说，IP 尽它“最大的努力”在通信的主机之间交付报文段，但不做任何确保。它不确保报文的交付，不保证报文段的按序交付，不保证报文段中数据完整性。因此，称为 IP 为不可靠服务。</p>
 <h3 id="多路复用multiplexing和多路分解demultiplexing">多路复用（Multiplexing）和多路分解（Demultiplexing）</h3>
 <p>一个进程有一个或多个套接字（socket），每个套接字都有唯一的标识符，它相当于从网络向进程传递数据和从进程向网络传递数据的一扇门。在接收主机中的运输层实际上并没有直接将数据交付给进程，而是将数据交给了一个中间的套接字。</p>
 <p>将运输层报文段中的数据交付到正确的套接字的工作称为运输层的<strong>多路分解</strong>（demultiplexing）。从主机上不同套接字中收集数据块，并为每个数据块封装上首部信息从而生成报文段，再将报文段传递到网络层的工作称为运输层的<strong>多路复用</strong>（multiplexing）。</p>
