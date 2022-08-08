@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>深入理解计算机系统(csapp)笔记 - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)学习笔记." />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="深入理解计算机系统(csapp)笔记" />
+<meta property="og:description" content="深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)学习笔记." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-csapp-notes/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-15T20:32:12+08:00" />
+<meta property="article:modified_time" content="2022-05-15T20:32:12+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解计算机系统(csapp)笔记"/>
+<meta name="twitter:description" content="深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)学习笔记."/>
+<script src="https://x-29.github.io/js/feather.min.js"></script>
+	
+	
+        <link href="https://x-29.github.io/css/fonts.b685ac6f654695232de7b82a9143a46f9e049c8e3af3a21d9737b01f4be211d1.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://x-29.github.io/css/main.40ca3a860425083862b7ebd55447caec5c4384573f0cb098b8d06a91e8dace2e.css" />
+	
+	
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" integrity="sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7mLTdk1wblIUnrIq35nqwEvC" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js" integrity="sha384-X/XCfMm41VSsqRNQgDerQczD69XqmjOOOwYQvr/uuC+j4OPoNhVgjdGFwhvN02Ja" crossorigin="anonymous"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ]
+        });
+    });
+</script>
+        
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://x-29.github.io/">CS里的X-29</a>
+	</div>
+	<nav>
+		
+		<a href="/">首页</a>
+		
+		<a href="/post">文章</a>
+		
+		<a href="/about">关于</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">深入理解计算机系统(csapp)笔记</h1>
+			<div class="meta">Posted on May 15, 2022</div>
+		</div>
+		
+
+		<section class="body">
+			<p>现代计算机存储和处理的信息以二值信号表示。这些微不足道的二进制数字，或者称为位（bit），形成了数字革命的基础。</p>
+<p>三种最重要的数字表示：</p>
+<ul>
+<li>无符号（unsigned）编码基于传统的二进制表示法，表示大于或者等于零的数字。</li>
+<li>补码（two&rsquo;s-complement）编码表示有符号整数，有符号整数是可以为正或者为负的数字。</li>
+<li>浮点数（floating-point）编码是表示实数。</li>
+</ul>
+<p>计算机的这些表示法是用有限数量的位来对一个数字编码，当结果太大以至于不能表示时，某些运算就会溢出（overflow）。</p>
+<h3 id="信息存储">信息存储</h3>
+<p>大多数计算机使用 8 位的<em>块</em>，或者<em>字节</em>（byte），作为最小的可寻址的内存单元，而不是访问内存中单独的位。</p>
+<p>机器级程序将内存视为一个非常大的字节数组，称为<strong>虚拟内存</strong>（virtual memory）。内存的每个字节（byte）都由一个唯一的数字来标识，称为它的<strong>地址</strong>（address），所有可能地址的集合就称为<strong>虚拟地址空间</strong>（virtual address space）。</p>
+<p>虚拟地址空间只是一个展现给机器级程序的概念性映射。实际的实现时将动态随机访问存储器（DRAM）、闪存、磁盘存储器、特殊硬件和操作系统软件结合起来，为程序提供一个看上去统一的字节数组。</p>
+<p>编译器和运行时系统会将存储器空间划分为更可管理的单元，来存放不同的程序对象（program object)，即程序数据、指令和控制信息。可以用各种机制来分配和管理程序的不同部分的存储。这种管理完全是在虚拟地址空间里完成的。</p>
+<blockquote>
+<p>C 语言中一个指针的值（无论它指向一个整数、一个结构或是某个其他程序对象）都是某个存储块的<strong>第一个字节的虚拟地址</strong>。</p>
+</blockquote>
+<p>C 编译器把每个指针和类型信息联系起来，根据指针值的类型，生成不同的机器级代码来访问存储在指针所指向位置处的值。尽管 C 编译器维护着类型信息，但是它生成的实际机器级程序并不包含关于数据类型的信息。</p>
+<p>每个程序对象可以简单地视为一个字节块，而程序本身就是一个字节序列。</p>
+<blockquote>
+<p>指针是 C 语言的一个重要特性。它提供了引用数据结构（包括数组）的元素的机制。与变量类似，指针也有两个方面：值和类型。它的值表示某个对象的位置，而它的类型表示那个位置上所存储对象的类型（比如整数或者浮点数）。</p>
+</blockquote>
+<hr>
+<p>十六进制表示法</p>
+<ul>
+<li>一个字节由 8 个位组成。
+<ul>
+<li>在二进制表示法中，它的值域是 $00000000_2$ ~ $11111111_2$。</li>
+<li>用十进制表示，它的值域是 $0_{10}$ ~ $255_{10}$</li>
+<li>二进制和十进制表示法对于描述位模式来说都不非常方便。二进制表示法太冗长，十进制表示与位模式的互相转化很麻烦。代替的方法是用十六进制表示。</li>
+</ul>
+</li>
+<li>用十六进制数来表示位模式。
+<ul>
+<li>使用数字 ‘0’～‘9’ 以及字符 ‘A‘～‘F’ 来表示 16 个可能的值，即 0 ~ 15。</li>
+<li>一个字节的值域为 $00_{16}$~$FF_{16}$</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>在 C 语言中，以 0x 或 0X 开头的数字常量被认为是十六进制的值。字符 &lsquo;A&rsquo; ~ &lsquo;F&rsquo; 既可以是大写，也可以是小写。</p>
+</blockquote>
+<hr>
+<p>每台计算机都有一个字长（word size），指明指针数据的标称大小（nominal size）。虚拟地址就是以一个字来编码的，所以字长决定了虚拟地址空间的最大大小。也就是说，对于一个字长为 $w$ 位的机器而言，虚拟地址的范围为 $0$ ~ $2^w-1$，程序最多可访问 $2^w$ 个字节。</p>
+<ul>
+<li>32 位字长的机器，虚拟地址空间为 4 千兆字节（4GB，$2^{32}$，字节是最小的可寻址的内存单元，每个字节都有一个虚拟地址），也就是说，刚刚超过 $4$ x $10^9$ 字节。</li>
+<li>64 位字长的机器，虚拟地址空间为 16EB（$2^{64}$)，大约是 $1.84$ x $10^9$ 字节。</li>
+</ul>
+<blockquote>
+<p>C 语言，声名指针:</p>
+<p>对于任何数据类型 T，声明</p>
+<p>T *p;</p>
+<p>表明 p 是一个指针变量，指向一个类型为 T 的对象。例如，</p>
+<p>char *p;</p>
+<p>就是将一个指针声明为指向一个 char 类型的对象。</p>
+</blockquote>
+<p>指针变量，在 32 位程序中为 4 个字节，在 64 位程序中为 8 个字节。</p>
+<hr>
+<p>对于跨越多个字节的程序对象，需要考虑两个问题：</p>
+<ul>
+<li>这个对象的地址是什么？</li>
+<li>在内存中如何排列这些字节（位如何排列）？</li>
+</ul>
+<p>在几所有的机器上，多字节对象都被存储为连续的字节序列，对象的地址为所使用字节中最小的地址。</p>
+<p>例如，一个类型为 int 的变量 x 的地址为 0x100，也就是说，地址表达式 &amp;x 的值为 0x100。那么，x 的 4 个字节将被存储在内存的 <code>0x100</code>、<code>0x101</code>、<code>0x102</code> 和 <code>0x103</code> 位置。</p>
+<p>字节如何排列呢？ 考虑一个 $w$ 位的整数，其位表示为 [$x_{w-1}, x_{w-2}, &hellip;, x_1, x_0$]，其中 $x_{w-1}$ 是最高有效位，而 $x_0$ 是最低有效位。假设 $w$ 是 8 的倍数，这些位就能被分组成为字节，其中最高有效字节包含位 [$x_{w-1}, x_{w-2}, &hellip;, x_{w-8}$]，而最低有效字节包含位 [$x_7, x_6, &hellip;, x_0$]，其他字节包含中间的位。</p>
+<p>排列「表示一个对象的字节」有两个通用的方式：</p>
+<ul>
+<li>小端法（little endian），在内存中按照从最低有效字节到最高有效字节的顺序存储对象。</li>
+<li>大端法（big endian），按照从最高有效字节到最低有效字节的顺序存储对象，</li>
+</ul>
+<figure><img src="/images/big-little-endian.jpg" width="600"/>
+</figure>
+
+<p>假设变量 x 的类型为 int，位于地址 0x100 处，它的十六进制值为 0x01234567，最高位字节的十六进制值为 0x01，最低字节值为 0x67。地址范围 0x100 ~ 0x1003 的字节顺序如上图。</p>
+<hr>
+<p>C 语言中字符串被编码为一个以 null（其值为 0）字符结尾的字符数组。每个字符都由某个标准编码来表示，最常见的是 ASCII 字符码。</p>
+<p>在使用 ASCII 码作为字符码的任何系统上都将得到相同的结果，与字节顺序和字大小规则无关。因而，文本数据比二进制数据具有更强的平台独立性。</p>
+<hr>
+<p>C 语言中的位级运算：</p>
+<ul>
+<li>｜（或）</li>
+<li>&amp;（与）</li>
+<li>～（取反）</li>
+<li>^（异或）</li>
+</ul>
+<p>这些运算能运用到任何“整型”的数据类型上。位级运算的一个常见用法是实现「掩码」运算，这里掩码是一个位模式，表示从一个「字」中选出的「位」的集合。</p>
+<ul>
+<li>掩码 0xFF 表示一个字的低位字节，位级运算 x&amp;0xFF生成一个由 x 的最低有效字节组成的值，而其他的字节就被置为 0。例如，x = 0x89ABCDEF，表达式 x&amp;0xFF 将得到 0x000000EF。</li>
+<li>表达式 ~0 将生成一个全 1 的掩码，不管机器的字大小是多少。</li>
+</ul>
+<p>C 语言中的逻辑运算符：</p>
+<ul>
+<li>||（或）</li>
+<li>&amp;&amp;（与）</li>
+<li>！（非）</li>
+</ul>
+<p>逻辑运算认为非零的数都表示真，0 表示假。它们返回 1 或者 0，分别表示结果为真或者为假。</p>
+<p>例如，!0x41 = 0x00；!0x00 = 0x01。</p>
+<hr>
+<p>C 语言中的移位运算：</p>
+<ul>
+<li>&gt;&gt;（向左移位）</li>
+<li>&lt;&lt;（向右移位）</li>
+</ul>
+<p>对于一个位表示为 [$x_{w-1}, x_{w-2}, &hellip;, x_0$] 的操作数 x，C 表达式 <code>x &lt;&lt; k</code>，表示 x 向左移动 k 位，丢弃最高的 k 位，并在右端补 k 个 0，其位表示为 [$x_{w-k-1}, x_{w-k-2}, &hellip;, x_0, 0, &hellip;, 0$]。</p>
+<p>右移运算 <code>x &gt;&gt; k</code>，有两种形式：</p>
+<ul>
+<li>逻辑右移。在左端补 k 个 0，得到的结果是 [$0, &hellip;, 0, x_{w-1}, x_{w-2}, &hellip;, x_k$]。</li>
+<li>算术右移。在左端补 k 个最高有效位的值，得到的结果是 [x_{w-1}, &hellip;, x_{w-1}, x_{w-1}, x_{w-2}, &hellip;, x_k$]。</li>
+</ul>
+<p>例如，x 的值为 $01100011_2$，$10010101_2$</p>
+<p>x &lt;&lt; 4  =&gt; [0011<em>0000</em>]，[0101<em>0000</em>]</p>
+<p>x &gt;&gt; 4（逻辑右移）=&gt; [*0000**0110]，[<em>0000</em>1001]</p>
+<p>x &gt;&gt; 4（算术右移）=&gt; [<em>0000</em>0110]，[<em>1111</em>1001]</p>
+<p>C 语言标准没有明确定义对于有符号数应该使用哪种类型的右移。然而，实际上几乎所有的编译器/机器组合都对符号数使用算术右移。对于无符号数，右移必须是逻辑右移。</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/cs">cs</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/x-29" title="GitHub"><i data-feather="github"></i></a><a class="soc" href="https://twiiter.com/x-29/" title="Twitter"><i data-feather="twitter"></i></a><a class="soc" href="https://gitlab.com/x-29/" title="GitLab"><i data-feather="gitlab"></i></a></div>
+  <div class="footer-info">
+    2022  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>
