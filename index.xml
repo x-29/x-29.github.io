@@ -115,11 +115,11 @@ Web 页面请求的历程 我们打开一台笔记本电脑浏览一个 Web 页�
     </item>
     
     <item>
-      <title>深入理解计算机系统(csapp)笔记</title>
-      <link>https://x-29.github.io/post/2022-05-csapp-notes/</link>
+      <title>深入理解计算机系统(csapp)笔记-信息的表示和处理</title>
+      <link>https://x-29.github.io/post/2022-05-csapp-notes-ch2/</link>
       <pubDate>Sun, 15 May 2022 20:32:12 +0800</pubDate>
       
-      <guid>https://x-29.github.io/post/2022-05-csapp-notes/</guid>
+      <guid>https://x-29.github.io/post/2022-05-csapp-notes-ch2/</guid>
       <description>现代计算机存储和处理的信息以二值信号表示。这些微不足道的二进制数字，或者称为位（bit），形成了数字革命的基础。
 三种最重要的数字表示：
  无符号（unsigned）编码基于传统的二进制表示法，表示大于或者等于零的数字。 补码（two&amp;rsquo;s-complement）编码表示有符号整数，有符号整数是可以为正或者为负的数字。 浮点数（floating-point）编码是表示实数。  计算机的这些表示法是用有限数量的位来对一个数字编码，当结果太大以至于不能表示时，某些运算就会溢出（overflow）。
