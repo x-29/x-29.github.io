@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>深入理解计算机系统(csapp)笔记 - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)学习笔记." />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="深入理解计算机系统(csapp)笔记" />
+<meta property="og:description" content="深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)学习笔记." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-csapp-notes/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-15T20:32:12+08:00" />
+<meta property="article:modified_time" content="2022-05-15T20:32:12+08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解计算机系统(csapp)笔记"/>
+<meta name="twitter:description" content="深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)学习笔记."/>
+<script src="https://x-29.github.io/js/feather.min.js"></script>
+	
+	
+        <link href="https://x-29.github.io/css/fonts.b685ac6f654695232de7b82a9143a46f9e049c8e3af3a21d9737b01f4be211d1.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://x-29.github.io/css/main.40ca3a860425083862b7ebd55447caec5c4384573f0cb098b8d06a91e8dace2e.css" />
+	
+	
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" integrity="sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7mLTdk1wblIUnrIq35nqwEvC" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js" integrity="sha384-X/XCfMm41VSsqRNQgDerQczD69XqmjOOOwYQvr/uuC+j4OPoNhVgjdGFwhvN02Ja" crossorigin="anonymous"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ]
+        });
+    });
+</script>
+        
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://x-29.github.io/">CS里的X-29</a>
+	</div>
+	<nav>
+		
+		<a href="/">首页</a>
+		
+		<a href="/post">文章</a>
+		
+		<a href="/about">关于</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">深入理解计算机系统(csapp)笔记</h1>
+			<div class="meta">Posted on May 15, 2022</div>
+		</div>
+		
+
+		<section class="body">
+			<p>现代计算机存储和处理的信息以二值信号表示。这些微不足道的二进制数字，或者称为位（bit），形成了数字革命的基础。</p>
+<p>三种最重要的数字表示：</p>
+<ul>
+<li>无符号（unsigned）编码基于传统的二进制表示法，表示大于或者等于零的数字。</li>
+<li>补码（two&rsquo;s-complement）编码表示有符号整数，有符号整数是可以为正或者为负的数字。</li>
+<li>浮点数（floating-point）编码是表示实数。</li>
+</ul>
+<p>计算机的这些表示法是用有限数量的位来对一个数字编码，当结果太大以至于不能表示时，某些运算就会溢出（overflow）。</p>
+<h3 id="信息存储">信息存储</h3>
+<p>大多数计算机使用 8 位的<em>块</em>，或者<em>字节</em>（byte），作为最小的可寻址的内存单元，而不是访问内存中单独的位。</p>
+<p>机器级程序将内存视为一个非常大的字节数组，称为<strong>虚拟内存</strong>（virtual memory）。内存的每个字节（byte）都由一个唯一的数字来标识，称为它的<strong>地址</strong>（address），所有可能地址的集合就称为<strong>虚拟地址空间</strong>（virtual address space）。</p>
+<p>虚拟地址空间只是一个展现给机器级程序的概念性映射。实际的实现时将动态随机访问存储器（DRAM）、闪存、磁盘存储器、特殊硬件和操作系统软件结合起来，为程序提供一个看上去统一的字节数组。</p>
+<p>编译器和运行时系统会将存储器空间划分为更可管理的单元，来存放不同的程序对象（program object)，即程序数据、指令和控制信息。可以用各种机制来分配和管理程序的不同部分的存储。这种管理完全是在虚拟地址空间里完成的。</p>
+<blockquote>
+<p>C 语言中一个指针的值（无论它指向一个整数、一个结构或是某个其他程序对象）都是某个存储块的<strong>第一个字节的虚拟地址</strong>。</p>
+</blockquote>
+<p>C 编译器把每个指针和类型信息联系起来，根据指针值的类型，生成不同的机器级代码来访问存储在指针所指向位置处的值。尽管 C 编译器维护着类型信息，但是它生成的实际机器级程序并不包含关于数据类型的信息。</p>
+<p>每个程序对象可以简单地视为一个字节块，而程序本身就是一个字节序列。</p>
+<blockquote>
+<p>指针是 C 语言的一个重要特性。它提供了引用数据结构（包括数组）的元素的机制。与变量类似，指针也有两个方面：值和类型。它的值表示某个对象的位置，而它的类型表示那个位置上所存储对象的类型（比如整数或者浮点数）。</p>
+</blockquote>
+<hr>
+<p>十六进制表示法</p>
+<ul>
+<li>一个字节由 8 个位组成。
+<ul>
+<li>在二进制表示法中，它的值域是 $00000000_2$ ~ $11111111_2$。</li>
+<li>用十进制表示，它的值域是 $0_{10}$ ~ $255_{10}$</li>
+<li>二进制和十进制表示法对于描述位模式来说都不非常方便。二进制表示法太冗长，十进制表示与位模式的互相转化很麻烦。代替的方法是用十六进制表示。</li>
+</ul>
+</li>
+<li>用十六进制数来表示位模式。
+<ul>
+<li>使用数字 ‘0’～‘9’ 以及字符 ‘A‘～‘F’ 来表示 16 个可能的值，即 0 ~ 15。</li>
+<li>一个字节的值域为 $00_{16}$~$FF_{16}$</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>在 C 语言中，以 0x 或 0X 开头的数字常量被认为是十六进制的值。字符 &lsquo;A&rsquo; ~ &lsquo;F&rsquo; 既可以是大写，也可以是小写。</p>
+</blockquote>
+<hr>
+<p>每台计算机都有一个字长（word size），指明指针数据的标称大小（nominal size）。虚拟地址就是以一个字来编码的，所以字长决定了虚拟地址空间的最大大小。也就是说，对于一个字长为 $w$ 位的机器而言，虚拟地址的范围为 $0$ ~ $2^w-1$，程序最多可访问 $2^w$ 个字节。</p>
+<ul>
+<li>32 位字长的机器，虚拟地址空间为 4 千兆字节（4GB，$2^{32}$，字节是最小的可寻址的内存单元，每个字节都有一个虚拟地址），也就是说，刚刚超过 $4$ x $10^9$ 字节。</li>
+<li>64 位字长的机器，虚拟地址空间为 16EB（$2^{64}$)，大约是 $1.84$ x $10^9$ 字节。</li>
+</ul>
+<blockquote>
+<p>C 语言，声名指针:</p>
+<p>对于任何数据类型 T，声明</p>
+<p>T *p;</p>
+<p>表明 p 是一个指针变量，指向一个类型为 T 的对象。例如，</p>
+<p>char *p;</p>
+<p>就是将一个指针声明为指向一个 char 类型的对象。</p>
+</blockquote>
+<p>指针变量，在 32 位程序中为 4 个字节，在 64 位程序中为 8 个字节。</p>
+<hr>
+<p>对于跨越多个字节的程序对象，需要考虑两个问题：</p>
+<ul>
+<li>这个对象的地址是什么？</li>
+<li>在内存中如何排列这些字节（位如何排列）？</li>
+</ul>
+<p>在几所有的机器上，多字节对象都被存储为连续的字节序列，对象的地址为所使用字节中最小的地址。</p>
+<p>例如，一个类型为 int 的变量 x 的地址为 0x100，也就是说，地址表达式 &amp;x 的值为 0x100。那么，x 的 4 个字节将被存储在内存的 <code>0x100</code>、<code>0x101</code>、<code>0x102</code> 和 <code>0x103</code> 位置。</p>
+<p>字节如何排列呢？ 考虑一个 $w$ 位的整数，其位表示为 [$x_{w-1}, x_{w-2}, &hellip;, x_1, x_0$]，其中 $x_{w-1}$ 是最高有效位，而 $x_0$ 是最低有效位。假设 $w$ 是 8 的倍数，这些位就能被分组成为字节，其中最高有效字节包含位 [$x_{w-1}, x_{w-2}, &hellip;, x_{w-8}$]，而最低有效字节包含位 [$x_7, x_6, &hellip;, x_0$]，其他字节包含中间的位。</p>
+<p>排列「表示一个对象的字节」有两个通用的方式：</p>
+<ul>
+<li>小端法（little endian），在内存中按照从最低有效字节到最高有效字节的顺序存储对象。</li>
+<li>大端法（big endian），按照从最高有效字节到最低有效字节的顺序存储对象，</li>
+</ul>
+<figure><img src="/images/big-little-endian.jpg" width="600"/>
+</figure>
+
+<p>假设变量 x 的类型为 int，位于地址 0x100 处，它的十六进制值为 0x01234567，最高位字节的十六进制值为 0x01，最低字节值为 0x67。地址范围 0x100 ~ 0x1003 的字节顺序如上图。</p>
+<hr>
+<p>C 语言中字符串被编码为一个以 null（其值为 0）字符结尾的字符数组。每个字符都由某个标准编码来表示，最常见的是 ASCII 字符码。</p>
+<p>在使用 ASCII 码作为字符码的任何系统上都将得到相同的结果，与字节顺序和字大小规则无关。因而，文本数据比二进制数据具有更强的平台独立性。</p>
+<hr>
+<p>C 语言中的位级运算：</p>
+<ul>
+<li>｜（或）</li>
+<li>&amp;（与）</li>
+<li>～（取反）</li>
+<li>^（异或）</li>
+</ul>
+<p>这些运算能运用到任何“整型”的数据类型上。位级运算的一个常见用法是实现「掩码」运算，这里掩码是一个位模式，表示从一个「字」中选出的「位」的集合。</p>
+<ul>
+<li>掩码 0xFF 表示一个字的低位字节，位级运算 x&amp;0xFF生成一个由 x 的最低有效字节组成的值，而其他的字节就被置为 0。例如，x = 0x89ABCDEF，表达式 x&amp;0xFF 将得到 0x000000EF。</li>
+<li>表达式 ~0 将生成一个全 1 的掩码，不管机器的字大小是多少。</li>
+</ul>
+<p>C 语言中的逻辑运算符：</p>
+<ul>
+<li>||（或）</li>
+<li>&amp;&amp;（与）</li>
+<li>！（非）</li>
+</ul>
+<p>逻辑运算认为非零的数都表示真，0 表示假。它们返回 1 或者 0，分别表示结果为真或者为假。</p>
+<p>例如，!0x41 = 0x00；!0x00 = 0x01。</p>
+<hr>
+<p>C 语言中的移位运算：</p>
+<ul>
+<li>&gt;&gt;（向左移位）</li>
+<li>&lt;&lt;（向右移位）</li>
+</ul>
+<p>对于一个位表示为 [$x_{w-1}, x_{w-2}, &hellip;, x_0$] 的操作数 x，C 表达式 <code>x &lt;&lt; k</code>，表示 x 向左移动 k 位，丢弃最高的 k 位，并在右端补 k 个 0，其位表示为 [$x_{w-k-1}, x_{w-k-2}, &hellip;, x_0, 0, &hellip;, 0$]。</p>
+<p>右移运算 <code>x &gt;&gt; k</code>，有两种形式：</p>
+<ul>
+<li>逻辑右移。在左端补 k 个 0，得到的结果是 [$0, &hellip;, 0, x_{w-1}, x_{w-2}, &hellip;, x_k$]。</li>
+<li>算术右移。在左端补 k 个最高有效位的值，得到的结果是 [$x_{w-1}, &hellip;, x_{w-1}, x_{w-1}, x_{w-2}, &hellip;, x_k$]。</li>
+</ul>
+<p>例如，x 的值为 $01100011_2$，$10010101_2$</p>
+<p>x &lt;&lt; 4  =&gt; [0011<em>0000</em>]，[0101<em>0000</em>]</p>
+<p>x &gt;&gt; 4（逻辑右移）=&gt; [<em>0000</em>0110]，[<em>0000</em>1001]</p>
+<p>x &gt;&gt; 4（算术右移）=&gt; [<em>0000</em>0110]，[<em>1111</em>1001]</p>
+<p>C 语言标准没有明确定义对于有符号数应该使用哪种类型的右移。然而，实际上几乎所有的编译器/机器组合都对符号数使用算术右移。对于无符号数，右移必须是逻辑右移。</p>
+<h3 id="整数表示">整数表示</h3>
+<blockquote>
+<p>C 和 C++ 都支持有符号（默认）和无符号数。Java 只支持有符号数。</p>
+</blockquote>
+<p>无符号数编码的定义：对于向量 $\vec{x}=[x_{w-1}, x_{w-2}, \cdots, x_0]$，定义函数：</p>
+<p>$$B2U_w(\vec{x})\doteq\sum\limits_{i=0}^{w-1}x_i2^i$$</p>
+<p>函数 $B2U_w$ 将一个长度为 $w$ 的 0，1 串映射到「非负整数」。例如：</p>
+<p>$B2U_4([0001])=0\cdot2^3 + 0\cdot2^2 + 0\cdot2^1 + 1\cdot2^0 = 0 + 0 + 0 + 1 = 1$</p>
+<p>$B2U_4([1011])=1\cdot2^3 + 0\cdot2^2 + 1\cdot2^1 + 1\cdot2^0 = 8 + 0 + 2 + 1 = 11$</p>
+<p>$w$ 位所能表示的最小值为 0，最大值为 $UMax_w\doteq\sum\limits_{i=0}^{w-1}2_i=2^w - 1$。因此，函数 $B2U_w$ 能够被定义为一个映射 $B2U_w:\lbrace 0, 1 \rbrace ^w \to\lbrace 0, \cdots, 2^w - 1 \rbrace$</p>
+<p>无符号数编码的唯一性：函数 $B2U_w$ 是一个双射。</p>
+<ul>
+<li>函数 $B2U_w$ 将每一个长度为 $w$ 的位向量都映射为 $0 \sim 2^w - 1$ 之间的一个唯一值。</li>
+<li>反函数 $U2B_w$（即“无符号数到二进制”）将 $0 \sim 2^w - 1$ 之间的每一个整数都可以映射为一个唯一的长度为 $w$ 的位模式。</li>
+</ul>
+<hr>
+<p>表示负值，最常用的计算机表示方式是补码（two&rsquo;s-complement）形式。</p>
+<p>补码编码的定义：对向量 $\vec{x}=[x_{w-1}, x_{w-2}, \cdots, x_0]$，定义函数：</p>
+<p>$$B2T_w(\vec{x})\doteq - x_{w-1}2^{w-1} + \sum\limits_{i=0}^{w-2}x_i2^i$$</p>
+<p>在这个定义中，将字的最高有效位 $x_{w-1}$ 解释为负权（negative weight），也称为符号位，它的“权重”为 $-2^{w-1}$，是「无符号」表示中权重的负数。符号位被置为 1 时，表示值为负，当设置为 0 时，值为非负。</p>
+<p>例，从位向量到整数的映射：</p>
+<p>$B2T_4([0001])=-0\cdot2^3 + 0\cdot2^2 + 0\cdot2^1 + 1\cdot2^0 = 0 + 0 + 0 + 1 = 1$</p>
+<p>$B2T_4([1011])=-1\cdot2^3 + 0\cdot2^2 + 1\cdot2^1 + 1\cdot2^0 = -8 + 0 + 2 + 1 = -5$</p>
+<p>$w$ 位补码所能表示的值的范围：</p>
+<ul>
+<li>最小值是位向量 $[10&hellip;0]$，其整数值为 $TMin_w\doteq-2^{w-1}$。</li>
+<li>最大值是位向量 $[01&hellip;1]$，其整数值为 $TMax_w\doteq\sum\limits_{i=0}^{w-2}2^i=2^{w-1} - 1$。</li>
+</ul>
+<p>从值的范围可以看出，函数 $B2T_w$ 能够被定义为一个映射 $B2T_w：\lbrace 0，1 \rbrace ^w \to \lbrace TMin_w，\cdots，TMax_w \rbrace$。</p>
+<p>补码编码的唯一性：函数 $B2T_w$ 是一个双射。</p>
+<ul>
+<li>函数 $B2T_w$ 将一个长度为 $w$ 的位模式映射为 $TMin_w$ 到 $TMax_w$ 之间的一个唯一值 $x$。</li>
+<li>对于每个数 $x$，满足 $TMin_w \le x \le TMax_w，$反函数 $T2B_w$（即补码到二进制）将 $x$ 映射为一个唯一的长度为 $w$ 的位模式。</li>
+</ul>
+<hr>
+<p>几个重要数字的位模式和数值</p>
+<figure><img src="/images/important-number.jpg" width="600"/><figcaption>
+            <h4>重要的数字</h4>
+        </figcaption>
+</figure>
+
+<p>关于这些数字，值得注意的点：</p>
+<ul>
+<li>补码的范围是不对称的：$|TMin|=|TMax| + 1$。之所以有这样的不对称性，是因为一半的位模式（符号位为 1 的数）表示负数，而另一半（符号位为 0 的数）表示非负数。0 是非负数，也就意味着能表示的正数比负数少一个。</li>
+<li>最大的无符号数值刚好比补码的最大值的两倍大一点：$UMax_w=2TMax_w+1$。补码表示中所有表示负数的位模式在无符号表示中都变成了正数。就是说，同样的位模式用补码编码是负数，用无符号编码是正数。例如，对位模式 $[1011]$：$B2T_4([1011])=-1\cdot2^3 + 0\cdot2^2 + 1\cdot2^1 + 1\cdot2^0 = -5$，$B2U_4([1011])=1\cdot2^3 + 0\cdot2^2 + 1\cdot2^1 + 1\cdot2^0 = 11$</li>
+<li>-1 和 $UMax$ 有同样的位模式---一个全 1 的串。数值 0 在两种表示方式（无符号和补码）中都是全 0 的串。</li>
+</ul>
+<blockquote>
+<p>C 语言标准并没有要求要用补码形式来表示有符号整数，但是几乎所有的机器都是这么做的。</p>
+</blockquote>
+<hr>
+<p>有符号数和无符号数之间的转换，即 「补码」与「无符号」的相互转换。</p>
+<p>对于大多数 C 语言的实现，处理同样字长的有符号数和无符号数之间的相互转换的一般规则是：<strong>数值可能会改变（负数时数值会改变，正数不会改变），但是位模式不变</strong>。</p>
+<p>定义函数 $U2B_w$ 和 $T2B_w$，它们将数值映射为无符号数和补码形式的位表示。即：</p>
+<ul>
+<li>给定 $0 \le x \le UMax_w$ 范围内的一个整数 $x$，函数 $U2B_w(x)$ 会给出 $x$ 的唯一的 $w$ 位无符号表示。</li>
+<li>当 $x$ 满足 $TMin_w \le x \le TMax_w$，函数 $T2B_w(x)$ 会给出 $x$ 的唯一的 $w$ 位补码表示。</li>
+</ul>
+<p>定义函数 $T2U_w$ 描述从补码到无符号的转换：$T2U_w(x) \doteq B2U_w(T2B_w(x))$。</p>
+<p>定义函数 $U2T_w$ 描述从无符号数到补码的转换：$U2T_w(x) \doteq B2T_w(U2B_w(x))$。</p>
+<p>例：$T2U_{16}(-12345)=53191$，$U2T_{16}(53191)=-12345$。</p>
+<p>从上面的例子看到，十六进制 0xCFC7 表示的 16 位位模式，既是 -12345 的补码表示，又是 53191 的无符号表示。<strong>同样的位模式，不同的解释（应用不同的函数得到的值可能会改变）</strong>。</p>
+<p>给定位模式，函数 $T2U_w$（补码转为无符号数）的一个属性：</p>
+<p>对满足 $TMin_w \le x \le TMax_w$ 的 $x$ 有：</p>
+<p>$$
+T2U_w(x)=\begin{cases}
+x+2^w, &amp; x &lt; 0 \\
+x, &amp; x \ge 0
+\end{cases}
+$$</p>
+<p>当将一个有符号数映射为它相应的无符号数时，负数就被转换成了大的正数，而非负数会保持不变。下图说明了函数 $T2U$ 的行为：</p>
+<figure><img src="/images/t2u.jpg"
+         alt="从补码到无符号数的转换" width="400"/><figcaption>
+            <p>从补码到无符号数的转换</p>
+        </figcaption>
+</figure>
+
+<p>函数 $U2T_w$（无符号数转换为补码）的一个属性：</p>
+<p>对满足 $0 \le u \le UMax_w$ 的 $u$ 有：</p>
+<p>$$
+U2T_w(u)=\begin{cases}
+u, &amp; u \le TMax_w \\
+u-2^w, &amp; u &gt; TMax_w
+\end{cases}
+$$</p>
+<p>对于小的数（$ \le TMax_w$），从无符号到有符号的转换将保留数字的原值，对于大的数（$&gt;TMax_w$），数字将会被转换为一个负数值。下图说明了函数 $U2T$ 的行为：</p>
+<figure><img src="/images/u2t.jpg"
+         alt="从无符号到有符号的转换" width="400"/><figcaption>
+            <p>从无符号到有符号的转换</p>
+        </figcaption>
+</figure>
+
+<p>可以看到无符号与补码之间相互转换，对于在范围 $0 \le x \le TMax_w$ 之内的值 $x$ 而言，得到 $T2U_w(x)=x，U2T_w(x)=x$。也就是说，在这个范围内的数字有相同的无符号和补码表示。对于这个范围以外的数值，转换需要加上或减去$2^w$。</p>
+<blockquote>
+<p>C 语言允许无符号数和有符号数之间的转换，虽然 C 标准没有规定应该如何进行这种转换，但大多数系统遵循的原则是：底层的位保持不变。</p>
+</blockquote>
+<hr>
+<p>扩展一个数字的表示:</p>
+<ul>
+<li>将一个无符号数转换为一个更大的数据类型，在表示开头添加 0。这种运算称为零扩展。即：</li>
+</ul>
+<p>$$\vec{u}=[u_{w-1}，u_{w-2}，\cdots，u_0] \to \vec{u}&rsquo;=[0，\cdots，0，u_{w-1}，u_{w-2}，\cdots，u_0]$$</p>
+<ul>
+<li>将一个补码数字转换为一个更大的数据类型，在表示的开头添加最高有效位的值。这种运算称为符号扩展。即：</li>
+</ul>
+<p>$$\vec{x}=[x_{w-1}，x_{w-2}，\cdots，x_0] \to \vec{x}&rsquo;=[x_{w-1}，\cdots，x_{w-1}，x_{w-1}，x_{w-2}，\cdots，x_0]$$</p>
+<p>例：</p>
+<pre tabindex="0"><code>short sx = -12345;           // sx = -12345: cf c7
+unsigned short usx = sx;     // usx = 53191: cf c7
+
+int x = sx;                  // x = -12345: ff ff cf c7 (符号扩展)
+unsigned int ux = usx;       // ux = 53191: 00 00 cf c7 (零扩展)
+</code></pre><p>值得注意的是，无符号与有符号之间转换时，先要改变数据大小，之后再进行转换。例如：</p>
+<pre tabindex="0"><code>short sx = -12345;         /* -12345 */
+unsgined int uy = sy;      /* 4294954951 */
+</code></pre><p>先 sx 改变数据大小到 int，再从有符号转换到无符号，即：
+$\undergroup{(unsigned)\undergroup{(int)sy}}$。</p>
+<hr>
+<p>截断数字，就是减少表示一个数的位数。比如把 int 转换成 short，就是将 32 位的 int 截断为了 16 位的 short int。</p>
+<p>将一个 $w$ 位的数 $\vec{x}=[x_{w-1}，x_{w-2}，\cdots，x_0]$ 截断为一个 $k$ 位的数字时，会丢弃高 $w-k$ 位，得到一个位向量 $\vec{x}&rsquo;=[x_{k-1}，x_{k-2}，\cdots，x_0]$。<strong>截断一个数字可能会改变它的值---溢出的一种形式</strong>。</p>
+<p>对无符号数截断 $k$ 位的结果：</p>
+<p>$$B2U_k[x_{k-1}，x_{k-2}，\cdots，x_0]=B2U_w([x_{w-1}，x_{w-2}，\cdots，x_0]) \mod 2^k$$</p>
+<p>对补码数字截断 $k$ 位的结果：</p>
+<p>$$B2T_k[x_{k-1}，x_{k-2}，\cdots，x_0]=U2T_k(B2U_w([x_{w-1}，x_{w-2}，\cdots，x_0]) \mod 2^k)$$</p>
+<p>例：将一个 4 位数值截断到一个 3 位数值，即 $w$=4，$k$=3</p>
+<p>无符号：9 = [1001] = $B2U_4([1001]) \mod 2^3$ = 9 mod 8 = 9 - (9/8) x 8 = 1</p>
+<p>补码：-7 = [1001] = $U2T_3(B2U_4([1001]) \mod 2^3) = U2T_3(1)$ = 1</p>
+<p>补码：-1 = [1111] = $U2T_3(B2U_4([1111]) \mod 2^3) = U2T_3(7) = B2T_3(U2B_3(7))=B2T_3([111])$ = -1</p>
+<blockquote>
+<p>有符号数到无符号数的隐式转换，会导致错误或着漏洞，最好不要使用无符号数。实际上，除了 C 语言以外很少有语言支持无符号整数，比如 Java 只支持有符号整数。</p>
+</blockquote>
+<h3 id="整数运算">整数运算</h3>
+<p>无符号加法：对满足 $0 \le x$，$y&lt;2^w$ 的 $x$ 和 $y$ 有：</p>
+<p>$$
+x +_w^u y = \begin{cases}
+x+y, &amp; x+y&lt;2^w \qquad\qquad 正常\\
+x+y-2^w, &amp; 2^w \le x+y &lt; 2^{w+1} \quad 溢出
+\end{cases}
+$$</p>
+<p>正常情况下 $x+y$ 的值保持不变，溢出情况则要从和中减去 $2^w$。</p>
+<blockquote>
+<p>算术运算溢出，是指完整的整数结果不能放到数据类型的字长限制中去。</p>
+</blockquote>
+<p>无符号数求反：对满足 $0 \le x &lt; 2^w$ 的任意 $x$，其 $w$ 位的无符号逆元 $-_w^ux$为：</p>
+<p>$$
+-_w^ux=\begin{cases}
+x, &amp; x=0\\
+2^w-x, &amp; x&gt;0
+\end{cases}
+$$</p>
+<p>补码加法：对满足 $-2^{w-1} \le x$，$y \le 2^{w-1} - 1$ 的整数 $x$ 和 $y$，有：</p>
+<p>$$
+x +_w^t y = \begin{cases}
+x+y-2^w, &amp; 2^{w-1} \le x+y \qquad\qquad\quad 正溢出 \\
+x+y, &amp; -2^{w-1} \le x+y &lt; 2^{w-1} \quad 正常 \\
+x+y+2^w, &amp;x+y &lt; -2^{w-1} \qquad\qquad 负溢出
+\end{cases}
+$$</p>
+<p>当和 $x+y$ 超过 $TMax_w$ 时，发生正溢出。截断的结果是从和中减去 $2^w$。当和 $x+y$ 小于 $TMin_w$ 时，发生负溢出。截断的结果是把和加上 $2^w$。</p>
+<p>[注] $TMin_w=-2^{w-1}$，$TMax_w=2^{w-1} - 1$。</p>
+<blockquote>
+<p>两个数的 $w$ 位补码之和与无符号之和有完全相同的位模式。实际上，大多数计算机使用同样的机器指令来执行无符号或者有符号加法。</p>
+</blockquote>
+<p>补码的非：对满足 $TMin_w \le x \le TMax_w$ 的 $x$，其补码的非 $-_w^tx$ 为：</p>
+<p>$$
+-_w^tx=\begin{cases}
+TMin_w, &amp; x=TMin_w\\
+-x, &amp; x&gt;TMin_w
+\end{cases}
+$$</p>
+<p>对 $w$ 位的补码加法来说，$TMin_w$ 是自己的加法的逆，而对其他任何数值 $x$ 都有 $-x$ 作为其加法的逆。</p>
+<hr>
+<p>无符号数乘法：对满足 $0 \le x$，$y \le UMax_w$ 的 $x$ 和 $y$ 有：</p>
+<p>$$x *_w^uy=(x \cdot y)\mod 2^w$$</p>
+<p>补码乘法：对满足 $TMin_w \le x$，$y \le TMax_w$ 的 $x$ 和 $y$ 有：</p>
+<p>$$x *_w^ty=U2T_w((x \cdot y) \mod 2^w)$$</p>
+<p>由于整数乘法比移位和加法的代价要大得多（整数乘法指令相当慢，需要 10 个或更多的时钟周期），许多 C 语言编译器试图以移动、加法和减法的组合来消除很多整数乘以常数的情况。</p>
+<blockquote>
+<p>左移动 1 位，相当于乘以 2。移动 $k$ 位，等价于乘以 $2^k$。</p>
+</blockquote>
+<p>例如，表达式 x * 14。利用 $14 = 2^3 + 2^2 + 2^1$，编译器会将乘法重写为（x&lt;&lt;3)+(x&lt;&lt;2)+(x&lt;&lt;1)，将一个乘法替换为 3 个移位和 2 个加法。这个表达式还可以被重写为 (x&lt;&lt;4)-(x&lt;&lt;1)，这时只需要两个移位和一个减法。</p>
+<p>整数除法要比整数乘法更慢，需要 30 个或更多的时钟周期。除以 2 的幂也可以用移位运算来实现。</p>
+<blockquote>
+<p>右移一位，相当于除以 2。</p>
+</blockquote>
+<p>同乘法不同，不能用除以 2 的幂的除法来表示除以任意常数 $K$ 的除法。</p>
+<h3 id="浮点数">浮点数</h3>
+<p>IEEE 浮动标准规定，对于任意一个二进制浮点数 $V$，可以表示成 $V=(-1)^s \times M \times 2^E$ 的形式，其中：</p>
+<ul>
+<li>符号（sign）$s$ 决定这个数是负数（$s$=1）还是正数（$s$=0）。</li>
+<li>尾数（significand）$M$ 是一个二进制小数，表示有效数字，$ 1 \le M &lt; 2$。</li>
+<li>阶码（exponent）$E$ 的作用是对浮点数加权，这个权重是 2 的 $E$ 次幂（可能是负数）。</li>
+</ul>
+<p>举例来说，十进制 17.0，写成二进制是 10001.0，相当于 $1.0001 \times 2^4$。那么，按照上面 $V$ 的格式，可以得出 $s=0，M=1.0001，E=4$。</p>
+<p>IEEE 浮动标准规定，将浮点数的「位」表示划分为三个字段，分别对这些值进行编码：</p>
+<ul>
+<li>一个单独的符号位字段 s ，直接编码符号 $s$。</li>
+<li>$k$ 位的阶码字段 exp=$e_{k-1}\cdots e_1e_0$ 编码阶码 $E$。</li>
+<li>$n$ 位的小数字段 frac=$f_{n-1}\cdots f_1f_0$ 编码尾数 $M$。</li>
+</ul>
+<p>对于 32 位的单精度浮点数（C 语言中的 float），将它划分为三个字段，其中最高位 31 位是符号位字段 s，当 s=0 表示正数，s=1 时，则表示负数。第 23 位到 30 位，这 8 个二进制位表示阶码字段（exp），用来编码阶码 $E$，剩下的 23 位是小数字段（frac），用来编码尾数 $M$。</p>
+<figure><img src="/images/fp-formats.jpg"
+         alt="标准浮点格式" width="500"/><figcaption>
+            <p>标准浮点格式</p>
+        </figcaption>
+</figure>
+
+<p>对于 64 位的双精度浮点数（C语言中的 double），s、exp 和 frac 字段分别为 1 位、$k$=11 位和 $n$=52 位。</p>
+<p>浮点数的数值可以分为三类：</p>
+<ul>
+<li>规格化的值</li>
+<li>非规格化的值</li>
+<li>特殊值</li>
+</ul>
+<p>其中，阶码字段（exp）的值决定了这个数是属于哪一类。</p>
+<figure><img src="/images/fp-cases.jpg"
+         alt="单精度浮点数的分类" width="500"/><figcaption>
+            <p>单精度浮点数的分类</p>
+        </figcaption>
+</figure>
+
+<p><strong>1. 规格化的值</strong></p>
+<p>当 exp 的位模式既不全为 0（数值 0），也不全为 1（单精度数值为 255，双精度数值为 2047）时，都属于这一类。</p>
+<ul>
+<li>在这一类中，阶码 $E$ 的值「不等于」exp 位模式所表示的值，而是等于「exp 位模式所表示的值」减去一个「偏置量」后的值（我们知道，科学计数法中的 $E$ 是可以出现负数的，<strong>所以IEEE 754 规定，$E$ 的真实值必须再减去一个偏置量</strong>），偏置量与阶码字段的位数相关。也就是说，阶码的值是 $E = e - Bias$，其中 $e$ 是 exp 位模式所表示的值，它是一个无符号数，而 $Bias$ 是一个等于 $2^{k-1}-1$ 的偏置量，$k$ 为阶码字段 exp 的长度。</li>
+</ul>
+<p>例如，单精度的阶码字段 exp 是 8 位，那么 $k$ = 8，偏置量 $Bias$=127，而位模式（不能全为 0 或全为 1）所能表示的最小值为 $[00000001] = 1$，最大值为 $[11111110]=254$，所以阶码 $E$ 的值的范围为 $-126 \sim 127$。</p>
+<p>举例来说，$2^5$ 的 $E$ 是 5，所以保存成 32 位浮点数时，exp 的值必须保存为 $E+Bias=5+127=132$，即 $[10001000]$。</p>
+<ul>
+<li>前面说过，$1 \le M &lt; 2$，也就是说，$M$ 可以写成 「1.xxxxxx」 的形式，其中 xxxxxx 表示小数部分。即尾数定义为 $M=1+f$。在计算机内部保存 $M$ 时，默认第一位总是 1，因此不需要显式地表示出来，只保存后面的 $f$（xxxxxx 部分）。</li>
+</ul>
+<p>比如，保存 1.0001 的时候，只保存 0001，等到读取的时候，再把第一位的 1 加上去。这样做可以节省出一位来用于提高精度。</p>
+<p>看一个完整的例子，$17.0=(1.0001)_2×2^4$，用一个 8 位浮点格式表示：假定符号位长度为 1， exp 的长度为 4，小数字段 frac 长度为 3，那么：</p>
+<ul>
+<li>正数，所以符号位字段 s 的值为 0。</li>
+<li>阶码 $E=4，k=4，Bias=2^{k-1} - 1=7，E= e-Bias，e=E+Bias=4+7=11=[1011]_2$，所以阶码字段 exp 的值为$[1011]$。</li>
+<li>由 $M=1+f=1.000，f=000$，得到小数字段 frac 的值为 $[000]$。(看到 8 位表示，出现了精度损失)</li>
+</ul>
+<p>最后组合起来，就形成了 8 位单进度浮点数 17.0 的编码：$[0 \thickspace 1011 \thickspace 000]$。</p>
+<p>再来推算一个下，看对不对：</p>
+<ul>
+<li>exp 字段的值为 [1011]，即 $e = [1011]_2=11$，阶码 $E = e - Bias = 11 - 7 = 4$。</li>
+<li>frac 字段的值为 [000]，即 $f = [000]_2=0 \times 2^{-1} +  0 \times 2^{-2}  + 0 \times 2^{-3}  = 1 + \frac{0}{8}，M = 1 + f = 1 + \frac{0}{8}\ = \frac{8}{8}$</li>
+</ul>
+<p>$V=(-1)^0 \times \frac{8}{8} \times 2^4=16$，出现了精度丢失。</p>
+<p><strong>2. 非规格化的值</strong></p>
+<p>当阶码字段的二进制位全为 0 时，所表示的数是非规格化的。非规格化的数有两个用途：</p>
+<ul>
+<li>提供了表示数值 0 的方法。
+<ul>
+<li>当符号位 s 等于 0，阶码字段全为 0，小数字段也全为 0 时，此时表示正零，即 $s=0，M=f=0，V=+0.0$。</li>
+<li>当符号位 s 等于 1，阶码字段全为 0，小数字段也全为 0 时，此时表示负零，即 $s=1，M=f=0，V=-0.0$。</li>
+<li>根据 IEEE 的浮点格式，值$+0.0$ 和 $-0.0$ 在某些方面被认为是不同的，而在其他方面是相同的。</li>
+</ul>
+</li>
+<li>表示那些非常接近于 0.0 的数。
+<ul>
+<li>当阶码字段全为 0 时，阶码 $E$ 的值等于 $1-bias$，而尾数的值 $M=f$，不包含隐藏的zhi</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. 特殊值</strong></p>
+<p>特殊值有两种：无穷大的数和 NaN。</p>
+<ul>
+<li>在阶码字段全为 1，且小数字段全为 0 时，表示无穷大的数（$\infty$），如果符号位 s 等于 0，表示正无穷大（$+\infty$）。符号位 s 等于 1，表示负无穷大（$-\infty$）。</li>
+<li>在遇到一个些运算结果不为实数或者用无穷也无法表示的情况，此时得到结果就是一个 NaN 值。
+<ul>
+<li>当阶码字段全为 1，且小数字段不为 0 时，可以表示 NaN（Not a Number，不是一个数）。</li>
+</ul>
+</li>
+</ul>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/cs">cs</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/x-29" title="GitHub"><i data-feather="github"></i></a><a class="soc" href="https://twiiter.com/x-29/" title="Twitter"><i data-feather="twitter"></i></a><a class="soc" href="https://gitlab.com/x-29/" title="GitLab"><i data-feather="gitlab"></i></a></div>
+  <div class="footer-info">
+    2022  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>
