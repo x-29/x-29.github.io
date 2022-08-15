@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>深入理解计算机系统(csapp)笔记-程序的机器级表示 - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第三章的学习笔记." />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="深入理解计算机系统(csapp)笔记-程序的机器级表示" />
+<meta property="og:description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第三章的学习笔记." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-csapp-notes-ch3/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-16T10:12:20+08:10" />
+<meta property="article:modified_time" content="2022-05-16T10:12:20+08:10" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解计算机系统(csapp)笔记-程序的机器级表示"/>
+<meta name="twitter:description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第三章的学习笔记."/>
+<script src="https://x-29.github.io/js/feather.min.js"></script>
+	
+	
+        <link href="https://x-29.github.io/css/fonts.b685ac6f654695232de7b82a9143a46f9e049c8e3af3a21d9737b01f4be211d1.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://x-29.github.io/css/main.40ca3a860425083862b7ebd55447caec5c4384573f0cb098b8d06a91e8dace2e.css" />
+	
+	
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" integrity="sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7mLTdk1wblIUnrIq35nqwEvC" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js" integrity="sha384-X/XCfMm41VSsqRNQgDerQczD69XqmjOOOwYQvr/uuC+j4OPoNhVgjdGFwhvN02Ja" crossorigin="anonymous"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ]
+        });
+    });
+</script>
+        
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://x-29.github.io/">CS里的X-29</a>
+	</div>
+	<nav>
+		
+		<a href="/">首页</a>
+		
+		<a href="/post">文章</a>
+		
+		<a href="/about">关于</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">深入理解计算机系统(csapp)笔记-程序的机器级表示</h1>
+			<div class="meta">Posted on May 16, 2022</div>
+		</div>
+		
+
+		<section class="body">
+			<p>计算机执行「机器代码」，用字节序列编码低级的操作，包括处理数据、管理内存、读写存储设备上的数据，以及利用网络通信。</p>
+<p>汇编代码表示非常接近于机器代码。与机器代码的二进制格式相比，汇编代码的主要特点是它用可读性更好的文本格式表示。理解汇编代码以及它与原始 C 代码的联系，是理解计算机如何执行程序的关键一步。</p>
+<h2 id="程序编码">程序编码</h2>
+<p>假设一个 C 程序，有两个文件 p1.c 和 p2.c。用下面的 Unix 命令编译这些代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>linux&gt; gcc -Og -o p p1.c p2.c
+</span></span></code></pre></div><p>命令 gcc 指的是 GCC C 编译器，这是 Linux 上默认的编译器。</p>
+<p>gcc 命令实际上会调用一整套的程序，将源代码转换成可执行代码。</p>
+<ul>
+<li>首先，调用「C 预处理器」扩展源代码，插入所有用 <code>#include</code> 命令指定的文件，并扩展所有用 <code>#define</code> 声明指定的宏。</li>
+<li>其次，调用「编译器」产生两个源文件的汇编代码，名字分别为 <code>p1.s</code> 和 <code>p2.s</code>。</li>
+<li>接下来，调用「汇编器」将汇编代码转换成二进制「目标代码」文件 <code>p1.o</code> 和 <code>p2.o</code>。目标代码是机器代码的一种形式，它包含所有指令的二进制表示，但是还没有填入全局值的地址。</li>
+<li>最后，调用「链接器」将两个目标代码文件与实现库函数的代码合并，并产生最终的「可执行」代码文件 p。可执行代码是机器代码的第二种形式。</li>
+</ul>
+<hr>
+<p>计算机系统使用了多种不同形式的抽象，利用更简单的抽象模型来隐藏实现的细节。对于机器级编程来说，其中两种抽象尤为重要：</p>
+<ol>
+<li>由「指令集体系结构或指令集架构（Instruction Set Architecture，ISA）」来定义机器级程序的格式和行为，它定义了处理器状态、指令的格式，以及每条指令对状态的影响。</li>
+<li>机器级程序使用的内存地址是虚拟地址，提供的内存模型看上去是一个非常大的字节数值。</li>
+</ol>
+<p>C语言提供了一种模型，可以在内存中声明和分配各种数据类型的对象，但是机器代码只是简单地将内存看成一个很大、按字节寻址的数组。</p>
+<ul>
+<li>C 语言中的聚合数据类型，例如数组和结构，在机器代码中用一个组连续的字节来表示。</li>
+<li>对标量数据类型，汇编代码也不区分有符号或无符号，不区分各种类型的指针，甚至不区分指针和整数。</li>
+</ul>
+<p>在 gcc 命令上使用 &ldquo;-S&rdquo; 选项，可以产生一个汇编文件，例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>linux&gt; gcc -Og -S mstore.c
+</span></span></code></pre></div><p>执行这条命令，将会使 GCC 运行编译器，产生一个汇编文件 <code>mstore.s</code>，但不做进一步的工作。（通常情况下，它还会继续调用汇编器产生目标代码文件）。</p>
+<p>使用 “-c“ 选项，GCC 会执行编译并汇编代码，例如：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>linux&gt; gcc -Og -c mstore.c
+</span></span></code></pre></div><p>这会产生目标代码文件 mstore.o，它是二进制格式的，所以我们无法直接查看。</p>
+<p>要想查看机器代码文件的内容，可以使用「反汇编器」程序，例如，在 Linux 系统中，带 &lsquo;-d&rsquo; 选项的 objdump 命令。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>linux&gt; objdump -d mstore.o
+</span></span></code></pre></div><p>查看机器代码文件的内容，我们会发现「<strong>机器执行的程序只是一个字节序列，它是对一系列指令的编码</strong>」。例如：</p>
+<pre tabindex="0"><code>53 48 89 d3 e8 00 00 00 00 48 89 03 5b c3
+</code></pre><p>这些字节分成若干组，每组有 1 ～ 5 个字节。<strong>每组都是一条指令</strong>。例如 <code>53</code> 是 <code>push %rbx</code> 指令，<code>48 89 d3</code> 是指令 <code>mov %rdx, %rbx</code>。机器对产生这些指令的源代码几乎一无所知。</p>
+<hr>
+<p>汇编代码格式有两种：ATT 格式和 Intel 格式。</p>
+<ul>
+<li>GCC、objdump 用得是 ATT 格式的汇编代码。</li>
+<li>Microsoft 的工具，以及 Intel 的文档，都是使用 Intel 格式的汇编代码。</li>
+</ul>
+<p>Intel 和 ATT 格式的一些主要不同点：</p>
+<ul>
+<li>Intel 代码省略了指示大小的后缀。如指令 push 和 mov，而不是 pushq 和 movq。</li>
+<li>Intel 代码省略了寄存器名字前面的 &lsquo;%&rsquo; 符号，用的是 rbx，而不是 %rbx。</li>
+<li>Intel 代码用不同的方式来描述内存中的位置，例如 &lsquo;QWORD PTR [rbx]&rsquo;，而不是 &lsquo;(%rbx)&rsquo;。</li>
+<li>在有多个操作数的指令中，列出的操作数的顺序相反。</li>
+</ul>
+<h2 id="数据格式">数据格式</h2>
+<p>由于是从 16 位体系结构扩展成 32 位的，Intel 用术语「字（word）」表示 16 位数据类型。因此，称 32 位数为「双字（double words）」，64 位数为「四字（quad words）」。</p>
+<p>C 语言基本数据类型对应的 x86-64 表示：</p>
+<figure><img src="/images/c-data-types-x86.jpg"
+         alt="C 语言数据类型在 x86-64 中的大小" width="600"/><figcaption>
+            <p>C 语言数据类型在 x86-64 中的大小</p>
+        </figcaption>
+</figure>
+
+<p>如图所示，大多数 GCC 生成的汇编代码指令都有一个字符的后缀，表明操作数的大小。</p>
+<p>例如，数据传输指令的 4 个变种：</p>
+<ul>
+<li>movb，传送字节</li>
+<li>movw，传送字</li>
+<li>movl，传送双字</li>
+<li>movq，传送四字。</li>
+</ul>
+<h2 id="访问信息">访问信息</h2>
+<p>一个 x86-64 的 CPU 包含一组 16 个存储「64 位」值的「通用目的寄存器」。这些寄存器用来「存储整数数据和指针」。</p>
+<blockquote>
+<p>每个 CPU core 都有各自的寄存器。</p>
+</blockquote>
+<p>如图：</p>
+<figure><img src="/images/integer-registers.jpg"
+         alt="整数寄存器"/><figcaption>
+            <p>整数寄存器</p>
+        </figcaption>
+</figure>
+
+<p>所有 16 个寄存器的低位部分都可以作为字节、字（16位）、双字（32位）和四字（64位）数字访问，即：</p>
+<ul>
+<li>字节级操作可以访问最低的字节（8位）。</li>
+<li>16 位操作可以访问最低的 2 个字节（16位）。</li>
+<li>32 位操作可以访问最低的 4 个字节（32位）。</li>
+<li>64 位操作可以访问整个寄存器。</li>
+</ul>
+<p>程序计数器是特殊的寄存器，通常称为 PC，在 x86-64 中用 %rip 表示，它给出将要执行的下一条指令在内存中的地址。</p>
+<blockquote>
+<p>在常见的程序里不同的寄存器扮演不同的角色，其中最特别的是「栈指针 %rsp」，它用来指明运行时栈的结束位置。</p>
+</blockquote>
+<p>有一组标准的编程规范控制着如何使用寄存器来管理栈、传递函数参数、从函数的返回值，以及存储局部和临时数据。</p>
+<h3 id="寻址方式">寻址方式</h3>
+<p>大多数指令有一个或多个操作数（operand）。指令的操作数分为三种类型：</p>
+<ul>
+<li>立即数（immediate），用来表示常数值。如 <code>$-577</code>，<code>$0x1F</code>。</li>
+<li>寄存器（register），表示某个寄存器的内容。</li>
+<li>内存引用 ，它会根据计算出来的地址（通常称为有效地址）访问某个内存位置，也就是读取内存位置所存放的值。</li>
+</ul>
+<p>内存引用有多种不同的形式，最常用的形式为：$Imm(r_b，r_i，s)$。这样的引用有四个组成部分：</p>
+<ul>
+<li>一个立即数偏移量 $Imm$。</li>
+<li>一个基址寄存器 $r_b$。必须是 64 位寄存器。</li>
+<li>一个变址寄存器 $r_i$。必须是 64 位寄存器。</li>
+<li>一个比例因子 $s$。$s$ 必须是 1、2、4 或者 8。</li>
+</ul>
+<p>它所表示的地址可以这样计算出来：</p>
+<p>$$Imm+R[r_b]+R[r_i] \cdot s$$</p>
+<p>符号说明：符号 $r_a$ 表示任意寄存器 $a$，$R[r_a]$ 表示它的值。这是将寄存器集合看成一个数组 $R$，用寄存器标识作为索引。</p>
+<p>其他形式都是这种形式的特殊情况，只是省略了某些部分，相当于这些部分是 0。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>格式</th>
+<th>类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>直接（绝对）寻址（Direct/Absolute Addressing Mode））</td>
+<td>$Imm$</td>
+<td>Memory</td>
+<td>只使用 $Imm$ 寻址，例如 movl 0x20, %eax。把地址 0x20 处的 32 位数传送到 eax 寄存器。注意与立即数寻址的区别，这里是直接的内存地址。</td>
+</tr>
+<tr>
+<td>间接寻址（Indirect Addressing Mode）</td>
+<td>($r_b$)</td>
+<td>Memory</td>
+<td>只使用 $r_b$ 寻址。例如 movl (%eax), %ebx。把 eax 寄存器的值看做内存地址，把内存中这个地址处的 32 位数传送到 ebx 寄存器。<strong>注意与 movl %eax, %ebx 区分开来</strong>。</td>
+</tr>
+<tr>
+<td>(基址+偏移量)寻址（Base Pointer Addressing Mode）</td>
+<td>$Imm(r_b)$</td>
+<td>Memory</td>
+<td>只使用 $Imm$ 和 $r_b$ 寻址，例如 movl 4(%eax), %ebx。用于访问结构体成员比较方便，例如一个结构体的基地址保存在 eax 寄存器中，其中一个成员在结构体内的偏移量是 4 字节，要把这个成员读上来就可以用这条指令</td>
+</tr>
+<tr>
+<td>变址寻址（Indexed Addressing Mode）</td>
+<td>$(r_b,r_i)、Imm(r_b,r_i)$、$(,r_i,s)、Imm(,r_i,s)$、$(r_b,r_i,s)$、$Imm(r_b，r_i,s)$</td>
+<td>Memory</td>
+<td>例如 movl items(,%edi,4), %eax 就属于这种寻址方式，用于访问数组元素比较方便</td>
+</tr>
+<tr>
+<td>立即数寻址（Immediate Mode）</td>
+<td>$Imm$</td>
+<td>立即数</td>
+<td>就是指令中有一个操作数是立即数，例如 <code>movl $12, %eax</code>中的 $12，这其实跟寻址没什么关系，但也算作一种寻址方式。</td>
+</tr>
+<tr>
+<td>寄存器寻址（Register Addressing Mode）</td>
+<td>$r_a$</td>
+<td>Register</td>
+<td>就是指令中有一个操作数是寄存器，例如movl $12, %eax 中的 %eax，这跟内存寻址没什么关系，但也算作一种寻址方式。</td>
+</tr>
+</tbody>
+</table>
+<p>看几个例子，加深理解，假设下面的值存放在指明的内存地址和寄存器中：</p>
+<table>
+<thead>
+<tr>
+<th>内存地址</th>
+<th>值</th>
+<th>寄存器</th>
+<th>值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x100</td>
+<td>0xFF</td>
+<td>%rax</td>
+<td>0x100</td>
+</tr>
+<tr>
+<td>0x104</td>
+<td>0xAB</td>
+<td>%rcx</td>
+<td>0x1</td>
+</tr>
+<tr>
+<td>0x108</td>
+<td>0x13</td>
+<td>%rdx</td>
+<td>0x3</td>
+</tr>
+<tr>
+<td>0x10c</td>
+<td>0x11</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>给出所示操作数的值：</p>
+<table>
+<thead>
+<tr>
+<th>操作数</th>
+<th>值</th>
+<th>注释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>%rax</td>
+<td>0x100</td>
+<td>寄存器寻址</td>
+</tr>
+<tr>
+<td>0x104</td>
+<td>0xAB</td>
+<td>直接寻址</td>
+</tr>
+<tr>
+<td>$0x108</td>
+<td>0x108</td>
+<td>立即数寻址</td>
+</tr>
+<tr>
+<td>(%rax)</td>
+<td>0xFF</td>
+<td>间接寻址，地址 0x100</td>
+</tr>
+<tr>
+<td>4(%rax)</td>
+<td>0xAB</td>
+<td>变址寻址，地址 0x104</td>
+</tr>
+<tr>
+<td>9(%rax,%rdx)</td>
+<td>0x11</td>
+<td>变址寻址，地址 0x10c</td>
+</tr>
+<tr>
+<td>260(%rcx,%rdx)</td>
+<td>0x13</td>
+<td>变址寻址，地址 0x108。十进制 264 用十六进制表示就是 0x108</td>
+</tr>
+<tr>
+<td>0xFC(,%rcx, 4)</td>
+<td>0xFF</td>
+<td>变址寻址，地址 0x100</td>
+</tr>
+<tr>
+<td>(%rax,%rdx, 4)</td>
+<td>0x11</td>
+<td>变址寻址，地址 0x10c</td>
+</tr>
+</tbody>
+</table>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/cs">cs</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/x-29" title="GitHub"><i data-feather="github"></i></a><a class="soc" href="https://twiiter.com/x-29/" title="Twitter"><i data-feather="twitter"></i></a><a class="soc" href="https://gitlab.com/x-29/" title="GitLab"><i data-feather="gitlab"></i></a></div>
+  <div class="footer-info">
+    2022  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>
