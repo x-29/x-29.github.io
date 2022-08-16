@@ -92,7 +92,7 @@
 </ol>
 <p>C语言提供了一种模型，可以在内存中声明和分配各种数据类型的对象，但是机器代码只是简单地将内存看成一个很大、按字节寻址的数组。</p>
 <ul>
-<li>C 语言中的聚合数据类型，例如数组和结构，在机器代码中用一个组连续的字节来表示。</li>
+<li>C 语言中的聚合数据类型，例如数组和结构，在机器代码中用一组连续的字节来表示。</li>
 <li>对标量数据类型，汇编代码也不区分有符号或无符号，不区分各种类型的指针，甚至不区分指针和整数。</li>
 </ul>
 <p>在 gcc 命令上使用 &ldquo;-S&rdquo; 选项，可以产生一个汇编文件，例如：</p>
@@ -170,8 +170,8 @@
 <p>内存引用有多种不同的形式，最常用的形式为：$Imm(r_b，r_i，s)$。这样的引用有四个组成部分：</p>
 <ul>
 <li>一个立即数偏移量 $Imm$。</li>
-<li>一个基址寄存器 $r_b$。必须是 64 位寄存器。</li>
-<li>一个变址寄存器 $r_i$。必须是 64 位寄存器。</li>
+<li>一个基址寄存器 $r_b$。</li>
+<li>一个变址寄存器 $r_i$。</li>
 <li>一个比例因子 $s$。$s$ 必须是 1、2、4 或者 8。</li>
 </ul>
 <p>它所表示的地址可以这样计算出来：</p>
@@ -291,36 +291,97 @@
 <tr>
 <td>(%rax)</td>
 <td>0xFF</td>
-<td>间接寻址，地址 0x100</td>
+<td>间接寻址，内存地址 0x100</td>
 </tr>
 <tr>
 <td>4(%rax)</td>
 <td>0xAB</td>
-<td>变址寻址，地址 0x104</td>
+<td>变址寻址，内存地址 0x104</td>
 </tr>
 <tr>
 <td>9(%rax,%rdx)</td>
 <td>0x11</td>
-<td>变址寻址，地址 0x10c</td>
+<td>变址寻址，内存地址 0x10c</td>
 </tr>
 <tr>
 <td>260(%rcx,%rdx)</td>
 <td>0x13</td>
-<td>变址寻址，地址 0x108。十进制 264 用十六进制表示就是 0x108</td>
+<td>变址寻址，内存地址 0x108。十进制 264 用十六进制表示就是 0x108</td>
 </tr>
 <tr>
 <td>0xFC(,%rcx, 4)</td>
 <td>0xFF</td>
-<td>变址寻址，地址 0x100</td>
+<td>变址寻址，内存地址 0x100</td>
 </tr>
 <tr>
 <td>(%rax,%rdx, 4)</td>
 <td>0x11</td>
-<td>变址寻址，地址 0x10c</td>
+<td>变址寻址，内存地址 0x10c</td>
 </tr>
 </tbody>
 </table>
+<h3 id="数据传送指令">数据传送指令</h3>
+<p>数据传送指令（Move）是将数据从一个位置复制到另一个位置的指令，它有两个操作数：源操作数和目的操作数。</p>
+<ul>
+<li>源操作数指定的值是一个立即数，存储在寄存器（register）中或者内存（memory）中。</li>
+<li>目的操作数指定一个位置，要么是一个寄存器，要么是一个内存地址。</li>
+<li>X86-64 限制传送指令的两个操作数不能都指向内存位置。将一个值从一个内存位置复制到另一个内存位置需要两条指令。第一条指令将源值加载到寄存器中，第二条将寄存器的值写入目的位置。</li>
+</ul>
+<p>寄存器部分的大小必须与指令最后一个字符（&lsquo;b&rsquo;, &lsquo;w&rsquo;, &rsquo;l&rsquo; 或 &lsquo;q&rsquo;）指定的大小匹配，如：</p>
+<pre tabindex="0"><code>movl $0x4050, %eax         Immediate -- Register, 4 bytes
+movb $-17, (%rsp)          Immediate -- Memory,   1 bytes
+movb (%rdi, %rcx), %al     Memory -- Register,    1 bytes
+movw %bp, %sp              Register -- Register,  2 bytes
+movq %rax, -12(%rbp)       Register -- Memory,    8 bytes
+</code></pre><p>可以看到上面的 movl 指令是传送 4 个字节的数据到寄存器中，所以寄存器用 32 位的 <code>%eax</code>。同样的，movb 指令是传送 1 个字节的数据，寄存器用 8 位的 <code>%al</code>。后面的 <code>%bp</code>、<code>%sp</code>、<code>%rax</code> 也都是与指令最后一个字符指定的大小相匹配的。</p>
+<p>当指令以寄存器为目的操作数时，对于生成小于 8 字节的指令，寄存器中剩下的字节会怎样处理呢？对此有两条规则：</p>
+<ul>
+<li>生成 1 字节和 2 字节数字的指令会保持剩下的字节不变。</li>
+<li>生成 4 字节的指令会把高位 4 个字节置为 0。
+<ul>
+<li>movl 指令以寄存器作为目的操作数时，它会将寄存器的高 4 字节置为 0。</li>
+</ul>
+</li>
+</ul>
+<p>例如：</p>
+<pre tabindex="0"><code>movabsq $0x0011223344556677, %rax      %rax = 0011223344556677
+movb    $-1, %al                       %rax = 00112233445566FF
+movw    $-1, %ax                       %rax = 001122334455FFFF
+movl    $-1, %eax                      %rax = 00000000FFFFFFFF
+movq    $-1, %rax                      %rax = FFFFFFFFFFFFFFFF
+</code></pre><p>第一条 <code>movabsq</code> 指令传送绝对的四字，能够以任意 64 位立即数作为源操作数，并且只以寄存器作为目的操作数。在这里它把寄存器 %rax 初始化为位模式 0011223344556677。</p>
+<blockquote>
+<p>数据传送指令中有一条 cltq 指令。这条指令没有操作数：它总是以寄存器 %eax 为源操作数，%rax 为符号扩展结果的目的操作数。它的效果与指令 movslq %eax, %rax 完全一致。</p>
+</blockquote>
+<p>下面结合 C 程序来看一个数据传送的示例：</p>
+<p>C 代码：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">long</span> <span style="color:#a6e22e">exchange</span>(<span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>p, <span style="color:#66d9ef">long</span> y) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> x <span style="color:#f92672">=</span> <span style="color:#f92672">*</span>xp;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>xp <span style="color:#f92672">=</span> y;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> x;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>汇编代码：</p>
+<pre tabindex="0"><code>    long exchange(long *xp, long y)
+    xp in %rdi, y in %rsi
 
+1   exchange:
+2     movq  (%rdi), %rax      Get x at xp. Set as return value.
+3     movq  %rsi, (%rdi)      Store y at xp.
+4     ret                     Return
+</code></pre><p>我们看到函数 exchange 由三条指令实现：两条数据传送（movq），加上一条返回函数被调用点的指令（ret）。</p>
+<p>当过程开始执行时，过程参数 xp 和 y 分别存储在寄存器 %rdi 和 %rsi 中。然后，指令 2 从内存中读出 x，把它存放到寄存器 %rax 中，直接实现了 C 程序中的 x=*xp 操作。指令 3 将 y 写入到寄存器 %rdi 中的 xp 指向的内存位置，直接实现了操作 *xp=y。</p>
+<p>从这个段汇编代码中我们可以看到这么两点：</p>
+<ul>
+<li>C 语言中所谓的“指针”其实就是地址。间接引用指针就是将该指针放在一个寄存器中，然后在内存引用（$Imm(r_b,r_i,s)$)中使用这个寄存器。</li>
+<li>局部变量（如：x）通常保存在寄存器中，而不是内存中。访问寄存器比访问内存要快得多。</li>
+</ul>
+<p>有关 C 指针的一些示例：</p>
+<pre tabindex="0"><code>char *p;
+p = &amp;a;  // p 存储的是地址。C 操作符 &amp; 称为“取址” 操作符，它创建一个指针。
+
+char b = *p; // 读取 p 所指向位置中的值，并将它存放到变量 b 中。C 操作符 * 执行指针的间接引用。
+*p = c; // 将 c 的值写到 p 所指向的位置。这也是指针间接引用的一种形式。
+</code></pre>
 		</section>
 
 		<div class="post-tags">
