@@ -381,7 +381,34 @@ p = &amp;a;  // p 存储的是地址。C 操作符 &amp; 称为“取址” 操�
 
 char b = *p; // 读取 p 所指向位置中的值，并将它存放到变量 b 中。C 操作符 * 执行指针的间接引用。
 *p = c; // 将 c 的值写到 p 所指向的位置。这也是指针间接引用的一种形式。
-</code></pre>
+</code></pre><h3 id="压入和弹出栈数据">压入和弹出栈数据</h3>
+<p>「栈」是一个种数据结构，可以添加或者删除值，不过要遵循“后进先出”的原则。通过 push 操作把数据压入栈中，通过 pop 操作弹出（删除）数据。pop 操作的值永远是最近被压入而且仍然在栈中的值。</p>
+<p>在 x86-64 中，程序栈存放在内存中某个区域。<code>pushq</code> 指令把数据压入到栈中，<code>popq</code> 指令从栈中弹出数据。这两条指令都只有一个操作数。</p>
+<figure><img src="/images/push-pop-instructions.jpg"
+         alt="入栈和出栈指令。操作数 S：表示压入栈的数据源，操作数 D：表示弹出的数据目的" width="600"/><figcaption>
+            <p>入栈和出栈指令。操作数 S：表示压入栈的数据源，操作数 D：表示弹出的数据目的</p>
+        </figcaption>
+</figure>
+
+<p>将一个四字的值压入栈中，首先要将栈指针减 8，然后将值写到新的栈地址。因此，指令 pushq %rbp 的行为等价于下面两条指令：</p>
+<pre tabindex="0"><code>subq $8, %rsp        Decrement stack Pointer
+movq %rbp, (%rsp)    Store %rbp on stack
+</code></pre><p>弹出一个四字的操作，首先是从栈顶位置读出数据，然后将栈指针加 8。因此，指令 popq %rax 等价于下面两条指令：</p>
+<pre tabindex="0"><code>movq (%rsp), %rax      Read %rax from stack
+addq $8, %rsp          Increment stack pointer
+</code></pre><p>栈总是从一端压入或弹出数据。这一端称之为「栈顶」。</p>
+<p>在 x86-64 中，「<strong>栈向低地址方向增长，栈顶元素的地址是所有栈元素地址中最低的</strong>」。栈指针 %rsp 保存着栈顶元素的地址。所以压栈是减小栈指针（寄存器 %rsp）的值，并将数据存放到内存中，而出栈是从内存中读数据，并增加栈指针的值。</p>
+<p>看一个栈操作的例子。最开始是 %rsp 为 0x108，%rax 为 0x123。</p>
+<figure><img src="/images/stack-operation.jpg"
+         alt="栈操作" width="600"/><figcaption>
+            <p>栈操作</p>
+        </figcaption>
+</figure>
+
+<p>执行指令 <code>pushq %rax</code>，首先将 %rsp 减去 8，得到 0x100，然后把值 0x123 存放到内存地址 0x100 处。</p>
+<p>执行完 pushq 指令后，接着就执行 <code>popq %rdx</code> 指令，这时先从内存中读出值 0x123，再写到寄存器 %rdx 中，最后，寄存器 %rsp 的值增加 8，回到了 0x108。</p>
+<p>我们可以看到，%rsp 指向的地址总是栈顶。</p>
+
 		</section>
 
 		<div class="post-tags">
