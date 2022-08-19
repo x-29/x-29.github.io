@@ -350,6 +350,12 @@ movw    $-1, %ax                       %rax = 001122334455FFFF
 movl    $-1, %eax                      %rax = 00000000FFFFFFFF
 movq    $-1, %rax                      %rax = FFFFFFFFFFFFFFFF
 </code></pre><p>第一条 <code>movabsq</code> 指令传送绝对的四字，能够以任意 64 位立即数作为源操作数，并且只以寄存器作为目的操作数。在这里它把寄存器 %rax 初始化为位模式 0011223344556677。</p>
+<p>在将较小的源值传送到较大的目的时，需要先对源值做扩展：</p>
+<ul>
+<li><code>MOVZ S, R</code> 类的指令是做零扩展，用 0 填充。</li>
+<li><code>MOVS S, R</code> 类的指令是做符号扩展，用符号为来填充。</li>
+</ul>
+<p>例如，%dl = AA，执行 movzbl %dl, %eax 后 %eax = 000000AA。movzbl 指令会先对 %dl 的值做零扩展到 32 位（命令中的字符 l 指明了目的的大小，b 表示源值的大小），也就是前 24 位填充 0，再将值传送到 %eax 中。执行 movsbl %dl, %eax 后 %eax=FFFFFFAA。</p>
 <blockquote>
 <p>数据传送指令中有一条 cltq 指令。这条指令没有操作数：它总是以寄存器 %eax 为源操作数，%rax 为符号扩展结果的目的操作数。它的效果与指令 movslq %eax, %rax 完全一致。</p>
 </blockquote>
@@ -377,10 +383,10 @@ movq    $-1, %rax                      %rax = FFFFFFFFFFFFFFFF
 </ul>
 <p>有关 C 指针的一些示例：</p>
 <pre tabindex="0"><code>char *p;
-p = &amp;a;  // p 存储的是地址。C 操作符 &amp; 称为“取址” 操作符，它创建一个指针。
+p = &amp;a;        // p 存储的是地址。C 操作符 &amp; 称为“取址” 操作符，它创建一个指针。
 
-char b = *p; // 读取 p 所指向位置中的值，并将它存放到变量 b 中。C 操作符 * 执行指针的间接引用。
-*p = c; // 将 c 的值写到 p 所指向的位置。这也是指针间接引用的一种形式。
+char b = *p;   // 读取 p 所指向位置中的值，并将它存放到变量 b 中。C 操作符 * 执行指针的间接引用。
+*p = c;        // 将 c 的值写到 p 所指向的位置。这也是指针间接引用的一种形式。
 </code></pre><h3 id="压入和弹出栈数据">压入和弹出栈数据</h3>
 <p>「栈」是一个种数据结构，可以添加或者删除值，不过要遵循“后进先出”的原则。通过 push 操作把数据压入栈中，通过 pop 操作弹出（删除）数据。pop 操作的值永远是最近被压入而且仍然在栈中的值。</p>
 <p>在 x86-64 中，程序栈存放在内存中某个区域。<code>pushq</code> 指令把数据压入到栈中，<code>popq</code> 指令从栈中弹出数据。这两条指令都只有一个操作数。</p>
@@ -482,6 +488,62 @@ arith:
 sar %cl, %rax
 </code></pre><hr>
 <p><code>xorq %rdx, %rdx</code>，这条指令会将寄存器 %rdx 设置为 0。对于任意 x，x^x = 0。</p>
+<h2 id="控制">控制</h2>
+<p>C 语言中的条件语句、循环语言和分支语言，要求有条件的执行，根据测试的结果决定操作执行的顺序。机器代码提供两种基本的低级机制来实现有条件的行为：测试数据值，然后根据测试的结果来改变控制流或者数据流。</p>
+<p>除了整数寄存器，CPU 还维护着一组「<strong>单个位</strong>（single bit）」的「条件码」（condition code）寄存器，它们描述了最近算术或逻辑操作的情况。可以检查这些寄存器来执行条件分支指令。</p>
+<p>最常用的条件码有：</p>
+<ul>
+<li>CF：进位标志。最近的操作使最高位产生了进位。可以用来检查无符号操作是否溢出。</li>
+<li>ZF：零标志。最近的操作得出的结果为 0。</li>
+<li>SF：符号标志。最近的操作得到的结果为负数。</li>
+<li>OF：溢出标志。最近的操作导致一个补码溢出。</li>
+</ul>
+<p>除了 leaq 指令不改变任何条件码，前面（图：<em>整数算术操作</em>）列出的算术和逻辑操作指令都会设置条件码。</p>
+<ul>
+<li>对于逻辑操作，例如 XOR，进位标志（CF）和溢出标志（OF）会设置为 0.</li>
+<li>对于移位操作，进位标志将设置为最后一个被移出的位，而溢出标志设置为 0。</li>
+<li>INC 和 DEC 指令会设置溢出和零标志，但不会改变进位标志。</li>
+</ul>
+<p>另外，CMP 和 TEST 这两类指令也会设置条件码，但它们不会改变任何其他的寄存器，就是说不会更新目的寄存器。比如，<code>cmp S1, S2 </code>指令根据两个操作数之差（S2-S1）来设置条件码，它不会改变 S2 的值。</p>
+<p><code>test S1, S2</code> 指令的结果是基于 S1&amp;S2。典型的用法是，两个操作数是一样，比如，testq %rax, %rax 指令用来检查 %rax 是负数、零，还是正数。或者其中一个操作数是一个掩码，用来指示哪些为应该被测试。</p>
+<hr>
+<p>条件码通常不会直接读取，常用的使用方法有三种：</p>
+<ul>
+<li>可以根据条件码的某种组合将一个字节设置为 0 或者 1。</li>
+<li>可以条件跳转到程序的某个其他的部分。</li>
+<li>可以有条件地传送数据。</li>
+</ul>
+<p>SET 指令就是根据条件码的某种组合，将一个字节设置为 0 或者 1。</p>
+<figure><img src="/images/setx.jpg"
+         alt="SET 指令" width="600"/><figcaption>
+            <p>SET 指令</p>
+        </figcaption>
+</figure>
+
+<ul>
+<li>SET 指令的目的操作数是低位单字节寄存器（如 al、dl）之一，或者是一个字节的内存位置。</li>
+<li>SET 指令不会修改寄存器的剩余字节。
+<ul>
+<li>通常用 <code>movzbl</code> 指令来将高 32 位设置为 0。</li>
+<li>我们知道，在 x86-64 中，任何为寄存器生成 32 位（4 字节）值的指令，也会将寄存器的高位部分（最高 4 个字节）设置为 0。比如，movl、movzbl、movsbl。</li>
+</ul>
+</li>
+</ul>
+<p>例如，有 C 代码：</p>
+<pre tabindex="0"><code>int gt(long x, long y) {
+  return x &gt; y;
+}
+</code></pre><p>它的汇编指令如下：</p>
+<pre tabindex="0"><code>  int get(long x, long y)
+  x in %rdi, x int %rsi
+
+gt:
+  cmpq    %rsi, %rdi  # compare x:y
+  setg    %al         # al = x &gt; y
+  movzbl  %al, %eax   # Zero rest of %rax
+  ret
+</code></pre><p>先是执行比较指令，根据计算（y - x）设置条件码。然后，setg 指令根据条件码的组合（~(SF^0F)&amp;~ZF），将 %al 设置为 0 或 1。最后，movzbl 指令将高位填充为 0 传送到 %rax 作为结果返回。</p>
+<hr>
 
 		</section>
 
