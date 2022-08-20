@@ -544,6 +544,52 @@ gt:
   ret
 </code></pre><p>先是执行比较指令，根据计算（y - x）设置条件码。然后，setg 指令根据条件码的组合（~(SF^0F)&amp;~ZF），将 %al 设置为 0 或 1。最后，movzbl 指令将高位填充为 0 传送到 %rax 作为结果返回。</p>
 <hr>
+<p>正常情况下，指令按照它们出现的顺序一条一条地执行。跳转（jump）指令会导致执行切换到程序中一个全新的位置。</p>
+<ul>
+<li>它根据条件码跳转到代码的不同部分。</li>
+<li>跳转的目的地是一个地址。在汇编代码中，通常用一个标号（Label）指明。</li>
+</ul>
+<p><code>jmp</code> 指令是无条件跳转。它可以是直接跳转，即跳转目标是作为指令的一部分编码的；也可以是间接跳转，即跳转目标是从寄存器或内存位置中读出的。</p>
+<p>例如，直接跳转，用一个标号作为跳转目标：</p>
+<pre tabindex="0"><code>jmp .L1     # L1 为标号。
+</code></pre><p>间接跳转，在 “*” 号后面跟一个操作数指示符：</p>
+<pre tabindex="0"><code>jmp *%rax   # 用寄存器 %rax 中的值作为跳转目标
+
+jmp *(%rax) # 以 %rax 中的值作为读地址，从内存中读出跳转目标
+</code></pre><p>详细的跳转指令表：</p>
+<figure><img src="/images/jump.jpg"
+         alt="跳转指令"/><figcaption>
+            <p>跳转指令</p>
+        </figcaption>
+</figure>
+
+<p>除 jmp 之外，表中其他的跳转指令都是有条件的，它们根据条件码的某种组合，跳转或继续执行代码序列中下一条指令。</p>
+<p>跳转目标在汇编和链接时会进行编码，最常用的编码方法是「PC-relative」（PC 相对的）。<strong>它会将目标指令的地址与紧跟在跳转指令后面那条指令的地址之间的差作为编码</strong>。另外一种编码方法是给出 “绝对” 地址，用 4 个字节直接指定目标。汇编器和链接器会选择适当的编码方法。</p>
+<p>下面是一个 PC-relative 的例子，假设有一个函数的汇编代码如下：</p>
+<pre tabindex="0"><code>   movq  %rdi, %rax
+   jmp   .L2
+ .L3:
+   sarq  %rax
+ .L2
+   testq %rax, %rax
+   jg    .L3
+   rep；ret
+</code></pre><p>汇编器产生的 &ldquo;.o&rdquo; 格式的反汇编代码如下：</p>
+<pre tabindex="0"><code>1    0:    48 89 f8          mov   %rdi,%rax
+2    3:    eb 03             jmp   8 &lt;loop+0x8&gt;
+3    5:    48 d1 f8          sar   %rax
+4    8:    48 85 c0          test  %rax,%rax
+5    b:    7f f8             jg    5 &lt;loop+0x5&gt;
+6    d:    f3 c3             repz retq
+</code></pre><p>从反汇编的代码中可以看到，第 2 行和第 5 行中跳转指令的跳转目标分别指明为 0x8 和 0x5。观察指令的字节编码，会看到第一条跳转指令的目标编码（在第二个字节中）为 0x03。把它加上 0x5（也就是下一条指令的地址），就得到跳转目标地址 0x8，也就是第 4 行指令的地址。类似地，第二条跳转指令的目标编码是 0xf8，将它加上 0xd（第 6 行指令的地址），得到跳转目标地址 0x5，也就是第 3 行指令的地址。</p>
+<p>下面是经过链接器链接后的程序反编译代码：</p>
+<pre tabindex="0"><code>1    4004d0:    48 89 f8          mov   %rdi,%rax
+2    4004d3:    eb 03             jmp   4004d8 &lt;loop+0x8&gt;
+3    4004d5:    48 d1 f8          sar   %rax
+4    4004d8:    48 85 c0          test  %rax,%rax
+5    4004db:    7f f8             jg    4004d5 &lt;loop+0x5&gt;
+6    4004dd:    f3 c3             repz retq
+</code></pre><p>链接之后，这些指令被「重定位」到不同的地址，但是第 2 行和第 5 行中跳转目标的编码并没有变。</p>
 
 		</section>
 
