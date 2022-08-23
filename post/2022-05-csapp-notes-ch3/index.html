@@ -773,6 +773,120 @@ done:
 <li>分配和释放内存。在开始时，Q 可能需要为局部变量分配空间，而在返回前，又必须释放这些存储空间。</li>
 </ul>
 <p>x86-64 的过程实现包括一组特殊的指令和一些对机器资源（例如，寄存器和程序内存）使用的约定规则。</p>
+<h3 id="运行时栈">运行时栈</h3>
+<p>程序用栈来管理它的过程所需要的存储空间，栈和程序寄存器存放着传递控制和数据、分配内存所需的信息。</p>
+<p>栈是一块内存区域，由系统自动分配。</p>
+<figure><img src="/images/memory-layout.jpg"
+         alt="内存的布局" width="600"/><figcaption>
+            <p>内存的布局</p>
+        </figcaption>
+</figure>
+
+<p>x86-64 的栈向低地址方向增长，栈指针（寄存器 %rsp）指向栈顶元素。通过 pushq 和 popq 指令可以将数据存入栈中或是从栈中取出。将栈指针减小一个适当的量可以为没有指定初始值的数据在栈上分配空间，而增加栈指针可以释放空间。</p>
+<figure><img src="/images/stack-push-pop.jpg" width="600"/>
+</figure>
+
+<p>当 x86-64 过程需要的存储空间超出寄存器能够存放的大小时，就会在栈上分配空间。这部分栈上分配的空间称为过程的栈帧（stack frame）。</p>
+<figure><img src="/images/stack.jpg"
+         alt="通用的栈帧结构" width="600"/><figcaption>
+            <p>通用的栈帧结构</p>
+        </figcaption>
+</figure>
+
+<p>当前正在执行的过程（如函数 Q）的帧总是在栈顶。当过程 P 调用过程 Q 时，会把返回地址压入栈中（作为 P 的栈帧的一部分），指明当 Q 返回时，要从 P 程序的那个位置继续执行。</p>
+<p>大多数过程的栈帧都是定长的，在过程的开始就分配好了。实际上，在所有的局部变量都可以保存在寄存器中，而函数又不调用任何其他函数时，该函数是不需要栈帧的（不需要在栈上分配空间）。</p>
+<h3 id="转移控制">转移控制</h3>
+<p>将控制从函数 P 转移到函数 Q，只需要简单地把程序计数器（寄存器 %rip）设置为 Q 的代码的起始地址。不过，当从 Q 返回时，处理器必须要知道从 P 的哪个位置继续执行。在 x86-64 机器中，过程调用通过 <code>call Q</code> 指令完成，它会把返回地址 A 压入栈中，并将程序计数器（寄存器 %rip）设置为 Q 的起始地址。返回地址 A 是紧跟在 call 指令后面的那条指令的地址。例如：</p>
+<pre tabindex="0"><code>400544: call 400550 &lt;mult2&gt;
+400549: movq %rax, (%rax)
+</code></pre><p>返回地址 A = 0x400549。从过程中返回通过 <code>ret</code> 指令完成，ret 指令会从栈中弹出返回地址 A，并把程序计数器设置为 A。</p>
+<p>call 指令有一个目标操作数，指明被调用过程起始的指令地址。</p>
+<ul>
+<li>call .Label， 直接调用。</li>
+<li>call *Operand，间接调用。</li>
+</ul>
+<p>通过一个例子来看一下 call 和 ret 指令的执行情况，在下图的反汇编代码中，multstore 函数调用了 mult2 函数。</p>
+<figure><img src="/images/call-step-1.jpg"
+         alt="执行 call" width="600"/><figcaption>
+            <p>执行 call</p>
+        </figcaption>
+</figure>
+
+<p>从上图中看到，在 multstore 函数中，执行到 call 指令时，程序计数器 %rip = 0x400544，栈指针 %rsp = 0x120。</p>
+<figure><img src="/images/call-step-2.jpg"
+         alt="call 执行之后" width="600"/><figcaption>
+            <p>call 执行之后</p>
+        </figcaption>
+</figure>
+
+<p>call 指令执行之后，返回地址 <code>0x400549</code> 压入到了栈中，程序计数器设置到了 mult2 函数的开始地址（第一条指令的地址），即 %rip = 0x400550。栈指针指向到栈顶 %rsp = 0x118。</p>
+<figure><img src="/images/ret-step-1.jpg"
+         alt="执行 ret" width="600"/><figcaption>
+            <p>执行 ret</p>
+        </figcaption>
+</figure>
+
+<p>在 mult2 函数执行到 ret 指令时，程序计数器 %rip = 0x40057，栈指针 %rsp = 0x118，没有变化。</p>
+<figure><img src="/images/ret-step-2.jpg"
+         alt="ret执行之后" width="600"/><figcaption>
+            <p>ret执行之后</p>
+        </figcaption>
+</figure>
+
+<p>ret 指令执行之后，返回地址被弹出了栈，并且程序计数器设置成了返回地址，即 %rip = 0x400549。栈指针指向到 0x120。</p>
+<h3 id="数据传送">数据传送</h3>
+<p>在调用一个过程时，除了把控制传递给它并在过程返回时再传递回来之外，过程调用还可能要传递一些参数，而从过程返回也可能要换回一个值。在 x86-64 中，大部分过程间的这种数据传送是通过「寄存器」实现的。</p>
+<ul>
+<li>x86-64 中，可以通过寄存器最多传递 6 个整型（例如整数和指针）参数。</li>
+<li>如果一个函数有大于 6 个整型参数，超出 6 个的部分要通过「栈】来传递。
+<ul>
+<li>通过栈传递参数时，所有的数据大小都向 8 的倍数对齐。</li>
+<li>参数是以参数列表相反的顺序入栈。</li>
+</ul>
+</li>
+</ul>
+<figure><img src="/images/register-stack-function-args.jpg" width="600"/>
+</figure>
+
+<p>寄存器的使用有特殊的顺序，在 x86-64 中，会根据参数在参数列表中的顺序为它们分配寄存器，第 1 个参数分配给 %rdi，第 2 个分配给 %rsi，第 3~6 依次为 %rdx, %rcx, %r8, %r9。从第 7 个参数开始，就要在栈上分配了。需要注意的是，<strong>参数 7 位于栈顶</strong>，也就是说，<strong>参数是以参数列表相反的顺序入栈的</strong>，对于参数 7～n 的入栈顺序是 n，n-1，&hellip;，7，最后一个参数先入栈。</p>
+<p>按照约定，过程返回的值放在 %rax 寄存器中。</p>
+<ul>
+<li>被调用方将返回值放在 %rax 中。
+<ul>
+<li>%rax 能存放 8 个字节的数据。</li>
+<li>超过 8 个字节，最好返回一个指向它们的指针。</li>
+</ul>
+</li>
+<li>调用方从 %rax 读取返回值。</li>
+</ul>
+<p>下面是一个数据传送的例子：</p>
+<pre tabindex="0"><code>void multstore(long x, long y, long *desc) {
+  long t = mult2(x, y);
+  *dest = t;
+}
+
+0000000000400540 &lt;multstore&gt;:
+  # x in %rdi, y in %rsi, dest in %rdx
+    • • •
+  400541:  movq   %rdx, %rbx            # Save dest
+  400544:  call   400550 &lt;mult2&gt;        # mult2(x,y)
+  # t in %rax
+  400549:  movq   %rax, (%rbx)          # Save at dest
+    • • •
+
+
+long mult2(long a, long b) {
+  long s = a * b;
+  return s;
+}
+
+0000000000400550 &lt;mult2&gt;:
+  # a in %rdi, b in %rsi
+  400550:  movq   %rdi, %rax     # a
+  400553:  imulq  %rsi, %rax     # a * b
+  # s in %rax
+  400557: ret                    # Return
+</code></pre><h3 id="局部变量">局部变量</h3>
 
 		</section>
 
