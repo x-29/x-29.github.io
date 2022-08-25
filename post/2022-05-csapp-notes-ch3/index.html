@@ -886,8 +886,133 @@ long mult2(long a, long b) {
   400553:  imulq  %rsi, %rax     # a * b
   # s in %rax
   400557: ret                    # Return
-</code></pre><h3 id="局部变量">局部变量</h3>
+</code></pre><h3 id="栈上的局部存储">栈上的局部存储</h3>
+<p>在这些情况下，局部数据需要存放到内存中：</p>
+<ul>
+<li>寄存器不能存放下所有的本地数据。</li>
+<li>对一个局部变量使用地址运算符‘&amp;’，这时必须能够为它产生一个地址。</li>
+<li>局部变量是数值或结构，这时必须能够通过数值或结构引用被访问到。</li>
+</ul>
+<p>一般来说，过程通过减小栈指针，在栈上分配空间。分配的结果作为栈帧的一部分，标号为“局部变量”（Local variables）。</p>
+<p>下面是一个例子，体现了 x86-64 栈行为的一些特性。</p>
+<pre tabindex="0"><code>long call_proc() {
+  long x1 = 1;
+  int x2 = 2;
+  short x3 = 3;
+  char x4 = 4;
+  proc(x1, &amp;x1, x2, &amp;x2, x3, &amp;x3, x4, &amp;x4);
+  return (x1 + x2) * (x3 - x4)
+}
 
+
+1   call_proc:
+      # Set up arguments to proc
+2     subq    $32, %rsp       # Allocate 32-byte stack frame
+      ~~~~~~~~~~~~~~~~
+3     movq    $1,  24(%rsp)   # Store 1 in &amp;x1
+4     movl    $2,  20(%rsp)   # Store 2 in &amp;x2
+5     movw    $3,  18(%rsp)   # Store 3 in &amp;x3
+6     movb    $4,  17(%rsp)   # Store 4 in &amp;x4
+7     leaq    17(%rsp), %rax  # Create &amp;x4
+8     movq    %rax, 8(%rsp)   # Store &amp;x4 as argument 8
+9     movl    $4, (%rsp)      # Store 4 as argument 7
+10    leaq    18(%rsp), %r9   # Pass &amp;x3 as argument 6
+11    movl    $3, %r8d        # Pass 3 as argument 5
+12    leaq    20(%rsp), %rcx  # Pass &amp;x2 as argument 4
+13    movl    $2, %edx        # Pass 2 as argument 3
+14    leaq    24(%rsp), %rsi  # Pass &amp;x1 as argument 2
+15    movl    $1, %edi        # Pass 1 as argument 1
+      # Call proc
+16    call  proc
+      # Retrieve changes to memory
+17    movslq  20(%rsp), %rdx  # Get x2 and convert to long
+18    addq    24(%rsp), %rdx  # Compute x1+x2 
+19    movswl  18(%rsp), %eax  # Get x3 and convert to int 
+20    movsbl  17(%rsp), %ecx  # Get x4 and convert to int 
+21    subl    %ecx, %eax      # Compute x3-x4 
+22    cltq                    # Convert to long 
+23    imulq   %rdx, %rax      # Compute (x1+x2) * (x3-x4) 
+24    addq    $32, %rsp       # Deallocate stack frame
+      ~~~~~~~~~~~~~~~~
+25    ret                     # Return
+</code></pre><p>可以看到代码中第2～15行都是为调用 proc 做准备，其中包括为局部变量和函数参数建立栈帧，将函数参数加载至寄存器。
+过程 proc 的前 6 个参数通过寄存器传送，后面 2 个通过栈传送。</p>
+<pre tabindex="0"><code>void proc(long a1, long *a1p, 
+          int a2, int *a2p, 
+          short a3, short *a3p, 
+          char a4, char *a4p) {
+  *a1p += a1;
+  *a2p += a2;
+  *a3p += a3;
+  *a4p += a4;
+}
+
+
+
+    void proc(a1, a1p, a2, a2p, a3, a3p, a4, a4p) 
+    # Arguments passed as follows:
+    a1  in %rdi     (64 bits) 
+    a1p in %rsi     (64 bits) 
+    a2  in %edx     (32 bits) 
+    a2p in %rcx     (64 bits) 
+    a3  in %r8w     (16 bits) 
+    a3p in %r9      (64 bits) 
+    a4  at %rsp+8   (8 bits) 
+    a4p at %rsp+16  (64 bits)
+
+1   proc:
+2     movq  16(%rsp), %rax     # Fetch a4p  (64 bits)
+3     addq  %rdi, (%rsi)       # *a1p += a1 (64 bits)
+4     addl  %edx, (%rcx)       # *a2p += a2 (32 bits)
+5     addw  %r8w, (%r9)        # *a3p += a3 (16 bits)
+6     movl  8(%rsp), %edx      # Fetch a4   (8 bits)
+7     addb  %dl, (%rax)        # *a4p += a4 (8 bits)
+8     ret                      # Return
+</code></pre><p>我们看到在 proc 中读取参数 8（第2行）和 7（第6行）时，偏移量与入栈（第 8 和 9 行）时不一样。这是因为作为过程调用的一部分，返回地址被压入栈中（位于栈顶），因而这两个参数位于相对于栈指针（%rsp）距离为 8 和 16 的位置。</p>
+<h3 id="存储器中的局部存储空间">存储器中的局部存储空间</h3>
+<p>虽然在给定时刻只有一个过程是活动的，我们仍必须确保当一个过程（caller，调用者）调用另一个过程（callee，被调用者时，被调用者不会覆盖调用者稍后会使用的寄存器。</p>
+<p>x86-64 采用了一组统一的寄存器使用惯例，所有的过程都必须遵循：</p>
+<ul>
+<li>寄存器 %rbx, %rbp 和 %r12 ~ %r15 划分为「被调用者保存寄存器」。
+<ul>
+<li>当过程 P 调用过程 Q 时，Q 必须保存这些寄存器的值，保证它们的值在 Q 返回到 P 时与 Q 被调用时是一样的。过程 Q 保存一个寄存器的值不变，有两种方式：
+<ul>
+<li>根本不去改变它</li>
+<li>把原始值压入栈中，改变寄存器的值，然后在返回前从栈中弹出旧值。压入寄存器的值会在栈帧中创建标号为“保存的寄存器（Saved register）”的一部分。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>除栈指针（%rsp）外，其他的寄存器划分为「调用者保存寄存器」。
+<ul>
+<li>这些寄存器可以被任意修改。在 P 调用 Q 之前，P 有责任在自己的栈帧上保存好这些寄存器的值。</li>
+</ul>
+</li>
+</ul>
+<p>一个被调用者保存的例子：</p>
+<pre tabindex="0"><code>long call_incr2(long x) {
+  long v1 = 351;
+  long v2 = increment(&amp;v1, 100);
+  return x + v2;
+}
+
+
+  call_incr(long x)
+  x in %rdi
+
+call_incr2:
+  pushq   %rbx              # Save %rbx
+  subq    $16, %rsp         # Allocate 16-bytes stack frame
+  movq    %rdi, %rbx        # Save x
+  movq    $351, 8(%rsp)     # Save 351
+  movl    $100, %esi        # Move 100 to second argument
+  leaq    8(%rsp), %rdi     # First argument
+  call    increment
+  addq    %rbx, %rax        # x+v2
+  addq    $16, %rsp         # Deallocate stack frame 
+  popq    %rbx              # Restore %rbx
+  ret
+</code></pre>
 		</section>
 
 		<div class="post-tags">
