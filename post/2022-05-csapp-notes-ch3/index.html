@@ -1114,6 +1114,39 @@ int* univ[3] = {uw, cmu, ucb};
 </ul>
 </li>
 </ul>
+<h2 id="结构">结构</h2>
+<p>结构定义：</p>
+<pre tabindex="0"><code>struct name {
+  /* fields */
+};
+</code></pre><p>类似于数组的实现，结构的所有组成部分都存放在内存中一段连续的区域内，而指向结构的指针就是结构第一个字节的地址。</p>
+<p>下面的代码定义了一个结构，并声明了一个指向这个结构的指针变量。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> rec {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> a[<span style="color:#ae81ff">4</span>];
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> i;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">struct</span> rec <span style="color:#f92672">*</span>next;
+</span></span><span style="display:flex;"><span>} <span style="color:#f92672">*</span>r;
+</span></span></code></pre></div><p>这个结构包括了 3 个字段：一个由 4 个类型为 int 的元素组成的数组、一个 8 字节 long 和一个 8 字节的结构指针。总共是 32 个字节：</p>
+<figure><img src="/images/struct-layout.jpg" width="400"/>
+</figure>
+
+<p>结构的大小和字段的位置是在编译时决定的，机器代码不包含结构信息。在汇编代码中访问结构字段，要将结构的地址加上适当的偏移，编译器了解结构的每个字段的偏移（offset），通过 r + offset 计算出字段的位置。</p>
+<p>假如，指针变量 r 存放在寄存器 %rdi 中。那么下面的指令会将字段 i 的值返回：</p>
+<pre tabindex="0"><code># r in %rdi
+movq  16(%rdi), %rax
+ret
+</code></pre><p>同样的，只需要将结构的地址加上某个字段的偏移量，就能产生一个指向该字段的指针。例如，只要加上偏移量 0 + 4 x 1 = 4，就可以得到指针 &amp;(r-&gt;a[1])。由此，我们可以用一条指令就能产生指针 &amp;(r-&gt;a[i]) 的值：</p>
+<pre tabindex="0"><code>    # Register: r in %rdi, i %rsi
+1   leaq    (%rdi, %rsi, 4), %rax       # Set %rax to &amp;r-&gt;a[i]
+</code></pre><h3 id="数据对齐">数据对齐</h3>
+<p>对齐数据是为了提高内存系统的性能。无论数据是否对齐，x86-64 硬件都是能正确工作的。</p>
+<p>对齐原则：任何 $K$ 字节的基本对象，它的地址必须是 $K$ 的倍数。</p>
+<figure><img src="/images/memory-alignment.jpg"
+         alt="基本数据类型的地址对齐" width="600"/><figcaption>
+            <p>基本数据类型的地址对齐</p>
+        </figcaption>
+</figure>
+
 
 		</section>
 
