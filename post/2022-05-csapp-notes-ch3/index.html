@@ -1216,7 +1216,7 @@ ret
 <ul>
 <li>每个指针都对应一个类型。
 <ul>
-<li>这个类型表明指针指向的是哪一类对象。</li>
+<li>这个类型表明指针指向的是哪一类对象。例如，<code>int \*ip;</code>，变量 ip 是一个指向「int 类型」对象的指针。</li>
 <li>void * 类型代表通用指针。可以同任意其他类型的指针相互转换。</li>
 <li>指针类型不是机器代码中的一部分；它们是 C 语言提供的一种抽象，帮助程序员避免寻址错误。</li>
 </ul>
@@ -1263,6 +1263,41 @@ ret
 <pre tabindex="0"><code>int (*f)(int*);
 </code></pre><p>要从里（从 &ldquo;f&rdquo; 开始）往外读。<code>(*f)</code> 表明 f 是一个指针；而 <code>(*f)(int*)</code> 表明 f 是一个指向函数的指针，这个函数以一个 int* 作为参数。最后，我们看到，f 是指向以 int * 为参数并返回 int 的函数的指针。</p>
 <p>*f 两边的括号不能省略，否则声明就变成了 <code>int *f(int*);</code>，它会被解读成 <code>(int *) f(int*);</code>，这是一个函数原型，声明了一个函数 f，以一个 int * 作为参数并返回一个 int *。</p>
+<h2 id="缓存区溢出">缓存区溢出</h2>
+<p>C 对于数组引用不进行任何边界检查，而且局部变量和状态信息（例如保存的寄存器值和返回地址）都存放在栈中。如果对越界的数组元素进行写操作，就会破坏存储在栈中的状态信息。一种特别常见的状态破坏是缓冲区溢出（buffer overflow）。</p>
+<p>例如，在栈上分配一个字符数组来保存字符串，但是字符串的长度超出了为数组分配的空间，这时，就会产生缓冲区溢出。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> <span style="color:#a6e22e">gets</span>(<span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> dest) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> c <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> p <span style="color:#f92672">=</span> dest;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">while</span> (c <span style="color:#f92672">!=</span> EOF <span style="color:#f92672">&amp;&amp;</span> c <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;\n&#39;</span>) {
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">*</span>p<span style="color:#f92672">++</span> <span style="color:#f92672">=</span> c;
+</span></span><span style="display:flex;"><span>      c <span style="color:#f92672">=</span> getchar();
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>p <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;\0&#39;</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> dest;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">echo</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> buf[<span style="color:#ae81ff">4</span>];
+</span></span><span style="display:flex;"><span>  gets(buf);
+</span></span><span style="display:flex;"><span>  puts(buf);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">call_echo</span>() {
+</span></span><span style="display:flex;"><span>  echo();
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><figure><img src="/images/buffer-overflow.jpg"/>
+</figure>
+
+<p>从上图看到，字符串到 23 个字符之前都没有严重到后果，但是超过以后，返回地址就被破坏了，这样 ret 指令会导致程序跳转到一个完全意想不到的位置。</p>
+<h3 id="对抗缓冲区溢出攻击">对抗缓冲区溢出攻击</h3>
+<p>现代的编译器和操作系统实现了很多机制，来避免遭受缓存区溢出的攻击：</p>
+<ul>
+<li>栈随机化。通过 ASLR （Address-Space Layout Randomization，地址空间随机化）技术，每次运行程序的不同部分，包括程序代码、库代码、栈、全局变量和堆数据，都会被加载到内存的不同区域。</li>
+<li>栈破坏检测。通过在栈帧中任何局部缓冲区与栈状态之间存储一个特殊的金丝雀（canary）值，来检测栈是否被修改过。</li>
+<li>限制可执行代码区域。</li>
+</ul>
+<h3 id="变长栈帧">变长栈帧</h3>
 
 		</section>
 
