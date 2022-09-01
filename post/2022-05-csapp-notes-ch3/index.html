@@ -860,12 +860,11 @@ done:
 <li>调用方从 %rax 读取返回值。</li>
 </ul>
 <p>下面是一个数据传送的例子：</p>
-<pre tabindex="0"><code>void multstore(long x, long y, long *desc) {
-  long t = mult2(x, y);
-  *dest = t;
-}
-
-0000000000400540 &lt;multstore&gt;:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">multstore</span>(<span style="color:#66d9ef">long</span> x, <span style="color:#66d9ef">long</span> y, <span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>desc) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> t <span style="color:#f92672">=</span> mult2(x, y);
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>dest <span style="color:#f92672">=</span> t;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>0000000000400540 &lt;multstore&gt;:
   # x in %rdi, y in %rsi, dest in %rdx
     • • •
   400541:  movq   %rdx, %rbx            # Save dest
@@ -891,21 +890,19 @@ long mult2(long a, long b) {
 <ul>
 <li>寄存器不能存放下所有的本地数据。</li>
 <li>对一个局部变量使用地址运算符‘&amp;’，这时必须能够为它产生一个地址。</li>
-<li>局部变量是数值或结构，这时必须能够通过数值或结构引用被访问到。</li>
+<li>局部变量是数组或结构，这时必须能够通过数组或结构引用被访问到。</li>
 </ul>
 <p>一般来说，过程通过减小栈指针，在栈上分配空间。分配的结果作为栈帧的一部分，标号为“局部变量”（Local variables）。</p>
 <p>下面是一个例子，体现了 x86-64 栈行为的一些特性。</p>
-<pre tabindex="0"><code>long call_proc() {
-  long x1 = 1;
-  int x2 = 2;
-  short x3 = 3;
-  char x4 = 4;
-  proc(x1, &amp;x1, x2, &amp;x2, x3, &amp;x3, x4, &amp;x4);
-  return (x1 + x2) * (x3 - x4)
-}
-
-
-1   call_proc:
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">long</span> <span style="color:#a6e22e">call_proc</span>() {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> x1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">int</span> x2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">short</span> x3 <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">char</span> x4 <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>;
+</span></span><span style="display:flex;"><span>  proc(x1, <span style="color:#f92672">&amp;</span>x1, x2, <span style="color:#f92672">&amp;</span>x2, x3, <span style="color:#f92672">&amp;</span>x3, x4, <span style="color:#f92672">&amp;</span>x4);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> (x1 <span style="color:#f92672">+</span> x2) <span style="color:#f92672">*</span> (x3 <span style="color:#f92672">-</span> x4)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>1   call_proc:
       # Set up arguments to proc
 2     subq    $32, %rsp       # Allocate 32-byte stack frame
       ~~~~~~~~~~~~~~~~
@@ -937,19 +934,16 @@ long mult2(long a, long b) {
 25    ret                     # Return
 </code></pre><p>可以看到代码中第2～15行都是为调用 proc 做准备，其中包括为局部变量和函数参数建立栈帧，将函数参数加载至寄存器。
 过程 proc 的前 6 个参数通过寄存器传送，后面 2 个通过栈传送。</p>
-<pre tabindex="0"><code>void proc(long a1, long *a1p, 
-          int a2, int *a2p, 
-          short a3, short *a3p, 
-          char a4, char *a4p) {
-  *a1p += a1;
-  *a2p += a2;
-  *a3p += a3;
-  *a4p += a4;
-}
-
-
-
-    void proc(a1, a1p, a2, a2p, a3, a3p, a4, a4p) 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">proc</span>(<span style="color:#66d9ef">long</span> a1, <span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>a1p, 
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">int</span> a2, <span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span>a2p, 
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">short</span> a3, <span style="color:#66d9ef">short</span> <span style="color:#f92672">*</span>a3p, 
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">char</span> a4, <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>a4p) {
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>a1p <span style="color:#f92672">+=</span> a1;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>a2p <span style="color:#f92672">+=</span> a2;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>a3p <span style="color:#f92672">+=</span> a3;
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">*</span>a4p <span style="color:#f92672">+=</span> a4;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>    void proc(a1, a1p, a2, a2p, a3, a3p, a4, a4p) 
     # Arguments passed as follows:
     a1  in %rdi     (64 bits) 
     a1p in %rsi     (64 bits) 
@@ -996,14 +990,12 @@ long mult2(long a, long b) {
 </li>
 </ul>
 <p>一个被调用者保存的例子：</p>
-<pre tabindex="0"><code>long call_incr2(long x) {
-  long v1 = 351;
-  long v2 = increment(&amp;v1, 100);
-  return x + v2;
-}
-
-
-  call_incr(long x)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">long</span> <span style="color:#a6e22e">call_incr2</span>(<span style="color:#66d9ef">long</span> x) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> v1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">351</span>;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> v2 <span style="color:#f92672">=</span> increment(<span style="color:#f92672">&amp;</span>v1, <span style="color:#ae81ff">100</span>);
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> x <span style="color:#f92672">+</span> v2;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>  call_incr(long x)
   x in %rdi
 
 call_incr2:
@@ -1298,6 +1290,44 @@ ret
 <li>限制可执行代码区域。</li>
 </ul>
 <h3 id="变长栈帧">变长栈帧</h3>
+<p>通常，编译器能够预先确定一个函数需要在栈上分配多少空间，但是有些函数，需要的局部存储是变长。例如，函数调用了标准库函数 alloca，它可以在栈上分配任意字节数量的存储空间，或者是声明了一个局部变长数组。在这些情况下，编译器是无法确定要给该函数的栈帧分配多少空间的。</p>
+<p>下面是一个包含变长数组的例子。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">long</span> <span style="color:#a6e22e">vframe</span>(<span style="color:#66d9ef">long</span> n, <span style="color:#66d9ef">long</span> idx, <span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>q) {
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> i;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">long</span> <span style="color:#f92672">*</span>p[n];
+</span></span><span style="display:flex;"><span>  p[<span style="color:#ae81ff">0</span>] <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>i;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>    p[i] <span style="color:#f92672">=</span> q;
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> <span style="color:#f92672">*</span>p[idx];
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>    long vframe(long n, long idx, long *q)
+    n in %rdi, idx in %rsi, q in %rdx
+  
+  vframe:
+      pushq   %rbp                      # Save old %rbp
+      movq    %rsp, %rbp                # Set frame pointer
+      subq    %16, %rsp                 # Allocate space for i (%rsp = s1)
+      leaq    22(,%rdi,8), %rax
+      andq    $-16, 5rax
+      subq    %rax, %rsp                # Allocate space for array p(%rsp = s2)
+        ...
+  .L3:
+      movq    %rdx, (%rcx,%rax,8)       # Set p[i] to q
+      addq    $1, %rax                  # Increment i
+      movq    %rax, -8(%rbp)            # store on stack
+  .L2:
+      movq    -8(%rbp), %rax            # Retrieve i from stack
+      cmpq    %rdi, %rax                # Compare i:n
+      jl      .L3                       # If &lt;, goto loop
+        ...
+      leave                             # Resotre %rbp and %rsp
+      ret                               # Return
+</code></pre><p>从汇编代码看到，为了管理变长栈帧，x86-64 代码使用寄存器 %rbp 作为帧指针（frame pointer），也称为基指针（base pointer），这也是 %rbp 中 bp 两个字母的由来。先将 %rbp push 进栈，然后对 %rsp sub，分配栈帧空间，再利用 %rbp 的偏移量来引用局部变量，最后在返回前，将 %rbp 赋值给 %rsp，此时栈顶指针指向的是最初对 %rbp push 之后的位置，再将栈顶 pop 出来给 %rbp，最后返回。</p>
+<p><code>leave</code> 指令将帧指针（%rbp）恢复到它之前的值。这条指令不需要操作数，它等价于执行下面两条指令：</p>
+<pre tabindex="0"><code>movq  %rbp, %rsp    # Set stack pointer to beginning of frame
+popq  %rbp          # Restore saved %rbp and set stack ptr to end of caller&#39;s frame
+</code></pre><p>其效果就是释放整个栈帧。</p>
+<p>(本章完)</p>
 
 		</section>
 
