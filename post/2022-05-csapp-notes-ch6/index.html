@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>深入理解计算机系统(csapp)笔记-存储器层次结构 - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第六章的学习笔记." />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="深入理解计算机系统(csapp)笔记-存储器层次结构" />
+<meta property="og:description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第六章的学习笔记." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-csapp-notes-ch6/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-17T15:22:10+08:10" />
+<meta property="article:modified_time" content="2022-05-17T15:22:10+08:10" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解计算机系统(csapp)笔记-存储器层次结构"/>
+<meta name="twitter:description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第六章的学习笔记."/>
+<script src="https://x-29.github.io/js/feather.min.js"></script>
+	
+	
+        <link href="https://x-29.github.io/css/fonts.b685ac6f654695232de7b82a9143a46f9e049c8e3af3a21d9737b01f4be211d1.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://x-29.github.io/css/main.40ca3a860425083862b7ebd55447caec5c4384573f0cb098b8d06a91e8dace2e.css" />
+	
+	
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" integrity="sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7mLTdk1wblIUnrIq35nqwEvC" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js" integrity="sha384-X/XCfMm41VSsqRNQgDerQczD69XqmjOOOwYQvr/uuC+j4OPoNhVgjdGFwhvN02Ja" crossorigin="anonymous"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ]
+        });
+    });
+</script>
+        
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://x-29.github.io/">CS里的X-29</a>
+	</div>
+	<nav>
+		
+		<a href="/">首页</a>
+		
+		<a href="/post">文章</a>
+		
+		<a href="/about">关于</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">深入理解计算机系统(csapp)笔记-存储器层次结构</h1>
+			<div class="meta">Posted on May 17, 2022</div>
+		</div>
+		
+
+		<section class="body">
+			<p>存储器系统（memory system）是一个具有不同容量、成本和访问时间的存储设备的层次结构。</p>
+<h2 id="局部性">局部性</h2>
+<p>编写良好的计算机程序常常具有良好的局部性（locality）。也就是，程序倾向于使用地址接近或等于它们最近使用过的地址的数据和指令。有良好局部性的程序比局部性差的程序运行得更快。</p>
+<p>局部性通常有两种不同的形式：</p>
+<ul>
+<li>时间局部性（temporal locality）。最近引用过一次的内存位置很可能在不远的将来再被多次引用。</li>
+<li>空间局部性（spatial locality）。一个内存位置被引用了一次，那么程序很可能在不远的将来引用它相邻的内存位置。</li>
+</ul>
+<p>现代计算机系统的各个层次，从硬件到操作系统、再到应用程序，它们的设计都利用了局部性。在硬件层，局部性原理允许计算机设计者通过引入小而快速的「高速缓存存储器」来保存最近被引用的指令和数据项，从而提供对主存的访问速度。</p>
+<p>一个有良好局部性的函数：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">sumvec</span>(<span style="color:#66d9ef">int</span> a[n]) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> n; i<span style="color:#f92672">++</span>) 
+</span></span><span style="display:flex;"><span>        sum <span style="color:#f92672">+=</span> a[i];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sum;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>数据引用上，每次迭代都会重复引用 sum，所以有很好的时间局部性，同时以顺序引用模式（也称为步长为 1 的引用模式，stride-1 reference pattern）访问数组 a 的元素，因此有良好的空间局部性。</p>
+<p>取指令上，for 循环体里的指令是按照连续的内存顺序执行的，因此循环有良好的空间局部性。又因为循环体会被执行多次，所以它也有很好的时间局部性。</p>
+<p>一个空间局部性很差的函数：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">sum_array_cols</span>(<span style="color:#66d9ef">int</span> a[M][N]) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i, j, sum <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (j <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; j <span style="color:#f92672">&lt;</span> N; j<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> M; i<span style="color:#f92672">++</span>)
+</span></span><span style="display:flex;"><span>            sum <span style="color:#f92672">+=</span> a[i][j];
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> sum;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>C 数组在内存中是按照「行优先」顺序存放的，上面的函数是按照「列」顺序来扫描数组，而不是按照「行」顺序，结果就得到了步长为 N 的引用模式。步长的增大，会使得空间局部性下降。</p>
+<p>只需要交换 i 和 j 的循环，使得嵌套循环按照「行优先顺序」读取数组元素</p>
+<pre tabindex="0"><code>for (i = 0; i &lt; M; i++)
+    for (j = 0; j &lt; N; j++)
+        sum += a[i][j];
+</code></pre><p>结果就得到一个很好的步长为 1 的引用模式，具有良好的空间局部性。</p>
+<p>量化评价程序中局部性的一些简单原则：</p>
+<ul>
+<li>重复引用相同变量的程序会有良好的时间局部性。</li>
+<li>对于具有步长为 k 的引用模式的程序，步长越小，空间局部性越好。
+<ul>
+<li>具有步长为 1 的引用模式的程序有很好的局部性。</li>
+<li>在内存中以大步长跳来跳去的程序空间局部性会很差。</li>
+</ul>
+</li>
+<li>对于取指令来说，循环有好的时间和空间局部性。循环体越小，循环迭代次数越多，局部性越好。</li>
+</ul>
+<h2 id="存储器层次结构">存储器层次结构</h2>
+<p>计算机硬件和软件系统有这样一些基本的和持久的特性：</p>
+<ul>
+<li>速度较快的存储技术每个字节的成本总是更高，而且容量更小。</li>
+<li>编写良好的程序往往具有良好的局部性。</li>
+</ul>
+<p>这些属性完美的互相补充，使得可以用「存储器层次结构」的方式来组织内存和存储系统。</p>
+<figure><img src="/images/memory-hierarchy.jpg"
+         alt="存储器层次结构"/><figcaption>
+            <p>存储器层次结构</p>
+        </figcaption>
+</figure>
+
+<p>存储器层次结构的基本思想是：<strong>对于每个 k，位于 k 层的更快更小的存储设备作为位于 k+1 层更大更慢的存储设备的缓存</strong>。也就是说，层次结构中的每一层都是缓存（caching）来自较低一层的数据对象。例如，本地磁盘作为通过网络从远程磁盘读取的文件的缓存，主存作为本地磁盘上数据的缓存，依次类推，直到最小的缓存 -- CPU 寄存器组。</p>
+<h3 id="缓存的机制">缓存的机制</h3>
+<p>使用高速缓存（cache）的过程称为缓存（caching），缓存的机制：</p>
+<figure><img src="/images/basic-principle-of-caching.jpg"
+         alt="存储器层次结构中缓存的基本原理" width="600"/><figcaption>
+            <p>存储器层次结构中缓存的基本原理</p>
+        </figcaption>
+</figure>
+
+<ul>
+<li>第 k+1 层的存储器被划分成连续的数据对象组块（chunk），称为块（block）。
+<ul>
+<li>每个块都有一个唯一的地址或名字。</li>
+<li>块可以是固定大小的，也可以是可变大小的。</li>
+</ul>
+</li>
+<li>第 k 层的存储器被划分成较少的块的集合，每个块的大小与 k+1 层的块的大小一样。
+<ul>
+<li>在任何时刻，第 k 层的缓存包含第 k+1 层块的一个字集的副本。</li>
+</ul>
+</li>
+<li>数据总是以块大小为「传送单元」（transfer unit），在第 k 层和第 k+1 层之间来回复制。</li>
+</ul>
+<h3 id="缓存命中和不命中">缓存命中和不命中</h3>
+<p>当程序需要第 k+1 层的某个数据对象 d 时，它首先在第 k 层的块中查找，如果 d 刚好缓存在第 k 层中，那么就是「缓存命中」（cache hit），程序直接从第 k 层中读取 d。</p>
+<p>如果第 k 层没有缓存数据对象 d，那么就是「缓存不命中」（cache miss），这时，第 k 层就要从第 k+1 层中取出包含 d 的那个块。</p>
+<ul>
+<li>如果第 k 层已经满了，就要覆盖现存的一个块。</li>
+<li>覆盖现存的块的过程称为替换（replacing）或驱逐（evicting）这个块。被驱逐的这个块称为牺牲块（victim block）。</li>
+<li>决定该替换哪个块是由缓存的「替换策略」（replacement plocy）来控制的。
+<ul>
+<li>比如，随机替换策略会随机选一个牺牲块。LRU 替换策略会选择最近最少被使用的那个块。</li>
+</ul>
+</li>
+</ul>
+<p>缓存不命中的种类：</p>
+<ul>
+<li>冷不命中（cold miss)。如果第 k 层的缓存是空的，那么对任何数据对象的访问都会不命中，此类不命中就称为冷不命中。</li>
+<li>冲突不命中（conflict miss）。只要发生不命中，第 k 层就会执行放置策略（placement policy），放置策略可能会把下一次正好需要的数据块给替换（或驱逐）了，这样就会引起冲突不命中。</li>
+<li>容量不命中（capacity miss）。当工作集的大小超过缓存的大小时，缓存就会经历容量不命中。</li>
+</ul>
+<h3 id="为什么存储器层次结构有效">为什么存储器层次结构有效？</h3>
+<p>由于局部性，程序访问层级 k 的数据的频率往往高于访问层级 k+1 的数据的频率，因此，层级 k+1 的存储可以较慢，并且因此可以更大、更便宜。</p>
+<blockquote>
+<p>存储器层次结构创建了一个大的存储池，其成本与底部附近的廉价存储器一样高，但它以顶部附近的快速存储器的速率向程序提供数据</p>
+</blockquote>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/cs">cs</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/x-29" title="GitHub"><i data-feather="github"></i></a><a class="soc" href="https://twiiter.com/x-29/" title="Twitter"><i data-feather="twitter"></i></a><a class="soc" href="https://gitlab.com/x-29/" title="GitLab"><i data-feather="gitlab"></i></a></div>
+  <div class="footer-info">
+    2022  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>
