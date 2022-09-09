@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>深入理解计算机系统(csapp)笔记-异常控制流 - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第六章的学习笔记." />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="深入理解计算机系统(csapp)笔记-异常控制流" />
+<meta property="og:description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第六章的学习笔记." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-csapp-notes-ch8/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-18T19:52:20+08:10" />
+<meta property="article:modified_time" content="2022-05-18T19:52:20+08:10" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解计算机系统(csapp)笔记-异常控制流"/>
+<meta name="twitter:description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第六章的学习笔记."/>
+<script src="https://x-29.github.io/js/feather.min.js"></script>
+	
+	
+        <link href="https://x-29.github.io/css/fonts.b685ac6f654695232de7b82a9143a46f9e049c8e3af3a21d9737b01f4be211d1.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://x-29.github.io/css/main.40ca3a860425083862b7ebd55447caec5c4384573f0cb098b8d06a91e8dace2e.css" />
+	
+	
+
+	
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://x-29.github.io/">CS里的X-29</a>
+	</div>
+	<nav>
+		
+		<a href="/">首页</a>
+		
+		<a href="/post">文章</a>
+		
+		<a href="/about">关于</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">深入理解计算机系统(csapp)笔记-异常控制流</h1>
+			<div class="meta">Posted on May 18, 2022</div>
+		</div>
+		
+
+		<section class="body">
+			<p>异常控制流的基本机制是用于：</p>
+<ul>
+<li>在进程和操作系统之间转移控制</li>
+<li>在操作系统中处理 I/O 和虚拟内存</li>
+<li>实现多进程应用程序，如 shell 和 web 服务器</li>
+<li>实现并发</li>
+</ul>
+<h2 id="异常">异常</h2>
+<p>异常是异常控制流的一种形式，它一部分由硬件实现，一部分由操作系统实现。异常就是控制流中的突变，它将控制转移到操作系统内核，以响应某些事件（例如，处理器状态的变化）。</p>
+<ul>
+<li>内核是操作系统常驻内存的部分</li>
+<li>异常示例：除 0，页故障，I/O 请求完成，Ctrl-C。</li>
+</ul>
+<figure><img src="/images/anatomy-of-an-exception.jpg" width="600"/>
+</figure>
+
+<p>当处理器（CPU）检测到有事件发生时，它怎么知道要跳转到操作系统中的哪个地方呢？</p>
+<p>答案是异常跳转表，也称为中断向量表。</p>
+<figure><img src="/images/exception-table.jpg"
+         alt="异常跳转表，其中条目 k 包含异常 k 的处理程序代码的地址" width="400"/><figcaption>
+            <p>异常跳转表，其中条目 k 包含异常 k 的处理程序代码的地址</p>
+        </figcaption>
+</figure>
+
+<ul>
+<li>系统中的每种类型的事件都有一个唯一的异常号 k。
+<ul>
+<li>一些异常号是由处理器的设计者分配的。比如，除 0、缺页、内存访问违例、断点以及算术运算溢出。</li>
+<li>其他是由操作系统内核的设计者分配的。比如，系统调用和来自外部 I/O 设备的信号。</li>
+</ul>
+</li>
+<li>在系统启动时，操作系统分配和初始化异常跳转表，使得表目 k 包含异常 k 的处理程序的地址。
+<ul>
+<li>k 等同于异常表的索引，也称为中断向量</li>
+</ul>
+</li>
+<li>在运行时（当系统在执行某个程序时），处理器检测到异常编号为 k 的事件发生时，就触发异常，执行间接过程调用，跳转到 k 的处理程序。</li>
+</ul>
+<blockquote>
+<p>异常跳转表的起始地址存放在一个叫做「异常表基址寄存器」的特殊 CPU 寄存器里。</p>
+</blockquote>
+<p>一旦硬件触发了异常，剩下的工作就是由异常处理程序在软件中完成。在异常处理程序处理完事件之后，它通过执行一条特殊的“从中断返回”指令，将适当的状态弹回到处理器的控制和数据寄存器中，可选地返回到被中断的程序，如果异常中断的是一个用户程序，就将状态恢复为「用户模式」，然后将控制返回给被中断的程序。</p>
+<hr>
+<p>异常可分为四类：</p>
+<ul>
+<li>中断（interrupt）。</li>
+<li>陷阱（trap）</li>
+<li>故障（fault）</li>
+<li>终止（abort）</li>
+</ul>
+<p>其中，中断是异步发生的，是来自处理器外部的 I/O设备的信号引发的。其他 3 类异常时同步发生的，是执行当前指令而引发的。这类指令叫做故障指令（faulting instruction）。</p>
+<h3 id="中断interrupt">中断（interrupt）</h3>
+<p>硬件中断不是由任何一条专门指令造成的，而是通过设置处理器的中断引脚（连接到 CPU），并将异常号放到系统总线上，来触发中断。硬件中断的异常处理程序称为中断处理程序（interrupt handler），当处理程序返回时，它将控制返回给下一条指令，也就是如果没有发生中断，在控制流中会在当前指令之后的那条指令。</p>
+<p>中断示例：</p>
+<ul>
+<li>I/O 中断
+<ul>
+<li>按下键盘上的 Ctrl-C 键</li>
+<li>单击鼠标按钮或是轻按触摸屏</li>
+<li>来自网络的数据包到达</li>
+<li>来自磁盘的数据到达</li>
+</ul>
+</li>
+<li>定时器中断
+<ul>
+<li>每隔几毫秒，外部定时器芯片就会触发一次中断</li>
+<li>操作系统内核从用户程序收回控制权</li>
+</ul>
+</li>
+</ul>
+<h3 id="陷阱trap">陷阱（trap)</h3>
+<p>陷阱是「有意的」异常，以将控制权移交给操作系统执行某些功能。比如，系统调用、断点陷阱、特殊指令。陷阱处理程序将控制返回到下一条指令。</p>
+<p>陷阱最重要的用途时在用户程序和内核之间提供一个像过程一样的接口，叫做「系统调用」。用户程序经常需要向内核请求服务，比如读一个文件（read）、创建一个新的进程（fork）、加载一个新的程序（execve），或者终止当前进程（exit）。为了允许对这些内核服务的受控的访问，处理器提供了一条特殊的「syscall n」指令。执行 syscall 指令会导致一个到异常处理程序的陷阱，由处理程序解析参数，并调用适当的内核程序。</p>
+<blockquote>
+<p>普通的函数运行在「用户模式」中，用户模式限制了函数可以执行的指令类型，而且它们只能访问与调用函数相同的栈。系统调用运行在「内核模式」，内核模式运行系统调用执行特权指令，并访问定义在内核中的栈。</p>
+</blockquote>
+<p>下面是一个调用系统调用 open(filename, options) 的示例：</p>
+<pre tabindex="0"><code>00000000000e5d70 &lt;__open&gt;:
+...
+e5d79:   b8 02 00 00 00      mov  $0x2, %eax                  # open is syscall 2
+e5d7e:   0f 05               syscall                          # return value in %rax
+e5d80:   48 3d 01 f0 ff ff   cmp  $0xfffffffffffff001, %rax 
+...
+e5dfa:   c3                  retq
+</code></pre><figure><img src="/images/trap-example.jpg" width="400"/>
+</figure>
+
+<p>每个系统调用都一个唯一的 ID 号，系统调用 open 的 ID 号是 2。</p>
+<h3 id="故障fault">故障（fault）</h3>
+<p>故障是「无意的」，由错误情况引起，它可能能够被故障处理程序修正。比如，缺页、段保护故障、除 0。如果处理程序能够修正错误，它就将控制返回到引发故障的指令，重写执行。否则，返回到内核中的 abort 例程，abort 例成会终止引发故障的应用程序。</p>
+<p>例如，缺页异常，当指令引用一个虚拟地址，而与该地址相对应的物理页面不在内存中，因此必须从磁盘中取出时，就会发生故障。缺页处理程序从磁盘加载适当的页面，然后将控制返回给引起故障的指令。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a[<span style="color:#ae81ff">1000</span>];
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span> () {
+</span></span><span style="display:flex;"><span>    a[<span style="color:#ae81ff">500</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">13</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><pre tabindex="0"><code>80483b7:	c7 05 10 9d 04 08 0d 	movl   $0xd,0x8049d10
+</code></pre><h3 id="终止abort">终止（abort）</h3>
+<p>终止也是「无意的」异常，但它是不可恢复的。通常是一些硬件错误，比如 DRAM 或者 SRAM 位被损坏是发生的奇偶错误。终止处理程序从不将控制返回给应用程序，而是返回给一个 abort 例程来终止应用程序。</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/cs">cs</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/x-29" title="GitHub"><i data-feather="github"></i></a><a class="soc" href="https://twiiter.com/x-29/" title="Twitter"><i data-feather="twitter"></i></a><a class="soc" href="https://gitlab.com/x-29/" title="GitLab"><i data-feather="gitlab"></i></a></div>
+  <div class="footer-info">
+    2022  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>
