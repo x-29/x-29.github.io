@@ -140,18 +140,96 @@ e5dfa:   c3                  retq
 </code></pre><figure><img src="/images/trap-example.jpg" width="400"/>
 </figure>
 
-<p>每个系统调用都一个唯一的 ID 号，系统调用 open 的 ID 号是 2。</p>
+<p>每个系统调用都有一个唯一的 ID 号，系统调用 open 的 ID 号是 2。</p>
 <h3 id="故障fault">故障（fault）</h3>
 <p>故障是「无意的」，由错误情况引起，它可能能够被故障处理程序修正。比如，缺页、段保护故障、除 0。如果处理程序能够修正错误，它就将控制返回到引发故障的指令，重写执行。否则，返回到内核中的 abort 例程，abort 例成会终止引发故障的应用程序。</p>
-<p>例如，缺页异常，当指令引用一个虚拟地址，而与该地址相对应的物理页面不在内存中，因此必须从磁盘中取出时，就会发生故障。缺页处理程序从磁盘加载适当的页面，然后将控制返回给引起故障的指令。</p>
+<p>例如，缺页异常，当指令引用一个虚拟地址，而与该地址相对应的物理页面不在内存中，因此必须从磁盘中取出时，就会发生故障。</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">int</span> a[<span style="color:#ae81ff">1000</span>];
 </span></span><span style="display:flex;"><span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span> () {
 </span></span><span style="display:flex;"><span>    a[<span style="color:#ae81ff">500</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">13</span>;
 </span></span><span style="display:flex;"><span>}
 </span></span></code></pre></div><pre tabindex="0"><code>80483b7:	c7 05 10 9d 04 08 0d 	movl   $0xd,0x8049d10
-</code></pre><h3 id="终止abort">终止（abort）</h3>
-<p>终止也是「无意的」异常，但它是不可恢复的。通常是一些硬件错误，比如 DRAM 或者 SRAM 位被损坏是发生的奇偶错误。终止处理程序从不将控制返回给应用程序，而是返回给一个 abort 例程来终止应用程序。</p>
+</code></pre><figure><img src="/images/fault-example.jpg" width="400"/>
+</figure>
 
+<p>缺页处理程序必须从磁盘加载页面到物理内存，然后将控制返回给引起故障的指令（movl），再次执行时，就会无故障地成功完成。</p>
+<h3 id="终止abort">终止（abort）</h3>
+<p>终止也是「无意的」异常，但它是不可恢复的。通常是一些硬件错误，比如 DRAM 或者 SRAM 位被损坏是发生的奇偶错误。终止处理程序从不将控制返回给应用程序，而是返回给一个 abort 例程来终止应用程序。</p>
+<h2 id="进程">进程</h2>
+<p>异常控制流是操作系统用来使多个进程在同一系统上运行的机制。<strong>进程是一个正在运行的程序的实例</strong>。它是计算机科学中最深刻、最成功的概念之一。进程与程序（program）或处理器（processor）不同。系统中的每个程序都运行在某个进程的「上下文（context）」中。上下文是由程序正确运行所需的状态组成的。这个状态包括存放在内存中的程序的代码和数据，它的栈、通用目的寄存器的内容、程序计数器、环境变量以及打开文件描述符的集合。</p>
+<figure><img src="/images/process-illusion.jpg" width="600"/>
+</figure>
+
+<p>进程为每个应用程序提供了两个关键的抽象：</p>
+<ul>
+<li>逻辑控制流
+<ul>
+<li>它提供一个假象，每个程序好像都独占地使用处理器。</li>
+<li>由称为「上下文切换（context switching）」的内核机制提供。</li>
+</ul>
+</li>
+<li>私有地址空间
+<ul>
+<li>它提供一个假象，每个程序好像都独占地使用主内存。</li>
+<li>由称为「虚拟内存」的内核机制提供。</li>
+</ul>
+</li>
+</ul>
+<h3 id="逻辑控制流">逻辑控制流</h3>
+<p>每个进程都是一个逻辑控制流。计算机系统中逻辑流有多种不同的形式。比如，异常处理程序、进程、信号处理程序、线程和 Java 进程。</p>
+<p>如果两个进程的指令执行（逻辑流）在时间上重叠，那么这两个进程是并发地运行，否则就是顺序地运行。更准确地说，逻辑流 X 和 Y 互相并发，当且仅当 X 在 Y 开始之后和 Y 结束之前开始，或者 Y 在 X 开始之后和 X 结束之前开始。</p>
+<p>下面是一个在单核 CPU 上运行三个进程的例子。处理器的一个物理控制流被分成了三个逻辑流，每个进程一个。</p>
+<figure><img src="/images/logical-control-flows.jpg"
+         alt="逻辑控制流。每个竖直的条表示一个进程的逻辑控制流的一部分" width="600"/><figcaption>
+            <p>逻辑控制流。每个竖直的条表示一个进程的逻辑控制流的一部分</p>
+        </figcaption>
+</figure>
+
+<p>三个进程轮流使用处理器，每个进程执行它的逻辑流的一部分，然后被抢占（preempted）（暂时挂起），轮到其他进程。进程 A 和 B，A 和 C 是并发地运行。进程 B 和 C 是顺序地运行。</p>
+<p>多个控制流并发地执行被称为并发（concurrency）。一个进程和其他进程轮流运行，称之为多任务（multitasking）。一个进程执行它的控制流的一部分的每一时间段叫做时间片（time slice）。因此，多任务页叫做时间分片（time slicing）。例如，上图中的进程 A 的控制流由两个时间片组成。</p>
+<p>并发进程的控制流在时间上是物理分离的，但是，用户可能将并发进程看作为在同一个时间并行（parallel）地执行。</p>
+<h3 id="私有地址空间">私有地址空间</h3>
+<p>在一台 n 位地址的机器上，「地址空间」是 2^n 个可能地址的集合。进程为每个程序提供它自己的私有地址空间。和这个空间中某个地址相关联的那个内存字节（一个地址对应一个字节）是不能被其他进程读或者写的。</p>
+<p>进程的私有地址空间的组织结构是相同的，例如，x86-64 Linux 进程的地址空间的组织结构：</p>
+<figure><img src="/images/process-address-space.jpg"
+         alt="进程地址空间" width="600"/><figcaption>
+            <p>进程地址空间</p>
+        </figcaption>
+</figure>
+
+<p>地址空间底部是保留给用户程序的，包括通常的代码、数据、堆和栈段。代码段总是从地址 0x400000 开始。地址空间顶部保留给内核（操作系统常驻内存的部分）。内核不是一个单独的进程，而是作为用户进程的一部分运行。</p>
+<h3 id="上下文切换">上下文切换</h3>
+<p>上下文切换（context switch）是由内核代码执行的，它将控制流从一个进程转移到另一个进程。内核为每个进程维持一个「上下文（context）」。上下文就是内核重新启动一个被抢占的进程所需的状态。在进程执行的某个时刻，内核可以决定抢占当前进程，并重新开始一个先前被抢占了的进程。这种决策叫调度（scheduling），由内核中的「调度器（scheduler）」的代码处理。在内核调度一个新的进程，抢占当前进程时，它使用上下文切换机制来将控制转移到新的进程。</p>
+<figure><img src="/images/context-switch.jpg"
+         alt="进程上下文切换" width="600"/><figcaption>
+            <p>进程上下文切换</p>
+        </figcaption>
+</figure>
+
+<p>上下文切换，1）首先，保存当前进程的上下文，2）然后，恢复先前被抢占的进程被保存的上下文，3）最后将控制传递给新恢复的进程。当内核代表用户执行系统调用时，可能会发生上下文切换。中断也可能引发上下文切换。</p>
+<h2 id="创建新的进程">创建新的进程</h2>
+<p>C 程序可以通过 fork 函数创建进程。</p>
+<pre tabindex="0"><code>pid_t fork(void)
+</code></pre><p>fork 函数创建一个与当前进程几乎相同的新子进程，子进程包括了父进程的所有状态（内存，寄存器等）。</p>
+<p>fork 函数调用一次，会返回两次：一次是在调用进程（父进程）中，返回值为子进程的 PID，一次是在新创建的子进程中，返回值为 0。通过判断返回值可以分辨程序是在父进程还是在子进程中执行。</p>
+<p>一个使用 fork 传教子进程的示例：</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-C" data-lang="C"><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">fork1</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+</span></span><span style="display:flex;"><span>    pid_t pid <span style="color:#f92672">=</span> fork();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (pid <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>	    printf(<span style="color:#e6db74">&#34;Child has x = %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#f92672">++</span>x);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">else</span>
+</span></span><span style="display:flex;"><span>	    printf(<span style="color:#e6db74">&#34;Parent has x = %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, <span style="color:#f92672">--</span>x);
+</span></span><span style="display:flex;"><span>    printf(<span style="color:#e6db74">&#34;Bye from process %d with x = %d</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, getpid(), x);
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>进程图如下：</p>
+<figure><img src="/images/process-graph.jpg" width="400"/>
+</figure>
+
+<h3 id="加载并运行程序">加载并运行程序</h3>
+<p>execve 函数在当前进程的上下文中加载并运行一个新程序。</p>
+<pre tabindex="0"><code>int execve(const char *filename, const char *argv[], const char *envp[])
+</code></pre>
 		</section>
 
 		<div class="post-tags">
