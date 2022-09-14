@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html><head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><title>深入理解计算机系统(csapp)笔记-虚拟内存 - CS里的X-29</title><meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第六章的学习笔记." />
+	<meta property="og:image" content=""/>
+	<meta property="og:title" content="深入理解计算机系统(csapp)笔记-虚拟内存" />
+<meta property="og:description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第六章的学习笔记." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://x-29.github.io/post/2022-05-csapp-notes-ch9/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2022-05-19T21:02:10+08:10" />
+<meta property="article:modified_time" content="2022-05-19T21:02:10+08:10" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深入理解计算机系统(csapp)笔记-虚拟内存"/>
+<meta name="twitter:description" content="这是深入理解计算机系统(Computer Systems A Programmer&#39;s Perspective 3rd)第六章的学习笔记."/>
+<script src="https://x-29.github.io/js/feather.min.js"></script>
+	
+	
+        <link href="https://x-29.github.io/css/fonts.b685ac6f654695232de7b82a9143a46f9e049c8e3af3a21d9737b01f4be211d1.css" rel="stylesheet">
+	
+
+	
+	<link rel="stylesheet" type="text/css" media="screen" href="https://x-29.github.io/css/main.40ca3a860425083862b7ebd55447caec5c4384573f0cb098b8d06a91e8dace2e.css" />
+	
+	
+
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css" integrity="sha384-Xi8rHCmBmhbuyyhbI88391ZKP2dmfnOl4rT9ZfRI7mLTdk1wblIUnrIq35nqwEvC" crossorigin="anonymous">
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js" integrity="sha384-X/XCfMm41VSsqRNQgDerQczD69XqmjOOOwYQvr/uuC+j4OPoNhVgjdGFwhvN02Ja" crossorigin="anonymous"></script>
+
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "$", right: "$", display: false}
+            ]
+        });
+    });
+</script>
+        
+</head>
+<body>
+        <div class="content"><header>
+	<div class="main">
+		<a href="https://x-29.github.io/">CS里的X-29</a>
+	</div>
+	<nav>
+		
+		<a href="/">首页</a>
+		
+		<a href="/post">文章</a>
+		
+		<a href="/about">关于</a>
+		
+		
+	</nav>
+</header>
+
+<main>
+	<article>
+		<div class="title">
+			<h1 class="title">深入理解计算机系统(csapp)笔记-虚拟内存</h1>
+			<div class="meta">Posted on May 19, 2022</div>
+		</div>
+		
+
+		<section class="body">
+			<p>现代系统提供了一种对主存的抽象概念，叫做「虚拟内存（VM）」。虚拟内存提供了三个重要的能力：</p>
+<ul>
+<li>它将主存看成是一个存储在磁盘上的地址空间的高速缓存，这相当于在主存中的是活动区域，然后根据需要从磁盘读取数据到主存或将主存数据写回到磁盘。</li>
+<li>它为每个进程提供了一致的地址空间。</li>
+<li>它保护了每个进程的地址空间不被其他进程破坏。</li>
+</ul>
+<h2 id="物理和虚拟寻址">物理和虚拟寻址</h2>
+<p>计算机系统的主存被组织成一个 $M$ 个连续的字节大小的单元组成的数组。每个字节都有一个唯一的「物理地址（Physical Address，PA）。第一个字节的地址为 0，接下来的字节地址为 1，再下一个为 2，依次类推。</p>
+<p>CPU 使用物理地址访问内存的方式称为物理寻址（physical addressing），这种寻址方式通常在单进程的简单系统中使用。比如，嵌入式微控制器、数字信号处理器。</p>
+<figure><img src="/images/physical-addressing.jpg"
+         alt="物理寻址" width="500"/><figcaption>
+            <p>物理寻址</p>
+        </figcaption>
+</figure>
+
+<p>然而，<strong>现代处理器使用「虚拟寻址（virtual addressing）」方式</strong>。</p>
+<figure><img src="/images/virtual-addressing.jpg"
+         alt="虚拟寻址" width="600"/><figcaption>
+            <p>虚拟寻址</p>
+        </figcaption>
+</figure>
+
+<p>使用虚拟寻址，CPU 通过生成一个「虚拟地址（Virtual Address，VA）」来访问主存。这个虚拟地址在被送到主存之前先要经过「地址翻译（address translation）」转换成物理地址。地址翻译需要 CPU 硬件和操作系统相互配合，CPU 芯片上叫做「内存管理单元（Memory Management Unit，MMU）」的专用硬件，利用存放在主存中的查询表（页表）来动态翻译虚拟地址，查询表的内容由操作系统维护。</p>
+<h2 id="地址空间">地址空间</h2>
+<p>地址空间（address space）是一个非负整数地址的有序集合。</p>
+<p>在一个带有虚拟内存的系统中，CPU 从一个有 $N=2^n$ 个地址的地址空间中生成虚拟地址，这个地址空间称为「虚拟地址空间（virtual address space)」。一个地址空间的大小是由表示最大地址所需要的「位」数来描述的。例如，一个包含 $N=2^n$ 个地址的虚拟地址空间就叫做一个 $n$ 位地址空间。现代系统通常支持 32 位或者 64 位虚拟地址空间。</p>
+<h2 id="虚拟内存">虚拟内存</h2>
+<p>概念上而言，将虚拟内存视为存储在磁盘上的 $N=2^n$ 个连续字节的数组。每个字节都有一个唯一的虚拟地址，作为到数组的索引。VM 系统将虚拟内存分割为虚拟页面（Virtual Page, VP），以虚拟页面作为传输单元，每个虚拟页面的大小为 $P=2^p$ 字节。同样地，物理内存被分割为多个物理页面（Physical Page, PP），物理页面的大小也为 $P$ 字节。</p>
+<ul>
+<li>虚拟页面往往很大，通常是 4KB～2MB。</li>
+<li>虚拟内存页面通常缓存在物理内存中。
+<ul>
+<li>每个虚拟页面都可以放置在任何的物理页面中，不会有内存碎片</li>
+</ul>
+</li>
+</ul>
+<figure><img src="/images/vm-as-a-tool-for-caching.jpg"
+         alt="一个 VM 系统如何使用主存作为缓存的" width="600"/><figcaption>
+            <p>一个 VM 系统如何使用主存作为缓存的</p>
+        </figcaption>
+</figure>
+
+<hr>
+<p>MMU（内存管理单元）中的地址翻译硬件在将一个虚拟地址转换为物理地址时，都会读取「页表（page table）」，页表是一种数据结构，它存放在物理内存中，包含了虚拟页面到物理页面的映射关系。页表由操作系统负责维护。</p>
+<figure><img src="/images/page-table.jpg"
+         alt="页表" width="600"/><figcaption>
+            <p>页表</p>
+        </figcaption>
+</figure>
+
+<p>页表是一个页表条目（Page Table Entry，PTE）的数组。虚拟地址空间中的每个页在页表中一个固定偏移量处都有一个 PTE。</p>
+<ul>
+<li>PTE 由一个「有效位」和一个 $n$ 位地址字段组成。</li>
+<li>有效位表明虚拟页面当前是否被缓存在主存中。
+<ul>
+<li>如果设置了有效位（为 1），那么地址字段就表示物理内存中的物理页面的起始位置，这个物理页面中缓存了该虚拟页面。</li>
+<li>如果没有设置有效位（为 0），地址字段为空就表示这个虚拟页面还未被分配（比如，PTE 5)，否则，这个地址指向该虚拟页面在磁盘上的起始位置（比如，PTE 3、PTE 6）。</li>
+</ul>
+</li>
+</ul>
+<p>假设，每个虚拟页面的大小是 4K（$2^{12}$），虚拟地址的位数为 16 位，那么需要多少个页表条目呢？</p>
+<p>计算：$2^n/2^p=2^{n-p}=2^{16-12}=16$，系统中总共有 16 个页面，其中每个页面都需要一个页表条目，所以需要 16 个 PTE。</p>
+<h3 id="缺页">缺页</h3>
+<p>在虚拟内存的习惯说法中，DRAM 缓存不命中称为「缺页（page fault）」。地址翻译硬件从页表中的页表条目的有效位推断出虚拟页面未被缓存时，就会触发一个缺页异常。缺页异常调用内核中的缺页异常处理程序，该程序会选择一个牺牲页面，如果被选中的牺牲页面已经被修改了，那么内核就会将它复制到磁盘，然后内核从磁盘复制请求的页面到内存中，并更新 PTE，随后返回。当异常处理程序返回时，它会重新执行导致缺页的指令，该指令会把导致缺页的虚拟地址重新发送到地址翻译硬件。</p>
+
+		</section>
+
+		<div class="post-tags">
+			
+			
+			<nav class="nav tags">
+				<ul class="tags">
+					
+					<li><a href="/tags/cs">cs</a></li>
+					
+				</ul>
+			</nav>
+			
+			
+		</div>
+	</article>
+</main>
+<footer>
+  <div style="display:flex"><a class="soc" href="https://github.com/x-29" title="GitHub"><i data-feather="github"></i></a><a class="soc" href="https://twiiter.com/x-29/" title="Twitter"><i data-feather="twitter"></i></a><a class="soc" href="https://gitlab.com/x-29/" title="GitLab"><i data-feather="gitlab"></i></a></div>
+  <div class="footer-info">
+    2022  <a
+      href="https://github.com/athul/archie">Archie Theme</a> | Built with <a href="https://gohugo.io">Hugo</a>
+  </div>
+</footer>
+
+
+<script>
+  feather.replace()
+</script></div>
+    </body>
+</html>
