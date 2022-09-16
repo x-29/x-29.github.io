@@ -186,7 +186,7 @@
 
 <p>例如，进程 i 有读 VP 0，读和执行 VP1，读写 VP2 的权限。</p>
 <h2 id="地址翻译">地址翻译</h2>
-<p>形式上来说，地址翻译时一个 $N$ 元素的虚拟地址空间（VAS）中的元素和一个 $M$ 元素的物理地址空间（PAS）中元素之间的映射。</p>
+<p>形式上来说，地址翻译是一个 $N$ 元素的虚拟地址空间（VAS）中的元素和一个 $M$ 元素的物理地址空间（PAS）中元素之间的映射。</p>
 <p>MMU 利用页表来实现这种映射。在 CPU 中有一个控制寄存器叫「页表基地址寄存器（Page Table Base Register，PTBR），它指向当前页表。$n$ 位的虚拟地址分成两个部分：一个 $p$ 位的虚拟页面偏移（Virtual Page Offset，VPO）和一个 ($n-p$) 位的虚拟页号（Virtual Page Number，VPN）。</p>
 <figure><img src="/images/address-translation.jpg"
          alt="使用页表的地址翻译" width="600"/><figcaption>
@@ -211,6 +211,23 @@
 </figure>
 
 <p>1）CPU 生成一个虚拟地址，并把它发送给 MMU。2-3）MMU 生成 PTE 地址，并从高速缓存/主存中得到 PTE。4）PTE 中的有效位为 0，因此 MMU 触发缺页异常。5）缺页处理程序确定出物理内存中的牺牲页，如果这个页面已经被修改，那么就把它换出（Page out）到磁盘。6）缺页处理程序调入（Page in）新的页面，并更新内存中的 PTE。7）缺页处理程序返回到原来的进程，再次指向导致缺页的指令。</p>
+<h3 id="利用-tlb-加速地址翻译">利用 TLB 加速地址翻译</h3>
+<p>每次 CPU 产生一个虚拟地址，MMU 就要访问内存两次，一次是获取用于地址翻译的 PTE，再一次是实际的内存请求。即便 PTE 像其他存储器字一样缓存在高速缓存 L1 中，它们也可能会被其他数据引用逐出缓存，并且 L1 缓存中的命中仍然需要 1-3 个时钟周期。许多系统为消除这种开销，它们在 MMU 中包括了一个「翻译后备缓冲器（Translation Lookaside Buffer，TLB）」。</p>
+<p>TLB 是一个小的、虚拟寻址的缓存，其中每一「行」都保存着一个由单个 PTE 组成的「块」。TLB 有高度的相联度。</p>
+<figure><img src="/images/TLB.jpg"
+         alt="虚拟地址中用以访问 TLB 的组成部分" width="600"/><figcaption>
+            <p>虚拟地址中用以访问 TLB 的组成部分</p>
+        </figcaption>
+</figure>
+
+<p>虚拟地址中的 VPN 被拆分为两个部分：TLB 标记（TLBT）和 TLB 索引（TLBI）。分别用于缓存的组选择和行匹配。如果 TLB 有 $T=2^t$ 个组，那么 TLB 索引是由 VPN 的 $t$ 个最低位组成的，而 TLB 标记是由 VPN 中剩余的位组成的。</p>
+<figure><img src="/images/tlb-hit-and-miss.jpg"
+         alt="TLB 命中和不命中的操作图"/><figcaption>
+            <p>TLB 命中和不命中的操作图</p>
+        </figcaption>
+</figure>
+
+<p>从上图可以看到，在 TLB 命中时，它消除了一次内存访问（步骤2和步骤3，MMU 从 TLB中取出相应的 PTE）。当 TLB 不命中时，会导致额外的内存访问（MMU 必须从 L1 缓存中取出相应的 PTE，并存放在 TLB 中）。幸运的是，TLB 不命中很少发生。</p>
 
 		</section>
 
